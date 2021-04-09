@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Alimento extends Model
 {
+	/*Changesss*/
     protected $table = 'alimento';
 	protected $primaryKey = 'AlimentoId';
 	public $timestamps = false;
