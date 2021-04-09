@@ -9,5 +9,4 @@ class Empleado extends Model
 	protected $primaryKey = 'EmpleadoId';
 	public $timestamps = false;
 	protected $filliable=['EmpleadoEstado','PersonaId'];
-
 }
