@@ -22,7 +22,7 @@ Route::get('/', function () {
     	return view('auth.login');
 	}
 });
-
+// cmentario
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
