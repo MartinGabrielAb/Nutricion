@@ -23,29 +23,29 @@
     <!-- /.content-header -->
 
     <!-- Main content -->
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-lg-12">
-            <div class="card">
-              <div class="card-body">
-              	<div class="row">
-                  <div class="col-lg-8" style="height: 5px">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-lg-8" style="height: 5px">
                     <div id="divMensaje" class="alert"> 
                     </div> 
-                  </div>
-              		<div class="col-lg-4">
+                </div>
+              	<div class="col-lg-4">
               		  <p class="text-right">
                       <button type="button" class="btn btn-sm btn-default" id="btnAgregar" data-toggle="modal" data-target="#modalAgregar">
                         Agregar Comida
                       </button>
               			</p>	
-              		</div>
               	</div>
-                @include('comidas.modal.agregar')	
+              </div>
+              @include('comidas.modal.agregar')	
               	<!--------------TABLA PRINCIPAL-------------->
-                <div class="row">
-                  <div class="col-lg-12">
-                    <table id="tableComidas" class="table table-sm table-striped table-bordered table-hover display nowrap" style="width:100%" cellspacing="0">
+              <div class="row">
+                <div class="col-lg-12">
+                  <table id="tableComidas" class="table table-sm table-striped table-bordered table-hover display nowrap" style="width:100%" cellspacing="0">
                     <!------Cabecera de la tabla------>
                     <thead>
                       <tr>
@@ -59,15 +59,14 @@
                     <tbody>
                     </tbody>
                   </table>
-                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <!-- /.col-md-6 -->
         </div>
-      </div><!-- /.container-fluid -->
-    </div>
+      </div>
+    </div><!-- /.container-fluid -->
+  </div>
 
   <!-- /.content-wrapper -->
 @push('custom-scripts')

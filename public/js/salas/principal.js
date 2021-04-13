@@ -1,124 +1,112 @@
 $(document).ready( function () {
-    $('#tableSalas').DataTable({
-          "serverSide":true,
-          "ajax": '../api/salas',
-            rowId: 'SalaId',
-          "columns": [
-            {data: 'SalaId'},
-            {data: 'SalaNombre'},
-            {data:'btn',orderable:false,sercheable:false},
-          ],
-          "language": {
-          "url": '../JSON/Spanish_dataTables.json',
-          },
-          responsive: true
-      });
+  var table = $('#tableSalas').DataTable({
+    responsive: true,
+    "serverSide":true,
+    "ajax": "/salas",
+      rowId: "SalaId",
+    "columns": [
+      {data: "SalaId"},
+      {data: "SalaNombre"},
+      {data:'btn',orderable:false,sercheable:false},
+    ],
+    "language": { "url": "../JSON/Spanish_dataTables.json"
+  }});
 
+  $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
+  
+  /*------Funcion para llenar los campos cuando selecciono una fila -----*/ 
+  $('#tableSalas tbody').on( 'click', 'button', function () {
+    $("#tituloModal").text("Editar sala");
+    $("#btnGuardar span").text("Editar");
+    $('#divComprobar').text("");
+    var data = table.row( $(this).parents('tr') ).data();
+    $("#id").val(data['SalaId']);
+    $("#nombre").val(data['SalaNombre']);
+  });
+});
+
+function vaciarCampos(){
+  $("#nombre").val("");
+}
+
+function agregar(){
+  $("#id").val(0);
+  vaciarCampos();
+  $("#tituloModal").text("Agregar sala");
+  $("#btnGuardar span").text("Guardar");
+}
+function editar(id){
+  $.ajax({
+    type:'PUT',
+    url:"salas/"+id,
+    dataType:"json",
+    data:{
+      salaNombre: $('#nombre').val(),
+    },
+    success: function(response){
+      $('#modal').modal('hide');
+      mostrarCartel('Registro editado correctamente.','alert-success');
+      var table = $('#tableSalas').DataTable();
+      table.draw();
+      $('#modalEditar').modal('hide');
+      },
+    error:function(response){
+      $("#divComprobar").text(response);
+    },
+  });
+}
+
+function guardar(e){
+  e.preventDefault();
+  var id = $("#id").val();
+  if(id == 0){
+    $.ajax({
+      type:'POST',
+      url:"salas",
+      dataType:"json",
+      data:{
+        salaNombre: $('#nombre').val(),
+      },
+      success: function(response){
+        $('#modal').modal('hide');
+        mostrarCartel('Registro agregado correctamente.','alert-success');
+        var table = $('#tableSalas').DataTable();
+        table.draw();
+        },
+      error:function(response){
+        $("#divComprobar").text(response);
+      }
     });
-
-function eliminarSala(id){
-      $('#modalEliminar'+id).modal('hide');
-      $('#divMensaje').removeClass('alert-success alert-danger');
-      $('#divMensaje').fadeIn();
-      $('#divMensaje').text("");
-      $.ajaxSetup({
-              headers: {
-                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-              }
-      });
-      $.ajax({
-        type:"DELETE",
-        url: "salas/"+id,
-        data: {
-          "_method": 'DELETE',
-          "id": id
-        },
-        beforeSend: function(response){
-
-        },
-       success: function(response) {
-          $('#divMensaje').addClass('alert-success');
-          $('#divMensaje').text("Registro eliminado correctamente.");
-          $('#divMensaje').fadeOut(4000);
-          var table = $('#tableSalas').DataTable();
-          table.row('#'+id).remove().draw();
-        },
-        error:function(){
-          $('#divMensaje').addClass('alert-danger');
-          $('#divMensaje').text("Error al eliminar el registro.");
-          $('#divMensaje').fadeOut(4000);
-        }
-      });
+  }else{
+    editar(id);
+  }
+  
 }
-function editarSala(id){
-      $('#divMensaje').removeClass('alert-success alert-danger');
-      $('#divMensaje').fadeIn();
-      $('#divMensaje').text("");
-      $('#labelComprobar'+id).removeClass('alert-success alert-danger');
-      $('#labelComprobar'+id).fadeIn();
-      $('#labelComprobar'+id).text("");
-      $('#btnGuardar'+id).attr('disabled',true);
-      $.ajaxSetup({
-              headers: {
-                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-              }
-      });
-      $.ajax({
-        type:'GET',
-        url:"getSalas",
-        dataType:"json",
-        beforeSend: function(response){
-          $("#labelComprobar"+id).text("Verificando datos...");
-        },
-       success: function(response) {
-          $("#labelComprobar"+id).text("");
-          var nombre = $('#salaNombre'+id).val();
-          var devolver = true;
-          for (let index = 0; index < response.salas.length; index++){
-            var salaNombre = response.salas[index]['SalaNombre'];
-            var salaId = response.salas[index]['SalaId'];
-            if(salaNombre == nombre && salaId != id){
-              devolver = false;
-              $("#labelNombre"+id).text("La sala ingresada ya existe");
-              $("#labelNombre"+id).addClass('text-danger');
-              break;
-            }
-          }
-          if(devolver == true){
-              $.ajax({
-                type:'PUT',
-                url:"salas/"+id,
-                dataType:"json",
-                data:{
-                  salaNombre: $('#salaNombre'+id).val(),
-                },
-                success: function(response){
-                  $('#labelComprobar'+id).addClass('alert-success');
-                  $('#labelComprobar'+id).text("Registro editado.");
-                  $('#labelComprobar'+id).fadeOut(4000);
-                  $('#salaNombre'+id).val("");
-                  var table = $('#tableSalas').DataTable();
-                  table.draw();
-                  $('#modalEditar'+id).modal('hide');
-                  $('#divMensaje').addClass('alert-success');
-                  $('#divMensaje').text("Registro editado correctamente.");
-                  $('#divMensaje').fadeOut(4000);
-                  },
-                error:function(){
-                  $("#labelComprobar"+id).text("ERROR 2");
-                },
-              });
-            }
-        },
-        error:function(){
-          $("#labelComprobar"+id).text("ERROR 1");
-          devolver = false;
-        },
-      });
 
-    $("#salaNombre"+id).click(function(){
-    $('#labelNombre'+id).removeClass('text-danger');
-    $('#labelNombre'+id).text('Nombre');
-    $('#btnGuardar'+id).attr('disabled',false);
-  }); 
+function mostrarCartel(texto,clase){
+    $('#divMensaje').removeClass('alert-success alert-danger');
+    $('#divMensaje').fadeIn();
+    $('#divMensaje').text(texto);
+    $('#divMensaje').addClass(clase);  
+    $('#divMensaje').fadeOut(4000);
 }
+
+function eliminar(id){
+  $.ajax({
+    type:"DELETE",
+    url: "salas/"+id,
+    data: {
+      "_method": 'DELETE',
+      "id": id
+    },
+    success: function(response) {
+      mostrarCartel('Registro eliminado correctamente.','alert-success');
+      var table = $('#tableSalas').DataTable();
+      table.row('#'+id).remove().draw();
+    },
+    error:function(){
+      mostrarCartel('Error al eliminar el registro.','alert-danger');
+    }
+  });
+}
+

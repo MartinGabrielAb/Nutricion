@@ -6,25 +6,37 @@ use Illuminate\Http\Request;
 use App\Sala;
 use App\Pieza;
 use App\Cama;
-use App\Http\Requests\CrearSalaRequest;
 use Illuminate\Support\Facades\Auth;
-use DB;
+use Exception;
+use Illuminate\Support\Facades\DB as FacadesDB;
+use Yajra\DataTables\DataTables;
+
 
 class SalaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function index(Request $request)
     {
         /*---Pregunto si es una peticion ajax----*/
         if($request->ajax()){
-            $salas = DB::table('sala')
-            ->where('SalaEstado',1)
-            ->get();
-            return compact('salas');
+            try{
+                $salas = FacadesDB::table('sala')->where('SalaEstado',1)->get();
+                return DataTables::of($salas)
+                            ->addColumn('SalaEstado',function($sala){
+                                if ($sala->SalaEstado == 1) {
+                                    return '<td><p class="text-success">Activo</p></td>';
+                                }else{
+                                    return '<td><p class="text-danger">Inactivo</p></td>';
+                                }
+                            })
+                            ->addColumn('btn','salas/actions')
+                             ->rawColumns(['SalaEstado','btn'])
+                             ->toJson();
+            }catch(Exception $ex){
+                return response()->json([
+                    'error' => 'Internal server error.'
+                ], 500);
+            }
         }
         $user = Auth::user();
         return view('salas.principal',compact('user'));
