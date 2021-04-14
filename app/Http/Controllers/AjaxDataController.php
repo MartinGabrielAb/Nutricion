@@ -121,7 +121,6 @@ function getAlimentos(){
                                 ->join('sala as s','s.SalaId','p.SalaId')
                                 ->join('paciente as pa','pa.PacienteId','dr.PacienteId')
                                 ->join('persona as pe','pe.PersonaId','pa.PersonaId')
-                                ->where('dr.RelevamientoId',$id)
                                 ->where('dr.DetalleRelevamientoEstado',1)
                                 ->get();
         return compact('detallesRelevamiento');

@@ -48,7 +48,6 @@ $(document).ready( function () {
                         if(pacienteDNI == response.detallesRelevamiento[detalleRelevamiento].PersonaCuil) {
                             pacienteExistente = false;
                             pacienteExistente_Cama = response.detallesRelevamiento[detalleRelevamiento].SalaNombre+'/'+response.detallesRelevamiento[detalleRelevamiento].PiezaNombre+'/'+response.detallesRelevamiento[detalleRelevamiento].CamaNumero ;
-                            
                         }                            
                         if (camaId == response.detallesRelevamiento[detalleRelevamiento].CamaId) {
                             camaOcupada = false;
