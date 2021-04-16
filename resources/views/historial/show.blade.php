@@ -10,7 +10,7 @@
       </div>
       <div class="col-lg-4">
         <p class="text-right mt-1 mb-1 pt-1">
-          <button class="d-inline btn btn-sm btn-default">Editar</button>
+          {{-- <button class="d-inline btn btn-sm btn-default">Editar</button> --}}
           <button class="d-inline btn btn-sm btn-default" data-toggle="modal" data-target="#modalEliminar" id="btnAgregar">Eliminar</button>
         </p>	
       </div>
