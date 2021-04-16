@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Exception;
 use Illuminate\Support\Facades\DB as FacadesDB;
 use Yajra\DataTables\DataTables;
-
+use App\Http\Requests\SalaRequest;
 
 class SalaController extends Controller
 {
@@ -60,7 +60,7 @@ class SalaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(SalaRequest $request)
     {
         $sala = New Sala();
         $sala->SalaNombre = $request['salaNombre'];
@@ -104,7 +104,7 @@ class SalaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(SalaRequest $request, $id)
     {
         $sala = Sala::FindOrFail($id);
         $sala->SalaNombre = $request['salaNombre'];

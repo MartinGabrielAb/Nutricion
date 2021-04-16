@@ -75,7 +75,7 @@
         <div class="modal-body">
           <input type="hidden" id="id" name="id">
           <label for='nombre' id="labelNombre">Nombre</label>
-          <input class="form-control" type="text" id="nombre" name="nombre" required>
+          <input class="form-control" type="text" id="nombre" name="nombre" required minlength="4" maxlength="64">
         </div>
         <div class="modal-footer">
           <div class="container-fluid">
@@ -90,11 +90,10 @@
               </div>
             </div>
             <div class="row">
-              <div class="col">
-                <div id="divComprobar" class="alert text-center p-0">
-                    <!-- Mensaje de exito/error -->
-                </div> 
-              </div>     
+              <div class="col text-danger" id="divComprobar">
+                  <!-- Lista de errores -->
+                  <ul id = "listaErrores"></ul>
+              </div>
             </div>
           </div>
         </div>
