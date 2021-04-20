@@ -32,6 +32,7 @@ class SalaRequest extends FormRequest
             return [
             'salaNombre' => [
                 'required',
+                'min:4',
                 'max:64',
                 Rule::unique('sala','SalaNombre')->where(function ($query) { 
                     return $query->where('SalaEstado', 1);
@@ -44,14 +45,15 @@ class SalaRequest extends FormRequest
             return  [
             'salaNombre' => [
                 'required',
+                'min:4',
                 'max:64',
-                Rule::unique('sala','SalaNombre')->ignore(new Sala)
-                ->where(function ($query) use ($request) { 
-                    return $query->where('SalaId','!=',$request->id);
-                    })
-                ->where(function ($query) use ($request) { 
-                    return $query->where('SalaEstado', 1);
-                    })
+                Rule::unique('sala','SalaNombre')
+                    ->where(function ($query) use ($request) { 
+                        return $query->where('SalaId','!=',$request->id);
+                        })
+                    ->where(function ($query) { 
+                        return $query->where('SalaEstado', 1);
+                        })
                 ]   
             ];
         }
@@ -62,7 +64,8 @@ class SalaRequest extends FormRequest
     {
         return [
             'salaNombre.required' => 'Nombre es requerido.',
-            'salaNombre.max' => 'Nombre no debe sobrepasar 64 carac.',
+            'salaNombre.min' => 'Nombre debe pasar los 4 caractéres.',
+            'salaNombre.max' => 'Nombre no debe sobrepasar 64 caractéres',
             'salaNombre.unique' => 'Ya existe una sala con ese nombre.'
         ];
     }

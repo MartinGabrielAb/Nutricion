@@ -3,8 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Sala;
 use App\Pieza;
 use App\Cama;
+use Illuminate\Support\Facades\Auth;
+use Exception;
+use Illuminate\Support\Facades\DB as FacadesDB;
+use Yajra\DataTables\DataTables;
+use App\Http\Requests\PiezaRequest;
+
 class PiezaController extends Controller
 {
     public function __construct()
@@ -37,14 +44,13 @@ class PiezaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PiezaRequest $request)
     {
         $pieza = New Pieza();
         $pieza->PiezaNombre = $request['piezaNombre'];
         $pieza->PiezaEstado = 1;
         $pieza->SalaId = $request['salaId'];
         $resultado = $pieza->save();
-
         if ($resultado) {
             return response()->json(['success' => $pieza]);
         }else{
@@ -60,8 +66,30 @@ class PiezaController extends Controller
      */
     public function show($id)
     {
+        if($request->ajax()){
+            try{
+                $camas = FacadesDB::table('cama')
+                                ->where('PiezaId', $id)
+                                ->get();
+                return DataTables::of($camas)
+                            ->addColumn('CamaEstado',function($cama){
+                                if ($cama->CamaEstado == 1) {
+                                    return '<td><p class="text-success">Activa</p></td>';
+                                }else{
+                                    return '<td><p class="text-danger">Inactiva</p></td>';
+                                }
+                            })
+                            ->addColumn('btn','camas/actions')
+                            ->rawColumns(['CamaEstado','btn'])
+                            ->toJson();
+            }catch(Exception $ex){
+                return response()->json([
+                    'error' => 'Internal server error.'
+                ], 500);
+            }
+        }
         $pieza = Pieza::FindOrFail($id);
-        return view('salas.camas',compact('pieza'));
+        return view('piezas.principal',compact('pieza'));
     }
 
     /**
@@ -82,7 +110,7 @@ class PiezaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(PiezaRequest $request, $id)
     {
         $pieza = Pieza::FindOrFail($id);
         $pieza->PiezaNombre = $request['piezaNombre'];

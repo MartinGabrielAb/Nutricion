@@ -14,7 +14,11 @@ use App\Http\Requests\SalaRequest;
 
 class SalaController extends Controller
 {
-    
+ 
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     public function index(Request $request)
     {
         /*---Pregunto si es una peticion ajax----*/
@@ -51,7 +55,6 @@ class SalaController extends Controller
     public function create()
     {
     
-        return view('salas.create');
     }
 
     /**
@@ -79,11 +82,28 @@ class SalaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request ,$id)
     {
-
-        $sala = Sala::FindOrFail($id);
-        return view('salas.show',compact('sala'));
+            /*---Pregunto si es una peticion ajax----*/
+            if($request->ajax()){
+                try{
+                    $piezas = FacadesDB::table('pieza')
+                                    ->where('SalaId', $id)
+                                    ->where('PiezaEstado',1)
+                                    ->get();
+                    return DataTables::of($piezas)
+                                
+                                ->addColumn('btn','piezas/actions')
+                                 ->rawColumns(['btn'])
+                                 ->toJson();
+                }catch(Exception $ex){
+                    return response()->json([
+                        'error' => 'Internal server error.'
+                    ], 500);
+                }
+            }
+            $sala = Sala::FindOrFail($id);
+            return view('piezas.principal',compact('sala'));
     }
 
     /**
