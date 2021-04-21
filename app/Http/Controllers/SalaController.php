@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Sala;
 use App\Pieza;
 use App\Cama;
+use App\TraitSalas;
 use Illuminate\Support\Facades\Auth;
 use Exception;
 use Illuminate\Support\Facades\DB as FacadesDB;
@@ -15,10 +16,6 @@ use App\Http\Requests\SalaRequest;
 class SalaController extends Controller
 {
  
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
     public function index(Request $request)
     {
         /*---Pregunto si es una peticion ajax----*/
@@ -42,8 +39,7 @@ class SalaController extends Controller
                 ], 500);
             }
         }
-        $user = Auth::user();
-        return view('salas.principal',compact('user'));
+        return view('salas.principal');
         
     }
 
@@ -114,7 +110,6 @@ class SalaController extends Controller
      */
     public function edit($id)
     {
-                return ("edit");
     }
 
     /**

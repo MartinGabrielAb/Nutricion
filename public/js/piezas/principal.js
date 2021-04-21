@@ -40,6 +40,7 @@ $(document).ready( function () {
   
   
   function guardar(e){
+    $("#listaErrores").empty();
     e.preventDefault();
     var id = $("#id").val();
     if(id == 0){
@@ -70,6 +71,7 @@ $(document).ready( function () {
     
   }
   function editar(id){
+    $("#listaErrores").empty();
     $.ajax({
       type:'PUT',
       url:"../piezas/"+id,

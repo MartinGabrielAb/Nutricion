@@ -79,13 +79,13 @@ Route::middleware(['auth'])->group(function(){
 // });
 //piezas
 Route::middleware(['auth'])->group(function(){
-	Route::post('pieza','PiezaController@store')->name('pieza.store')->middleware('permission:piezas.store');
-	Route::get('pieza','PiezaController@index')->name('pieza.index')->middleware('permission:piezas.index');
-	Route::get('pieza/create','PiezaController@create')->name('pieza.create')->middleware('permission:piezas.create');
-	Route::put('pieza/{id}','PiezaController@update')->name('pieza.update')->middleware('permission:piezas.update');
-	Route::get('pieza/{id}','PiezaController@show')->name('pieza.show')->middleware('permission:piezas.show');
-	Route::delete('pieza/{id}','PiezaController@destroy')->name('pieza.destroy')->middleware('permission:piezas.destroy');
-	Route::get('pieza/{id}/edit','PiezaController@edit')->name('pieza.edit')->middleware('permission:piezas.edit');
+	Route::post('piezas','PiezaController@store')->name('piezas.store')->middleware('permission:piezas.store');
+	Route::get('piezas','PiezaController@index')->name('piezas.index')->middleware('permission:piezas.index');
+	Route::get('piezas/create','PiezaController@create')->name('piezas.create')->middleware('permission:piezas.create');
+	Route::put('piezas/{id}','PiezaController@update')->name('piezas.update')->middleware('permission:piezas.update');
+	Route::get('piezas/{id}','PiezaController@show')->name('piezas.show')->middleware('permission:piezas.show');
+	Route::delete('piezas/{id}','PiezaController@destroy')->name('piezas.destroy')->middleware('permission:piezas.destroy');
+	Route::get('piezas/{id}/edit','PiezaController@edit')->name('piezas.edit')->middleware('permission:piezas.edit');
 });
 //camas
 Route::middleware(['auth'])->group(function(){
@@ -225,10 +225,6 @@ Route::get('getPacientes','AjaxDataController@getPacientes')->name('ajaxData.get
 Route::get('getEmpleados','AjaxDataController@getEmpleados')->name('ajaxData.getEmpleados');
 
 Route::get('getProfesionales','AjaxDataController@getProfesionales')->name('ajaxData.getProfesionales');
-
-Route::get('getSalas','AjaxDataController@getSalas')->name('ajaxData.getSalas');
-
-Route::get('getPiezas','AjaxDataController@getPiezas')->name('ajaxData.getPiezas');
 
 Route::get('getMenues','AjaxDataController@getMenues')->name('ajaxData.getMenues');
 Route::get('getMenuTipo','AjaxDataController@getMenuTipo')->name('ajaxData.getMenuTipo');

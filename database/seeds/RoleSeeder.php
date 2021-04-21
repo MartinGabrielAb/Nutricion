@@ -51,6 +51,14 @@ class RoleSeeder extends Seeder
         $permission = Permission::create(['name' => 'piezas.show'])->syncRoles(['Admin']);
         $permission = Permission::create(['name' => 'piezas.destroy'])->syncRoles(['Admin']);
         $permission = Permission::create(['name' => 'piezas.edit'])->syncRoles(['Admin']);
+        //camas
+        $permission = Permission::create(['name' => 'camas.store'])->syncRoles(['Admin']);
+        $permission = Permission::create(['name' => 'camas.index'])->syncRoles(['Admin']);
+        $permission = Permission::create(['name' => 'camas.create'])->syncRoles(['Admin']);
+        $permission = Permission::create(['name' => 'camas.update'])->syncRoles(['Admin']);
+        $permission = Permission::create(['name' => 'camas.show'])->syncRoles(['Admin']);
+        $permission = Permission::create(['name' => 'camas.destroy'])->syncRoles(['Admin']);
+        $permission = Permission::create(['name' => 'camas.edit'])->syncRoles(['Admin']);
         //menuportipopaciente
         $permission = Permission::create(['name' => 'menuportipopaciente.store'])->syncRoles(['Admin','Nutricion']);
         $permission = Permission::create(['name' => 'menuportipopaciente.index'])->syncRoles(['Admin','Nutricion']);
@@ -73,7 +81,7 @@ class RoleSeeder extends Seeder
         $permission = Permission::create(['name' => 'alimentos.create'])->syncRoles(['Admin','Despensa','Nutricion',]);
         $permission = Permission::create(['name' => 'alimentos.update'])->syncRoles(['Admin','Despensa','Nutricion',]);
         $permission = Permission::create(['name' => 'alimentos.show'])->syncRoles(['Admin','Despensa','Nutricion',]);
-        $permission = Permission::create(['name' => 'alimentos.destroy'])->syncRoles(['Admin','Despensa'],'Nutricion',);
+        $permission = Permission::create(['name' => 'alimentos.destroy'])->syncRoles(['Admin','Despensa','Nutricion',]);
         $permission = Permission::create(['name' => 'alimentos.edit'])->syncRoles(['Admin','Despensa','Nutricion',]);
         //alimentosporproveedor
         $permission = Permission::create(['name' => 'alimentosporproveedor.store'])->syncRoles(['Admin','Despensa','Nutricion',]);

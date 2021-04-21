@@ -14,36 +14,12 @@ use App\Http\Requests\PiezaRequest;
 
 class PiezaController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    { }
     public function create()
-    {
-        //
-    }
+    { }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(PiezaRequest $request)
     {
         $pieza = New Pieza();
@@ -57,14 +33,7 @@ class PiezaController extends Controller
             return response()->json(['success'=>'false']);
         }
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function show(Request $request,$id)
     {
         if($request->ajax()){
             try{
@@ -89,27 +58,13 @@ class PiezaController extends Controller
             }
         }
         $pieza = Pieza::FindOrFail($id);
-        return view('piezas.principal',compact('pieza'));
+        return view('camas.principal',compact('pieza'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function edit($id)
-    {
-        //
-    }
+    { }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(PiezaRequest $request, $id)
     {
         $pieza = Pieza::FindOrFail($id);
@@ -122,14 +77,9 @@ class PiezaController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
+        
         $pieza = Pieza::FindOrFail($id);
         $camas = Cama::where('PiezaId',$pieza->PiezaId)->get();
         foreach ($camas as $cama) {

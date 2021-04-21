@@ -39,6 +39,7 @@ function agregar(){
 
 
 function guardar(e){
+  $("#listaErrores").empty();
   e.preventDefault();
   var id = $("#id").val();
   if(id == 0){
@@ -70,6 +71,7 @@ function guardar(e){
   
 }
 function editar(id){
+  $("#listaErrores").empty();
   $.ajax({
     type:'PUT',
     url:"salas/"+id,

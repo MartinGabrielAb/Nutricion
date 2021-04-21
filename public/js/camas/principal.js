@@ -4,10 +4,11 @@ $(document).ready( function () {
       responsive: true,
       "serverSide":true,
       "ajax": "/piezas/"+PiezaId,
-        rowId: "PiezaId",
+        rowId: "CamaId",
       "columns": [
-        {data: "PiezaId"},
-        {data: "PiezaNombre"},
+        {data: "CamaId"},
+        {data: "CamaNumero"},
+        {data:"CamaEstado"},
         {data:'btn',orderable:false,sercheable:false},
       ],
       "language": { "url": "../JSON/Spanish_dataTables.json"
@@ -17,39 +18,40 @@ $(document).ready( function () {
     
     /*------Funcion para llenar los campos cuando selecciono una fila -----*/ 
     $('#tableCamas tbody').on( 'click', 'button', function () {
-      $("#tituloModal").text("Editar pieza");
+      $("#tituloModal").text("Editar cama");
       $("#btnGuardar span").text("Editar");
       vaciarCampos();
       var data = table.row( $(this).parents('tr') ).data();
-      $("#id").val(data['PiezaId']);
-      $("#nombre").val(data['PiezaNombre']);
+      $("#id").val(data['CamaId']);
+      $("#numero").val(data['CamaNumero']);
     });
   });
   
   function vaciarCampos(){
-    $("#nombre").val("");
+    $("#numero").val("");
     $("#listaErrores").empty();
   }
   
   function agregar(){
     $("#id").val(0);
     vaciarCampos();
-    $("#tituloModal").text("Agregar pieza");
+    $("#tituloModal").text("Agregar cama");
     $("#btnGuardar span").text("Guardar");
   }
   
   
   function guardar(e){
+    $("#listaErrores").empty();
     e.preventDefault();
     var id = $("#id").val();
     if(id == 0){
       $.ajax({
         type:'POST',
-        url:"../piezas",
+        url:"../../camas",
         dataType:"json",
         data:{
             piezaId : $("#PiezaId").val(),
-            piezaNombre: $('#nombre').val(),
+            camaNumero: $('#numero').val(),
         },
         success: function(response){
           $('#modal').modal('hide');
@@ -70,13 +72,13 @@ $(document).ready( function () {
     
   }
   function editar(id){
+    $("#listaErrores").empty();
     $.ajax({
       type:'PUT',
-      url:"../piezas/"+id,
+      url:"../../camas/"+id,
       dataType:"json",
       data:{
         piezaId : $("#PiezaId").val(),
-        piezaNombre: $('#nombre').val(),
       },
       success: function(response){
         $('#modal').modal('hide');
@@ -93,24 +95,7 @@ $(document).ready( function () {
         }
     });
   }
-  function eliminar(id){
-    $.ajax({
-      type:"DELETE",
-      url: "../piezas/"+id,
-      data: {
-        "_method": 'DELETE',
-        "id": id
-      },
-      success: function(response) {
-        mostrarCartel('Registro eliminado correctamente.','alert-success');
-        var table = $('#tableCamas').DataTable();
-        table.row('#'+id).remove().draw();
-      },
-      error:function(){
-        mostrarCartel('Error al eliminar el registro.','alert-danger');
-      }
-    });
-  }
+
   function mostrarCartel(texto,clase){
       $('#divMensaje').removeClass('alert-success alert-danger');
       $('#divMensaje').fadeIn();

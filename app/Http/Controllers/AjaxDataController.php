@@ -42,20 +42,6 @@ class AjaxDataController extends Controller
         return compact('profesionales');
 	}
 
-    function getSalas(){
-        $salas = DB::table('sala')
-                    ->where('SalaEstado',1)
-                    ->get();
-        return compact('salas');
-    }
-
-    function getPiezas(Request $request){
-        $salaId = $request['id'];
-        $piezas = DB::table('pieza')->where('SalaId',$salaId)
-                                    ->where('PiezaEstado',1)
-                                    ->get();
-        return compact('piezas');
-    }
 
     function getMenues(){
     
