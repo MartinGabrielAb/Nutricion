@@ -56,6 +56,7 @@ class AlimentoPorProveedorController extends Controller
         $alimentoPorProveedor->AlimentoPorProveedorVencimiento=$datos['vencimiento'];
         $alimentoPorProveedor->AlimentoPorProveedorCantidad = $datos['cantidad'];
         $alimentoPorProveedor->AlimentoPorProveedorCosto = $datos['precio'];
+        $alimentoPorProveedor->AlimentoPorProveedorCostoTotal = 0;
         if($alimento->AlimentoEquivalenteGramos != NULL){
             $alimentoPorProveedor->AlimentoPorProveedorCantidadGramos = $alimentoPorProveedor->AlimentoPorProveedorCantidad * $alimento->AlimentoEquivalenteGramos;
         }else{
