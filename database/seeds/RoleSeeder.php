@@ -19,6 +19,14 @@ class RoleSeeder extends Seeder
         $roleRelevamiento = Role::create(['name' => 'Relevamiento']);
         $roleAdminDespensa = Role::create(['name' => 'Despensa']);
         //Permissions
+        $permission = Permission::create(['name' => 'roles.store'])->syncRoles(['Admin','Nutricion']);
+        $permission = Permission::create(['name' => 'roles.index'])->syncRoles(['Admin','Nutricion']);
+        $permission = Permission::create(['name' => 'roles.create'])->syncRoles(['Admin','Nutricion']);
+        $permission = Permission::create(['name' => 'roles.update'])->syncRoles(['Admin','Nutricion']);
+        $permission = Permission::create(['name' => 'roles.show'])->syncRoles(['Admin','Nutricion']);
+        $permission = Permission::create(['name' => 'roles.destroy'])->syncRoles(['Admin','Nutricion']);
+        $permission = Permission::create(['name' => 'roles.edit'])->syncRoles(['Admin','Nutricion']);
+        
         //menu
         $permission = Permission::create(['name' => 'menu.store'])->syncRoles(['Admin','Nutricion']);
         $permission = Permission::create(['name' => 'menu.index'])->syncRoles(['Admin','Nutricion']);

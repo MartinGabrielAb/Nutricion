@@ -228,6 +228,17 @@ Route::middleware(['auth'])->group(function(){
 	// Route::delete('personas/{id}','PersonaController@destroy')->name('personas.destroy')->middleware('permission:personas.destroy');
 	// Route::get('personas/{id}/edit','PersonaController@edit')->name('personas.edit')->middleware('permission:personas.edit');
 });
+//roles
+Route::middleware(['auth'])->group(function(){
+	Route::post('roles','RoleController@store')->name('roles.store')->middleware('permission:roles.store');
+	Route::get('roles','RoleController@index')->name('roles.index')->middleware('permission:roles.index');
+	Route::get('roles/create','RoleController@create')->name('roles.create')->middleware('permission:roles.create');
+	Route::put('roles/{id}','RoleController@update')->name('roles.update')->middleware('permission:roles.update');
+	Route::get('roles/{id}','RoleController@show')->name('roles.show')->middleware('permission:roles.show');
+	Route::delete('roles/{id}','RoleController@destroy')->name('roles.destroy')->middleware('permission:roles.destroy');
+	Route::get('roles/{id}/edit','RoleController@edit')->name('roles.edit')->middleware('permission:roles.edit');
+});
+Auth::routes();
 
 // Las rutas comentadas habría que borrarlas
 // Route::get('getPacientes','AjaxDataController@getPacientes')->name('ajaxData.getPacientes');

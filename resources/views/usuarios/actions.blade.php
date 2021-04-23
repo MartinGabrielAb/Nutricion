@@ -1,10 +1,9 @@
-<button type="button" class="btn btn-sm btn-default " data-toggle="modal" data-target="#modalEditar{{$id}}">
-  Editar
+<button type="button" class="btn btn-sm btn-default"  data-toggle="modal"  data-target="#modal" >
+  <i class="fas fa-edit"></i>
 </button>
-@include('usuarios.modal.editar')
-
-<button type="button" class="btn btn-sm btn-default " data-toggle="modal" data-target="#modalEliminar{{$id}}">
-  Eliminar
+<button class="btn btn-sm btn-default" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <i class="fas fa-trash"></i>
 </button>
-
-@include('usuarios.modal.eliminar')
+<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <button class="dropdown-item" onClick ="eliminar({{$id}})" ><i class="fas fa-exclamation-circle"></i>Confirmar eliminación</button>
+</div>

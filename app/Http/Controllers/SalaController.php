@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Sala;
 use App\Pieza;
 use App\Cama;
-use App\TraitSalas;
 use Illuminate\Support\Facades\Auth;
 use Exception;
 use Illuminate\Support\Facades\DB as FacadesDB;
