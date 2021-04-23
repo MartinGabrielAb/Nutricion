@@ -43,6 +43,10 @@ class DetalleRelevamientoController extends Controller
      */
     public function store(Request $request)
     {
+        //ESTADO DE RELEVAMIENTO A PACIENTES:
+        //DetalleRelevamientoEstado = 1 -> Activo y pertenece al último relevamient del paciente.
+        //DetalleRelevamientoEstado = 0 -> Inactivo y pertenece al penúltimo relevamiento del paciente.
+        //DetalleRelevamientoEstado = -1 -> Inactivo y pertenece a cambios de estado de pacientes(Historia del paciente).
         $persona = Persona::where('PersonaCuil',$request->get('pacienteDNI'))->first();
         $paciente = Paciente::where('PersonaId',$persona->PersonaId)->first();
         //paciente existente y cama ocupada.
@@ -53,7 +57,8 @@ class DetalleRelevamientoController extends Controller
             if($DRpacienteExistente == $DRcamaOcupada){
                 if($DRpacienteExistente->RelevamientoId == $request->get('relevamientoId')){
                     //el paciente ya existe, está en la misma cama y en mismo relevamiento
-                    $DRpacienteExistente->delete();
+                    $DRpacienteExistente->DetalleRelevamientoEstado = -1;
+                    $DRpacienteExistente->update();
                 }else{
                     //el paciente ya existe, está en la misma cama y en distinto relevamiento
                     $DRpacienteExistente->DetalleRelevamientoEstado = 0;
@@ -63,7 +68,8 @@ class DetalleRelevamientoController extends Controller
                 if($DRpacienteExistente->RelevamientoId == $request->get('relevamientoId') || $DRcamaOcupada->RelevamientoId == $request->get('relevamientoId')){
                     if($DRpacienteExistente->RelevamientoId == $request->get('relevamientoId')){
                         //el paciente ya existe en el mismo relevamiento
-                        $DRpacienteExistente->delete();
+                        $DRpacienteExistente->DetalleRelevamientoEstado = -1;
+                        $DRpacienteExistente->update();
                     }else{
                         //el paciente ya existe en otro relevamient
                         $DRpacienteExistente->DetalleRelevamientoEstado = 0;
@@ -71,7 +77,8 @@ class DetalleRelevamientoController extends Controller
                     }
                     if($DRcamaOcupada->RelevamientoId == $request->get('relevamientoId')){
                         //la cama está ocupada en el mismo relevamiento
-                        $DRcamaOcupada->delete();
+                        $DRcamaOcupada->DetalleRelevamientoEstado = 0;
+                        $DRcamaOcupada->update();
                     }else{
                         //la cama está ocupada en otro relevamiento
                         $DRcamaOcupada->DetalleRelevamientoEstado = 0;
@@ -90,7 +97,8 @@ class DetalleRelevamientoController extends Controller
                 //el paciente ya existe en algún lugar
                 if($DRpacienteExistente->RelevamientoId == $request->get('relevamientoId')){
                     //el paciente ya existe y está en el mismo relevamiento
-                    $DRpacienteExistente->delete();
+                    $DRpacienteExistente->DetalleRelevamientoEstado = -1;
+                    $DRpacienteExistente->update();
                 }else{
                     //el paciente ya existe y está en otro relevamiento
                     $DRpacienteExistente->DetalleRelevamientoEstado = 0;
@@ -99,7 +107,8 @@ class DetalleRelevamientoController extends Controller
             }elseif($request->get('camaOcupada') == 'false'){
                 if($DRcamaOcupada->RelevamientoId == $request->get('relevamientoId')){
                     //la cama está ocupada en el mismo relevamiento
-                    $DRcamaOcupada->delete();
+                    $DRcamaOcupada->DetalleRelevamientoEstado = 0;
+                    $DRcamaOcupada->update();
                 }else{
                     //la cama está ocupada en otro relevamiento
                     $DRcamaOcupada->DetalleRelevamientoEstado = 0;

@@ -36,6 +36,7 @@
               		</div>
               	</div>	
               	<!--------------TABLA PRINCIPAL-------------->
+                <h1 class="text-danger border border-warning text-center">Falta agregar funcionalidad a los botones de acción!</h1>
               	<table id="tablePacientes" class="table table-sm table-striped table-bordered">
               		<!------Cabecera de la tabla------>
               		<thead>
@@ -49,23 +50,7 @@
                       <th scope="col">Acciones</th>
               			</tr>
               		</thead>
-              		<!------Cuerpo de la tabla------>
                   <tbody>
-              			@foreach($pacientes as $paciente)
-              			<tr role="row">
-              				<td>{{$paciente->PacienteId}}</td>
-              				<td>{{$paciente->PersonaApellido}},{{$paciente->PersonaNombre}}</td>
-                      <td>{{$paciente->PersonaCuil}}</td>
-                      <td>{{$paciente->PersonaDireccion}}</td>
-                      <td>{{$paciente->PersonaEmail}}</td>
-                      <td>{{$paciente->PersonaTelefono}}</td>
-                      <td>
-                        <a href="{{URL::action('PacienteController@edit',$paciente->PacienteId)}}" class="btn btn-sm btn-default">Editar</a>
-                        <button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#eliminar{{$paciente->PacienteId}}">Dar Baja</button>
-                        @include('pacientes.modal.eliminar')
-                      </td>
-                    </tr>
-              			@endforeach
               		</tbody>	
               	</table>
               </div>
@@ -79,21 +64,6 @@
   </div>
   <!-- /.content-wrapper -->
 @push('custom-scripts')
-<script>
-$(document).ready( function () {
-    $('#tablePacientes').DataTable({
-         "language": {
-          "url": '{{asset('JSON/Spanish_dataTables.json')}}',
-          },
-          responsive:true,
-          columnsDef: [
-            {responsivePriority:1,targets:0},
-            {responsivePriority:2,targets:1},
-            {responsivePriority:3,targets:3},
-
-          ]
-    });
-    } );
-</script>
+  <script type="text/javascript" src="{{asset('js/pacientes/principal.js')}}"></script>
 @endpush
 @endsection
