@@ -333,7 +333,6 @@ Route::get('relevamientos/{id}',function($id){
 		// }
 	$detallesRelevamiento = DB::table('detallerelevamiento')
 								->where('RelevamientoId',$id)
-								
 								->whereIn('DetalleRelevamientoId', function ($sub) use ($id) {
 									$sub->selectRaw('MAX(DetalleRelevamientoId)')->from('detallerelevamiento')->where('RelevamientoId',$id)->groupBy('PacienteId')->orderBy('updated_at')->orderBy('DetalleRelevamientoEstado'); // <---- la clave
 								})

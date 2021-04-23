@@ -65,7 +65,7 @@ class SalaRequest extends FormRequest
         return [
             'salaNombre.required' => 'Nombre es requerido.',
             'salaNombre.min' => 'Nombre debe pasar los 4 caractéres.',
-            'salaNombre.max' => 'Nombre no debe sobrepasar 64 caractéres',
+            'salaNombre.max' => 'Nombre no debe sobrepasar 64 caractéres.',
             'salaNombre.unique' => 'Ya existe una sala con ese nombre.'
         ];
     }

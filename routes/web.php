@@ -218,9 +218,19 @@ Route::middleware(['auth'])->group(function(){
 	Route::delete('proveedores/{id}','ProveedorController@destroy')->name('proveedores.destroy')->middleware('permission:proveedores.destroy');
 	Route::get('proveedores/{id}/edit','ProveedorController@edit')->name('proveedores.edit')->middleware('permission:proveedores.edit');
 });
-Auth::routes();
+//personas
+Route::middleware(['auth'])->group(function(){
+	Route::post('personas','PersonaController@store')->name('personas.store')->middleware('permission:personas.store');
+	// Route::get('personas','PersonaController@index')->name('personas.index')->middleware('permission:personas.index');
+	// Route::get('personas/create','PersonaController@create')->name('personas.create')->middleware('permission:personas.create');
+	Route::put('personas/{id}','PersonaController@update')->name('personas.update')->middleware('permission:personas.update');
+	// Route::get('personas/{id}','PersonaController@show')->name('personas.show')->middleware('permission:personas.show');
+	// Route::delete('personas/{id}','PersonaController@destroy')->name('personas.destroy')->middleware('permission:personas.destroy');
+	// Route::get('personas/{id}/edit','PersonaController@edit')->name('personas.edit')->middleware('permission:personas.edit');
+});
 
-Route::get('getPacientes','AjaxDataController@getPacientes')->name('ajaxData.getPacientes');
+// Las rutas comentadas habría que borrarlas
+// Route::get('getPacientes','AjaxDataController@getPacientes')->name('ajaxData.getPacientes');
 
 Route::get('getEmpleados','AjaxDataController@getEmpleados')->name('ajaxData.getEmpleados');
 
