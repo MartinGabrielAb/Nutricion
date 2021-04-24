@@ -28,41 +28,49 @@
           <div class="col-lg-12">
             <div class="card">
               <div class="card-body">
-              	<!--------------TABLA PRINCIPAL-------------->
-                <input hidden type="text" id="pacienteId" value="{{$paciente->PacienteId}}">
-                <h1 class="text-danger border border-warning text-center">Falta agregar los botones de acción!</h1>
-                  <dl class="row">
-                    <dt class="col-sm-3 col-md-3 col-lg-3 col-xl-2">Paciente</dt>
-                    <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PersonaApellido}}, {{$paciente->PersonaNombre}}</dd>
-                    <dt class="col-sm-3 col-md-3 col-lg-3 col-xl-2">Dirección</dt>
-                    <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PersonaDireccion}}</dd>
-                    <dt class="col-sm-3 col-md-3 col-lg-3 col-xl-2">Email</dt>
-                    <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PersonaEmail}}</dd>
-                    <dt class="col-sm-3 col-md-3 col-lg-3 col-xl-2">Teléfono</dt>
-                    <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PersonaTelefono}}</dd>
-                    <dt class="col-sm-3 col-md-3 col-lg-3 col-xl-2">DNI</dt>
-                    <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PersonaCuil}}</dd>
-                    <dt class="col-sm-3 col-md-3 col-lg-3 col-xl-2">Sexo</dt>
-                    <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PersonaSexo}}</dd>
-                  </dl>
-              	<table id="tableHistorialPaciente" class="table table-sm table-striped table-bordered">
-              		<!------Cabecera de la tabla------>
-              		<thead>
-              			<tr role="row">
-                            <th scope="col">#</th>
-                            <th scope="col">Relevamiento</th>
-                            <th scope="col">Turno</th>
-                            <th scope="col">Regímen</th>
-                            <th scope="col">S/P/C</th>
-                            <th scope="col">Estado</th>
-                            <th scope="col">Acompañante</th>
-                            <th scope="col">Diagnóstico</th>
-                            <th scope="col">Observaciones</th>
-              			</tr>
-              		</thead>
-                  <tbody>
-              		</tbody>	
-              	</table>
+                <div class="row">
+                  <div class="col">
+                    <input hidden type="text" id="pacienteId" value="{{$paciente->PacienteId}}">
+                    <h1 class="text-danger border border-warning text-center">Falta agregar los botones de acción!</h1>
+                    <dl class="row">
+                      <dt class="col-sm-3 col-md-3 col-lg-3 col-xl-2">Paciente</dt>
+                      <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PersonaApellido}}, {{$paciente->PersonaNombre}}</dd>
+                      <dt class="col-sm-3 col-md-3 col-lg-3 col-xl-2">Dirección</dt>
+                      <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PersonaDireccion}}</dd>
+                      <dt class="col-sm-3 col-md-3 col-lg-3 col-xl-2">Email</dt>
+                      <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PersonaEmail}}</dd>
+                      <dt class="col-sm-3 col-md-3 col-lg-3 col-xl-2">Teléfono</dt>
+                      <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PersonaTelefono}}</dd>
+                      <dt class="col-sm-3 col-md-3 col-lg-3 col-xl-2">DNI</dt>
+                      <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PersonaCuil}}</dd>
+                      <dt class="col-sm-3 col-md-3 col-lg-3 col-xl-2">Sexo</dt>
+                      <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PersonaSexo}}</dd>
+                    </dl>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <!--------------TABLA PRINCIPAL-------------->
+                    <table id="tableHistorialPaciente" class="table table-sm table-striped table-bordered table-hover display nowrap" style="width:100%" cellspacing="0">
+                      <!------Cabecera de la tabla------>
+                      <thead>
+                        <tr role="row">
+                                <th scope="col">#</th>
+                                <th scope="col">Relevamiento</th>
+                                <th scope="col">Turno</th>
+                                <th scope="col">Regímen</th>
+                                <th scope="col">S/P/C</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col">Acompañante</th>
+                                <th scope="col">Diagnóstico</th>
+                                <th scope="col">Observaciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      </tbody>	
+                    </table>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

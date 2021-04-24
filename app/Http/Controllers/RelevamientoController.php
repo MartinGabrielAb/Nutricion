@@ -2,98 +2,80 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Menu;
+use Exception;
 use App\Relevamiento;
 use App\DetalleRelevamiento;
+use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
+use App\Http\Requests\RelevamientoRequest;
+use Illuminate\Support\Facades\DB as FacadesDB;
 
 class RelevamientoController extends Controller
 {
-    public function __construct()
+    public function index(Request $request)
     {
-        $this->middleware('auth');
-    }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        return view('relevamientos.principal');
+        /*---Pregunto si es una peticion ajax----*/
+        if($request->ajax()){
+            try{
+                $relevamientos = FacadesDB::table('relevamiento as r')
+                                            ->join('menu as m','m.MenuId','r.MenuId')
+                                            ->where('r.RelevamientoEstado',1)
+                                            ->get();
+                return DataTables::of($relevamientos)
+                            ->addColumn('btn','relevamientos/actions')
+                             ->rawColumns(['btn'])
+                             ->toJson();
+            }catch(Exception $ex){
+                return response()->json([
+                    'error' => 'Internal server error.'
+                ], 500);
+            }
+        }
+        $menus = Menu::where('MenuEstado',1)->where('MenuParticular',0)->get();
+        return view('relevamientos.principal',compact('menus'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
-    {
-        //
-    }
+    { }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(RelevamientoRequest $request)
     {
         $relevamiento = new Relevamiento;
         $relevamiento->RelevamientoEstado = 1;
-        $relevamiento->RelevamientoAcompaniantes = 0;
         $relevamiento->RelevamientoFecha = $request->get('fecha');
-        $relevamiento->RelevamientoTurno = $request->get('turno');
+        $relevamiento->MenuId = $request->get('menu');
         $resultado = $relevamiento->save();
         if ($resultado) {
-            return response()->json(['success'=>'true']);
+            return response()->json(['success'=> $relevamiento]);
         }else{
             return response()->json(['success'=>'false']);
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         $relevamiento = Relevamiento::findOrFail($id);
         return view('relevamientos.show',compact('relevamiento'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
-    {
-        //
+    { }
+
+    public function update(RelevamientoRequest $request, $id)
+    { 
+        $relevamiento = Relevamiento::findOrFail($id);
+        $relevamiento->RelevamientoEstado = 1;
+        $relevamiento->RelevamientoFecha = $request->get('fecha');
+        $relevamiento->MenuId = $request->get('menu');
+        $resultado = $relevamiento->update();
+        if ($resultado) {
+            return response()->json(['success'=> $relevamiento]);
+        }else{
+            return response()->json(['success'=>'false']);
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $relevamiento = Relevamiento::findOrFail($id);

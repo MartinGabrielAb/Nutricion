@@ -295,15 +295,6 @@ Route::get('nutrientesporalimento/{id}',function($id){
 						->rawColumns(['NutrientePorAlimentoEstado'])
 	 					->toJson();
 });
-/* -----------------RELEVAMIENTOS ---------------------- -*/
-Route::get('relevamientos',function(){
-	$relevamientos = DB::table('relevamiento')->where('RelevamientoEstado',1)->get();
-	
-	return DataTables::of($relevamientos)
-						->addColumn('btn','relevamientos/actions')
-						->rawColumns(['RelevamientoEstado','btn'])
-	 					->toJson();
-});
 /* -----------------DETALLES DE RELEVAMIENTO ---------------------- -*/
 Route::get('relevamientos/{id}',function($id){
 	

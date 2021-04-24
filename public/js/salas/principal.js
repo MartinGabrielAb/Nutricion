@@ -9,8 +9,8 @@ $(document).ready( function () {
       {data: "SalaNombre"},
       {data:'btn',orderable:false,sercheable:false},
     ],
-    "language": { "url": "../JSON/Spanish_dataTables.json"
-  }});
+    "language": { "url": "../JSON/Spanish_dataTables.json"},
+  });
 
   $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
   
@@ -68,7 +68,6 @@ function guardar(e){
   }else{
     editar(id);
   }
-  
 }
 function editar(id){
   $("#listaErrores").empty();

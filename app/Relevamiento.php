@@ -8,7 +8,7 @@ class Relevamiento extends Model
 {
     protected $table = 'relevamiento';
     protected $primaryKey = 'RelevamientoId';
-    protected $filliable=['EmpleadoId','RelevamientoFecha','RelevamientoEstado','RelevamientoTurno','RelevamientoAcompaniantes'];
+    protected $filliable=['EmpleadoId','RelevamientoFecha','RelevamientoEstado','RelevamientoTurno','MenuId'];
 
     public $timestamps = false;
 }
