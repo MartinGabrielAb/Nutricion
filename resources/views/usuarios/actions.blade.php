@@ -1,7 +1,7 @@
-<button type="button" class="btn btn-sm btn-default"  data-toggle="modal"  data-target="#modal" >
+<button type="button" class="btn btn-sm btn-default ml-1 mr-1 pl-3 pr-3" data-toggle="modal"  data-target="#modal" >
   <i class="fas fa-edit"></i>
 </button>
-<button class="btn btn-sm btn-default" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+<button class="btn btn-sm btn-default ml-1 mr-1 pl-3 pr-3" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <i class="fas fa-trash"></i>
 </button>
 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">

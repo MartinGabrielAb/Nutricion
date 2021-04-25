@@ -5,12 +5,12 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1 class="m-0 text-dark">Alimentos</h1>
+          <h1 class="m-0 text-dark"> {{$alimento->AlimentoNombre}}: Proveedores</h1>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <li class="breadcrumb-item active">Alimentos</li>
+            <li class="breadcrumb-item"><a href="/alimentos">Alimentos</a></li>
+            <li class="breadcrumb-item active">Detalle proveedores</li>
           </ol>
         </div>
       </div>
@@ -29,26 +29,29 @@
                   </div> 
               </div>
               <div class="col">
-                  <p class="text-right">
-                    <button type="button" class="btn btn-sm btn-outline-primary" id="btnAgregar" onClick="agregar()" data-toggle="modal"  data-target="#modal">
-                      Agregar Alimento
-                    </button>
-                  </p>	
+                    <input type="hidden" id="alimentoId" value="{{$alimento->AlimentoId}}">
+                    <p class="text-right">
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnAgregar" onClick="agregar()" data-toggle="modal"  data-target="#modal">
+                        Agregar alimento
+                        </button>
+                    </p>	
               </div>
             </div>
               <!--------------TABLA PRINCIPAL-------------->
             <div class="row">
               <div class="col">
-                <table id="tableAlimentos" class="table table-sm table-striped table-bordered table-hover display nowrap" style="width:100%" cellspacing="0">
+                <table id="tableAlimentosPorProveedor" class="table table-sm table-striped table-bordered table-hover display nowrap" style="width:100%" cellspacing="0">
                   <!------Cabecera de la tabla------>
                   <thead>
-                    <tr>
+                    <tr >
                         <th>#</th>
-                        <th>Nombre</th>
-                        <th>Cantidad Total</th>
+                        <th>Proveedor</th>
+                        <th>Cantidad</th>
+                        <th>Equivalente gramos</th>
                         <th>Costo Unitario</th>
-			                  <th>Costo Total</th>
-                        <th width="10%">&nbsp;</th>
+                        <th>Costo Total</th>
+                        <th>Vencimiento</th>
+                        <th width="10%">Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -76,25 +79,24 @@
           </button>
         </div>    
         <div class="modal-body">
-          <label for='nombre' id="labelNombre">Nombre</label>
-          <input class="form-control" type="text" id="nombre" name="nombre" required>
-          <label for="unidad">Unidad de medida:</label>
-          <select class="form-control" id="unidad" name="unidad" required>
-            @foreach($unidadesMedida as $unidad)
-              @if ($unidad->UnidadMedidaNombre != 'U.I' and $unidad->UnidadMedidaNombre != 'Mililitro' and $unidad->UnidadMedidaNombre != 'Miligramo')
-                <option value="{{$unidad->UnidadMedidaId}}">{{$unidad->UnidadMedidaNombre}}</option>  
-              @endif
-            @endforeach
-          </select>
-          <div id="divEquivalencia">
-            <p><small>1 <span id="medida"></span> de <span id="alimento"> </span> es equivalente a:</small></p>
-            <div class="input-group">
-              <input type="number" class="form-control" id="equivalente" aria-label="">
-              <div class="input-group-append">
-                <span class="input-group-text"><small>gramos</small></span>
-              </div>
+            <label for='proveedor' id="labelProveedor">Proveedor</label>
+            <select class="form-control" id="proveedor" name="proveedor" >
+                @foreach($proveedores as $proveedor)
+                    <option value="{{$proveedor->ProveedorId}}">{{$proveedor->ProveedorNombre}}</option>  
+                @endforeach
+            </select>
+            <label for="costo">Costo por unidad:</label>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">$</span>
+                </div>
+                <input type="number" class="form-control" id="costo">
             </div>
-          </div>
+            <label for='cantidad'>Cantidad</label>
+            <input class="form-control" type="number" id="cantidad" name="cantidad" required>
+            <label for='vencimiento' >Vencimiento</label>
+            <input class="form-control" type="date" id="vencimiento" name="vencimiento" required>
+
         </div>
         <div class="modal-footer">
           <div class="container-fluid">
@@ -122,7 +124,7 @@
 </div>
 
 @push('custom-scripts')
-<script type="text/javascript" src="{{asset('js/alimentos/principal.js')}}"></script>
+<script type="text/javascript" src="{{asset('js/alimentosPorProveedor/principal.js')}}"></script>
 
 @endpush
 

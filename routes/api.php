@@ -100,62 +100,10 @@ Route::get('comidasPorTipoPaciente',function(Request $request){
 	 					->rawColumns(['btn','ComidaId'])
 	 					->toJson();
 });
-/* -----------------SALAS ---------------------- -*/
-Route::get('salas',function(){
 
-	$salas = DB::table('sala')->where('SalaEstado',1)->get();
-	return DataTables::of($salas)
-						->addColumn('SalaEstado',function($sala){
-							if ($sala->SalaEstado == 1) {
-								return '<td><p class="text-success">Activo</p></td>';
-							}else{
-								return '<td><p class="text-danger">Inactivo</p></td>';
-							}
-						})
-					
-						->addColumn('btn','salas/actions')
-	 					->rawColumns(['SalaEstado','btn'])
-	 					->toJson();
-});
-/* -----------------Piezas ---------------------- -*/
 
-Route::get('piezas',function(Request $request){
-	$id = $request['id'];
-	$piezas = DB::table('pieza')->where('PiezaEstado',1)
-								->where('SalaId',$id)
-								->get();
-	
-	foreach ($piezas as $pieza) {
-		$camas = DB::table('cama')->where('PiezaId', $pieza->PiezaId)
-									->where('CamaEstado',1)
-									->get();
-		$pieza->Camas = count($camas);	
-	}
-	
 
-	return DataTables::of($piezas)
-						->addColumn('btn','salas/actionsPieza')
-	 					->rawColumns(['btn'])
-	 					->toJson();
-});
 
-/* -----------------Camas ---------------------- -*/
-Route::get('camas',function(Request $request){
-	$id = $request['id'];
-	$camas = DB::table('cama')	->where('PiezaId',$id)
-								->get();
-	return DataTables::of($camas)
-						->addColumn('CamaEstado',function($cama){
-							if ($cama->CamaEstado == 1) {
-								return '<td><p class="text-success">Activa</p></td>';
-							}else{
-								return '<td><p class="text-danger">Inactiva</p></td>';
-							}
-						})
-						->addColumn('btn','salas/actionsCama')
-	 					->rawColumns(['btn','CamaEstado'])
-	 					->toJson();
-});
 
 /* -----------------Obtengo los nutrienes---------------------- -*/
 Route::get('getNutrientes',function(Request $request){
@@ -203,44 +151,6 @@ Route::get('getNutrientes',function(Request $request){
 	return ($comidas);
 });
 
-/* -----------------ALIMENTOS ---------------------- -*/
-Route::get('alimentos',function(){
-	$alimentos = DB::table('alimento')->where('AlimentoEstado',1)->get();
-	return DataTables::of($alimentos)
-							->addColumn('AlimentoCantidadTotal',function($alimento){
-								$unidadMedida = DB::table('unidadmedida')->where('UnidadMedidaId',$alimento->UnidadMedidaId)->first();
-								return $alimento->AlimentoCantidadTotal.' '.$unidadMedida->UnidadMedidaNombre.'(s)';					
-							})
-						->addColumn('AlimentoCostoUnitario',function($alimento){
-								if($alimento->AlimentoCantidadTotal != 0){
-									return '$'.($alimento->AlimentoCostoTotal/$alimento->AlimentoCantidadTotal);
-								}else{
-									return '$0';
-								}							
-						})
-						->addColumn('AlimentoCostoTotal',function($alimento){
-							return '$'.$alimento->AlimentoCostoTotal;							
-					})
-						->addColumn('btn','alimentos/actions')
-	 					->rawColumns(['btn'])
-	 					->toJson();
-});
-/* -----------------ALIMENTOS POR PROVEEDOR---------------------- -*/
-Route::get('alimentosporproveedor/{id}',function($id){
-
-	$alimentosPorProveedor = DB::table('alimentoporproveedor as app')
-								->join('alimento as a','a.AlimentoId','app.AlimentoId')
-								->join('proveedor as p','p.ProveedorId','app.ProveedorId')
-								->where('app.AlimentoId',$id)
-								->get();
-	foreach ($alimentosPorProveedor as $alimentoPorProveedor) {
-		$alimentoPorProveedor->AlimentoPorProveedorCostoTotal = $alimentoPorProveedor->AlimentoPorProveedorCosto * $alimentoPorProveedor->AlimentoPorProveedorCantidad;
-	}
-	return DataTables::of($alimentosPorProveedor)
-						->addColumn('btn','alimentos/actionsPorProveedor')
-						->rawColumns(['AlimentoEstado','btn'])
-	 					->toJson();
-});
 /* -----------------COMIDAS ---------------------- -*/
 Route::get('comidas',function(){
 	$comidas = DB::table('tipocomida as t')
@@ -281,20 +191,7 @@ Route::get('nutrientesPorAlimento/{id}',function($id){
 	}
 	return $resultado;
 });
-/* -----------------cargar: NUTRIENTES DE ALIMENTOS ---------------------- -*/
-Route::get('nutrientesporalimento/{id}',function($id){
-	$nutrientes = DB::table('nutriente')->get();
-	$nutrientesPorAlimentos = DB::table('nutrienteporalimento as npa')
-								->join('nutriente as n','n.NutrienteId','npa.NutrienteId')
-								->join('alimento as a','a.AlimentoId','npa.AlimentoId')
-								->where('npa.AlimentoId',$id)
-								->get();
-	
-	
-	return DataTables::of($nutrientesPorAlimentos)
-						->rawColumns(['NutrientePorAlimentoEstado'])
-	 					->toJson();
-});
+
 /* -----------------DETALLES DE RELEVAMIENTO ---------------------- -*/
 Route::get('relevamientos/{id}',function($id){
 	
@@ -407,11 +304,4 @@ Route::get('historial',function(){
 	 					->toJson();
 });
 
-/* -----------------Usuarios---------------------- -*/
-Route::get('usuarios',function(){
-	$users = DB::table('users')->get();
-	return DataTables::of($users)
-						->addColumn('btn','usuarios/actions')
-						->rawColumns(['btn'])
-	 					->toJson();
-});
+

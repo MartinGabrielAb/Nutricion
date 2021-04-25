@@ -6,41 +6,31 @@ use Illuminate\Http\Request;
 use App\NutrientePorAlimento;
 use App\Alimento;
 use DB;
+use Yajra\DataTables\DataTables;
+
 class NutrientePorAlimentoController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
-    {
-        //
-    }
+    {   }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
-    {
-        //
-    }
+    {    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(Request $request)
     {
         $alimentoId = $request['alimentoId'];
+        $nutrientesViejos = DB::table('nutrienteporalimento')
+                            ->where('AlimentoId',$alimentoId)
+                            ->get();
+        if(count($nutrientesViejos) != 0){
+            foreach($nutrientesViejos as $nutriente){
+                DB::table('nutrienteporalimento')
+                ->where('NutrientePorAlimentoId', $nutriente->NutrientePorAlimentoId)
+                ->delete();
+            }
+        }
         $nutrientes = $request['nutrientes'];
         foreach ($nutrientes as $nutriente) {
             $nutrientePorAlimento = new NutrientePorAlimento;
@@ -49,7 +39,6 @@ class NutrientePorAlimentoController extends Controller
             $nutrientePorAlimento->NutrienteId = $nutriente['nutrienteId'];
             $resultado = $nutrientePorAlimento->save();
         }
-        
         if ($resultado) {
             return response()->json(['success' =>'true']);
         }else{
@@ -57,20 +46,25 @@ class NutrientePorAlimentoController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function show(Request $request,$id)
     {
-        $alimento = Alimento::findOrFail($id);
-        $nutrientes = DB::TABLE('nutriente as n')
-                        ->join('unidadmedida as u','u.UnidadMedidaId','=','n.UnidadMedidaId')
+        $nutrientesPorAlimento = DB::table('nutrienteporalimento as npa')
+                                    ->join('nutriente as n','n.NutrienteId','npa.NutrienteId')
+                                    ->join('alimento as a','a.AlimentoId','npa.AlimentoId')
+                                    ->join('unidadmedida as u','u.UnidadMedidaId','n.UnidadMedidaId')
+                                    ->orderBy('n.NutrienteId','asc')
+                                    ->where('npa.AlimentoId',$id)
+                                    ->get();
+        if($request->ajax()){
+             return DataTables::of($nutrientesPorAlimento)
+                                ->toJson();
+        }
+        $nutrientes = DB::table('nutriente as n')
+                        ->join('unidadmedida as u','u.UnidadMedidaId','n.UnidadMedidaId')
                         ->orderBy('n.NutrienteId','asc')
-                        ->get();
-        return view('nutrientesporalimento.show',compact('alimento','nutrientes'));
+                         ->get();
+        $alimento = Alimento::findOrFail($id);
+        return view('nutrientesporalimento.principal',compact('alimento','nutrientesPorAlimento','nutrientes'));
     }
 
     /**

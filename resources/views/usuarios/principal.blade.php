@@ -77,15 +77,15 @@
         <div class="modal-body">
           <input type="hidden" id="id" name="id">  
           <label for='nombre' id="labelNombre">Nombre</label>
-          <input class="form-control" type="text" id="nombre" name="nombre">
+          <input class="form-control" type="text" id="nombre" name="nombre" required minlength="4" maxlength="64">
           <label for='email' id="labelEmail">E-mail</label>
-          <input class="form-control" type="text" id="email" name="email">
+          <input class="form-control" type="email" id="email" name="email" required>
           <label for='password' id="labelPassword">Password</label>
-          <input class="form-control" type="password" id="password" name="password">
+          <input class="form-control" type="password" id="password" name="password"  minlength="4" maxlength="32">
           <label for='confirmacion' id="labelConfirmacion">Confirma Password</label>
-          <input class="form-control" type="password" id="confirmacion" name="confirmacion" >
+          <input class="form-control" type="password" id="confirmacion" name="confirmacion"   minlength="4" maxlength="32" >
           <label for='roles' id="labelRoles">Roles:</label><small class="ml-2">Seleccione varios apretando CTRL</small>
-          <select id="roles" class="form-control custom-select " multiple >
+          <select id="roles" class="form-control custom-select " multiple  required>
             @foreach ($roles as $rol)
               <option value="{{$rol->id}}">{{$rol->name}}</option>
             @endforeach

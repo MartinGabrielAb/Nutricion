@@ -5,12 +5,13 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1 class="m-0 text-dark">Alimentos</h1>
+          <h1 class="m-0 text-dark">Nutrientes : {{$alimento->AlimentoNombre}}</h1>
+          <input type="hidden" id="alimentoId" value="{{$alimento->AlimentoId}}">
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <li class="breadcrumb-item active">Alimentos</li>
+            <li class="breadcrumb-item"><a href="/alimentos">Alimentos</a></li>
+            <li class="breadcrumb-item active">Nutrientes</li>
           </ol>
         </div>
       </div>
@@ -30,8 +31,8 @@
               </div>
               <div class="col">
                   <p class="text-right">
-                    <button type="button" class="btn btn-sm btn-outline-primary" id="btnAgregar" onClick="agregar()" data-toggle="modal"  data-target="#modal">
-                      Agregar Alimento
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="btnAgregar"  data-toggle="modal"  data-target="#modal">
+                      Agregar nutrientes
                     </button>
                   </p>	
               </div>
@@ -39,16 +40,12 @@
               <!--------------TABLA PRINCIPAL-------------->
             <div class="row">
               <div class="col">
-                <table id="tableAlimentos" class="table table-sm table-striped table-bordered table-hover display nowrap" style="width:100%" cellspacing="0">
+                <table id="tableNutrientes" class="table table-sm table-striped table-bordered table-hover display nowrap" style="width:100%" cellspacing="0">
                   <!------Cabecera de la tabla------>
                   <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Nombre</th>
-                        <th>Cantidad Total</th>
-                        <th>Costo Unitario</th>
-			                  <th>Costo Total</th>
-                        <th width="10%">&nbsp;</th>
+                        <th>Nutriente</th>
+                        <th>Cantidad</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -70,37 +67,44 @@
     <form onSubmit="guardar(event)">
       <div class="modal-content">
         <div class="modal-header">
-          <span class="modal-title" id="tituloModal"></span>
+          <span class="modal-title" id="tituloModal">Guardar / editar nutrientes</span>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>    
         <div class="modal-body">
-          <label for='nombre' id="labelNombre">Nombre</label>
-          <input class="form-control" type="text" id="nombre" name="nombre" required>
-          <label for="unidad">Unidad de medida:</label>
-          <select class="form-control" id="unidad" name="unidad" required>
-            @foreach($unidadesMedida as $unidad)
-              @if ($unidad->UnidadMedidaNombre != 'U.I' and $unidad->UnidadMedidaNombre != 'Mililitro' and $unidad->UnidadMedidaNombre != 'Miligramo')
-                <option value="{{$unidad->UnidadMedidaId}}">{{$unidad->UnidadMedidaNombre}}</option>  
-              @endif
-            @endforeach
-          </select>
-          <div id="divEquivalencia">
-            <p><small>1 <span id="medida"></span> de <span id="alimento"> </span> es equivalente a:</small></p>
-            <div class="input-group">
-              <input type="number" class="form-control" id="equivalente" aria-label="">
+          <small>Los nutrientes son valores por cada 100g de {{$alimento->AlimentoNombre}}<small>
+          @if(count($nutrientesPorAlimento) ==0)
+            @foreach($nutrientes as $nutriente)
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="$nutriente->NutrienteNombre">{{$nutriente->NutrienteNombre}}</span>
+              </div>
+              <input type="number" class="form-control" id="{{$nutriente->NutrienteId}}" name="nutrientes[]" required>
               <div class="input-group-append">
-                <span class="input-group-text"><small>gramos</small></span>
+                <span class="input-group-text" id="basic-addon2">{{$nutriente->UnidadMedidaNombre}}</span>
               </div>
             </div>
-          </div>
+            @endforeach
+          @else
+            @foreach($nutrientesPorAlimento as $nutriente)
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="$nutriente->NutrienteNombre">{{$nutriente->NutrienteNombre}}</span>
+              </div>
+              <input type="number" class="form-control" id="{{$nutriente->NutrienteId}}" value="{{$nutriente->NutrientePorAlimentoValor}}" name="nutrientes[]" required>
+              <div class="input-group-append">
+                <span class="input-group-text" id="basic-addon2">{{$nutriente->UnidadMedidaNombre}}</span>
+              </div>
+            </div>
+            @endforeach
+          @endif
         </div>
         <div class="modal-footer">
           <div class="container-fluid">
             <div class="row mb-2">
               <div class="col">
-                <button type="submit" id="btnGuardar" class="btn btn-sm btn-primary w-100"><i class="fas fa-check"></i><span> </span></button>
+                <button type="submit" id="btnGuardar" class="btn btn-sm btn-primary w-100"><i class="fas fa-check"></i><span>Guardar </span></button>
               </div>
             </div>
             <div class="row">
@@ -122,7 +126,7 @@
 </div>
 
 @push('custom-scripts')
-<script type="text/javascript" src="{{asset('js/alimentos/principal.js')}}"></script>
+<script type="text/javascript" src="{{asset('js/nutrientesporalimento/principal.js')}}"></script>
 
 @endpush
 

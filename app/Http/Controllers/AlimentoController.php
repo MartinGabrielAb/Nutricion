@@ -8,53 +8,62 @@ use App\AlimentoPorProveedor;
 use App\UnidadMedida;
 use App\Proveedor;
 use App\NutrientePorAlimento;
+use Yajra\DataTables\DataTables;
+use DB;
+use App\Http\Requests\AlimentoRequest;
 
 class AlimentoController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
 
-    }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
+ 
+    public function index(Request $request)
+    {   
+        /*---Pregunto si es una peticion ajax----*/
+        if($request->ajax()){
+            try{
+                $alimentos = DB::table('alimento')->where('AlimentoEstado',1)->get();
+	            return DataTables::of($alimentos)
+							->addColumn('AlimentoCantidadTotal',function($alimento){
+								$unidadMedida = DB::table('unidadmedida')->where('UnidadMedidaId',$alimento->UnidadMedidaId)->first();
+								return $alimento->AlimentoCantidadTotal.' '.$unidadMedida->UnidadMedidaNombre.'(s)';					
+							})
+						->addColumn('AlimentoCostoUnitario',function($alimento){
+								if($alimento->AlimentoCantidadTotal != 0){
+									return '$'.($alimento->AlimentoCostoTotal/$alimento->AlimentoCantidadTotal);
+								}else{
+									return '$0';
+								}							
+						})
+						->addColumn('AlimentoCostoTotal',function($alimento){
+							return '$'.$alimento->AlimentoCostoTotal;							
+					})
+						->addColumn('btn','alimentos/actions')
+	 					->rawColumns(['btn'])
+	 					->toJson();
+            }catch(Exception $ex){
+                return response()->json([
+                    'error' => 'Internal server error.'
+                ], 500);
+            }
+        }
         $unidadesMedida = UnidadMedida::all();
-        
-        // $alimentos = Alimento::where('AlimentoEstado',1)->get();
         return view('alimentos.principal',compact('unidadesMedida'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function create()
+    {    }
+
+    public function store(AlimentoRequest $request)
     {
 
         $datos = $request->all();
-        $unidadMedida = UnidadMedida::findOrFail($datos['unidadMedidaId']);
+        $unidadMedida = UnidadMedida::findOrFail($datos['unidad']);
         $alimento =new Alimento();
-        $alimento->AlimentoNombre = $datos['alimentoNombre'];
-        $alimento->UnidadMedidaId = $datos['unidadMedidaId'];
+        $alimento->AlimentoNombre = $datos['nombre'];
+        $alimento->UnidadMedidaId = $unidadMedida->UnidadMedidaId;
         if($unidadMedida->UnidadMedidaNombre == 'Litro'){
-            $alimento->AlimentoEquivalenteGramos = $datos['equivalenteGramos'];
+            $alimento->AlimentoEquivalenteGramos = $datos['equivalente'];
         }
         if($unidadMedida->UnidadMedidaNombre == 'Kilogramo'){
             $alimento->AlimentoEquivalenteGramos = 1000;
@@ -69,7 +78,6 @@ class AlimentoController extends Controller
         $alimento->AlimentoCantidadTotal = 0;
         $alimento->AlimentoCostoTotal = 0;
         $resultado = $alimento->save();
-
         if ($resultado) {
             return response()->json(['success' => 'true']);
         }else{
@@ -77,48 +85,39 @@ class AlimentoController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    //El show lo utilizo para ver los alimenos por proveedor
+    public function show(Request $request,$id)
     {
+        if($request->ajax()){
+            try{
+                $alimentosPorProveedor = DB::table('alimentoporproveedor as app')
+								->join('alimento as a','a.AlimentoId','app.AlimentoId')
+								->join('proveedor as p','p.ProveedorId','app.ProveedorId')
+								->where('app.AlimentoId',$id)
+								->get();
+                foreach ($alimentosPorProveedor as $alimentoPorProveedor) {
+                    $alimentoPorProveedor->AlimentoPorProveedorCostoTotal = $alimentoPorProveedor->AlimentoPorProveedorCosto * $alimentoPorProveedor->AlimentoPorProveedorCantidad;
+                }
+                return DataTables::of($alimentosPorProveedor)
+                                ->addColumn('btn','alimentosporproveedor/actions')
+                                ->rawColumns(['AlimentoEstado','btn'])
+                                ->toJson();
+            }catch(Exception $ex){
+                return response()->json([
+                    'error' => 'Internal server error.'
+                ], 500);
+            }
+        }
         $alimento = Alimento::findOrFail($id);
         $proveedores = Proveedor::all();
-        return view('alimentos.show',compact('alimento','proveedores'));
+        return view('alimentosporproveedor.principal',compact('alimento','proveedores'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    {    }
     public function update(Request $request, $id)
-    {
-        //
-    }
+    {    }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $alimento = Alimento::FindOrFail($id);
