@@ -85,7 +85,7 @@
                     <option value="{{$proveedor->ProveedorId}}">{{$proveedor->ProveedorNombre}}</option>  
                 @endforeach
             </select>
-            <label for="costo">Costo por unidad:</label>
+            <label for="costo">Costo por {{$alimento->UnidadMedidaNombre}}</label>
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
                     <span class="input-group-text">$</span>

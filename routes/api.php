@@ -151,32 +151,6 @@ Route::get('getNutrientes',function(Request $request){
 	return ($comidas);
 });
 
-/* -----------------COMIDAS ---------------------- -*/
-Route::get('comidas',function(){
-	$comidas = DB::table('tipocomida as t')
-            ->join('comida as c', 'c.TipoComidaId', '=', 't.TipoComidaId')
-            ->where('c.ComidaEstado','=',1)
-            ->get();
-	return DataTables::of($comidas)
-						->addColumn('btn','comidas/actions')
-	 					->rawColumns(['ComidaEstado','btn'])
-	 					->toJson();
-});
-/* -----------------ALIMENTOS POR COMIDA---------------------- -*/
-Route::get('alimentosporcomida/{id}',function($id){
-
-	$alimentosPorComida = DB::table('alimentoporcomida as apc')
-								->join('alimento as a','a.AlimentoId','apc.AlimentoId')
-								->join('unidadmedida as um','um.UnidadMedidaId','apc.UnidadMedidaId')
-								->join('comida as c','c.ComidaId','apc.ComidaId')
-								->where('apc.ComidaId',$id)
-								->where('apc.AlimentoPorComidaEstado',1)
-								->get();
-	return DataTables::of($alimentosPorComida)
-						->addColumn('btn','comidas/actionsAlimentoPorComida')
-						->rawColumns(['AlimentoPorComidaEstado','btn'])
-	 					->toJson();
-});
 /* -----------------verificación de existencia: NUTRIENTES DE ALIMENTOS AL ASIGNAR ALIMENTO A COMIDA ---------------------- -*/
 Route::get('nutrientesPorAlimento/{id}',function($id){
 	$nutrientes = DB::table('nutriente')->get();

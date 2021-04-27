@@ -12,7 +12,7 @@ $( document ).ready(function() {
         }else{
           verificacion = false;
         }
-        id = $('#alimentosPorComida').val();
+        id = $('#alimento').val();
         $('#labelComprobar').removeClass('alert-success alert-danger');
         $('#labelComprobar').fadeIn();
         $('#labelComprobar').text("");
@@ -94,7 +94,7 @@ $( document ).ready(function() {
     $('#option2').hide();
     $('#option3').hide();
     $('.js-example-basic-single').select2();
-    $('#alimentosPorComida').select2({
+    $('#alimento').select2({
       width: 'resolve',
       theme: "classic",
       placeholder: "Alimentos",

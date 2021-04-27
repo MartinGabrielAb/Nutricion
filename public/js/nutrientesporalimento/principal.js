@@ -9,6 +9,7 @@ $(document).ready( function () {
         "columns": [
           {data: 'NutrienteNombre'},
           {data: 'NutrientePorAlimentoValor'},
+          {data : 'UnidadMedidaNombre'},
         ],
         "language": {
           "url": '../JSON/Spanish_dataTables.json',

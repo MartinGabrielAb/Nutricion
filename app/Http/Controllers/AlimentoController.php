@@ -108,7 +108,10 @@ class AlimentoController extends Controller
                 ], 500);
             }
         }
-        $alimento = Alimento::findOrFail($id);
+        $alimento = DB::table('alimento as a')
+                                ->join('unidadmedida as u','u.UnidadMedidaId','a.UnidadMedidaId')
+                                ->where('AlimentoId',$id)
+                                ->first();
         $proveedores = Proveedor::all();
         return view('alimentosporproveedor.principal',compact('alimento','proveedores'));
     }

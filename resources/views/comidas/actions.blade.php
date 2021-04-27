@@ -1,9 +1,10 @@
-<a href="{{route('comidas.show',$ComidaId)}}" class="btn btn-sm btn-default">Alimentos</a>
-<button type="button" class="btn btn-sm btn-default " data-toggle="modal" data-target="#modalEditar{{$ComidaId}}">
-  Editar
+<a href="{{route('comidas.show',$ComidaId)}}" class="btn btn-sm btn-default ml-1 mr-1 pl-3 pr-3">Alimentos</a>
+<button type="button" class="btn btn-sm btn-default ml-1 mr-1 pl-3 pr-3"  data-toggle="modal"  data-target="#modal" >
+  <i class="fas fa-edit"></i>
 </button>
-@include('comidas.modal.editar')
-<button type="button" class="btn btn-sm btn-default " data-toggle="modal" data-target="#modalEliminar{{$ComidaId}}">
-  Eliminar
+<button class="btn btn-sm btn-default ml-1 mr-1 pl-3 pr-3" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <i class="fas fa-trash"></i>
 </button>
-@include('comidas.modal.eliminar')
+<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <button class="dropdown-item" onClick ="eliminar({{$ComidaId}})" ><i class="fas fa-exclamation-circle"></i>Confirmar eliminación</button>
+</div>

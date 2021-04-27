@@ -89,7 +89,7 @@ function eliminar(id){
       table.row('#'+id).remove().draw();
     },
     error:function(){
-      mostrarCartel('Error al eliminar el registro.','alert-danger');
+      mostrarCartel('El alimento no se puede eliminar porque conforma una de las comidas.','alert-danger');
     }
   });
 }
