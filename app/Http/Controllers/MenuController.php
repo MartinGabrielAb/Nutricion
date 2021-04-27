@@ -11,62 +11,34 @@ use App\TipoPaciente;
 use App\DetalleMenuTipoPaciente;
 use App\ComidaPorTipoPaciente;
 use Illuminate\Support\Facades\Auth;
-
+use Yajra\DataTables\DataTables;
+use App\Http\Requests\MenuRequest;
 use DB;
 
 class MenuController extends Controller
 {
-    
-     public function __construct()
-    {
-        $this->middleware('auth');
 
-    }
-
-    public function index()
-    {
-
+    public function index(Request $request)
+    {   
+        if($request->ajax()){
+            $menues = DB::table('menu')->where('MenuEstado',1)
+								->get();
+            return DataTables::of($menues)			
+                                ->addColumn('btn','menues/actions')
+                                ->rawColumns(['btn'])
+                                ->toJson();
+        }
+        
         return view('menues.principal');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(MenuRequest $request)
     {
-        
-        $particular = $request['menuParticular'];
         $menu = new Menu();
         $menu->MenuNombre= $request['menuNombre'];
         $menu->MenuEstado = 1;
-        $menu->MenuCostoTotal = 0;
-        if ($particular == 0) {
-            $menu->MenuParticular = 0;       
-            $resultado= $menu ->save();
-        }else{
-            /*Creo un particular que tenga un solo detalle*/
-            $menu->MenuParticular = 1;
-            $menu->save();
-            $detalleMenuTipoPaciente =new DetalleMenuTipoPaciente();
-            $detalleMenuTipoPaciente->MenuId = $menu->MenuId;
-            $tipoPaciente = TipoPaciente::where('TipoPacienteNombre','Particular')->first();
-            $detalleMenuTipoPaciente->TipoPacienteId = $tipoPaciente->TipoPacienteId;
-            $detalleMenuTipoPaciente->DetalleMenuTipoPacienteCostoTotal = 0;
-            $resultado = $detalleMenuTipoPaciente->save();
-        }
+        $resultado = $menu->save();
         if ($resultado) {
             return response()->json(['success' => $menu]);
         }else{
@@ -80,32 +52,27 @@ class MenuController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request,$id)
     {
+        if($request->ajax()){
+            $menues = DB::table('detallemenutipopaciente as d')
+                                ->join('tipopaciente as t','t.TipoPacienteId','d.TipoPacienteId')
+								->where('MenuId',$id)
+                                ->get();
+            return DataTables::of($menues)			
+                                ->addColumn('btn','detallemenutipopaciente/actions')
+                                ->rawColumns(['btn'])
+                                ->toJson();
+        }
         $menu = Menu::FindOrFail($id);
-        $tipospaciente = TipoPaciente::where('TipoPacienteNombre','!=','Particular')->get();
-        return view('menues.show',compact('menu','tipospaciente'));
+        $tipospaciente = DB::table('tipopaciente')
+                ->where('TipoPacienteEstado',1)                    
+                ->get();
+        return view('detallemenutipopaciente.principal',compact('menu','tipospaciente'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function update(MenuRequest $request, $id)
     {
         $menu = Menu::FindOrFail($id);
         $menu->MenuNombre = $request['menuNombre'];
@@ -117,12 +84,6 @@ class MenuController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $menu = Menu::findOrFail($id);

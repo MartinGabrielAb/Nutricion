@@ -30,7 +30,7 @@
               </div>
               <div class="col">
                   <p class="text-right">
-                    <button type="button" class="btn btn-sm btn-default" id="btnAgregar" onClick="agregar()" data-toggle="modal"  data-target="#modal">
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="btnAgregar" onClick="agregar()" data-toggle="modal"  data-target="#modal">
                       Agregar sala
                     </button>
                   </p>	

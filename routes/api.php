@@ -18,34 +18,6 @@ use App\UnidadMedida;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-/* -----------------Menues Normales ---------------------- -*/
-
-Route::get('menues',function(){
-	$menues = DB::table('menu')->where('MenuEstado',1)
-								->where('MenuParticular',0)
-								->get();
-	return DataTables::of($menues)
-						->addColumn('MenuCostoTotal',function($menu){
-								return "$".$menu->MenuCostoTotal;
-							})				
-						->addColumn('btn','menues/actions/menuesActions')
-	 					->rawColumns(['btn'])
-	 					->toJson();
-});
-/* -----------------Menues Particulares ---------------------- -*/
-
-Route::get('particulares',function(){
-	$menues = DB::table('menu')->where('MenuEstado',1)
-								->where('MenuParticular',1)
-								->get();
-	return DataTables::of($menues)
-						->addColumn('MenuCostoTotal',function($menu){
-								return "$".$menu->MenuCostoTotal;
-							})		
-						->addColumn('btn','menues/actions/particularesActions')
-	 					->rawColumns(['btn'])
-	 					->toJson();
-});
 
 /* -----------------MENU POR TIPO PACIENTE---------------------- -*/
 

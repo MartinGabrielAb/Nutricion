@@ -5,12 +5,12 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1 class="m-0 text-dark">Menúes</h1>
+          <h1 class="m-0 text-dark">Tipo de paciente: {{$menu->TipoPacienteNombre}} - Comidas</h1>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <li class="breadcrumb-item active">Menúes</li>
+            <li class="breadcrumb-item"><a href="/menu/{{$menu->MenuId}}">Menúes por tipo</a></li>
+            <li class="breadcrumb-item active">Comidas</li>
           </ol>
         </div>
       </div>
@@ -31,7 +31,7 @@
               <div class="col">
                   <p class="text-right">
                     <button type="button" class="btn btn-sm btn-outline-primary" id="btnAgregar" onClick="agregar()" data-toggle="modal"  data-target="#modal">
-                      Agregar menú
+                      Agregar comida
                     </button>
                   </p>	
               </div>
@@ -39,11 +39,12 @@
               <!--------------TABLA PRINCIPAL-------------->
             <div class="row">
               <div class="col">
-                <table id="tableMenues" class="table table-sm table-striped table-bordered table-hover display nowrap" style="width:100%" cellspacing="0">
+                <table id="tableComidas" class="table table-sm table-striped table-bordered table-hover display nowrap" style="width:100%" cellspacing="0">
                   <!------Cabecera de la tabla------>
                   <thead>
                     <tr>
-                      <th>Menu</th>
+                      <th>Tipo de comida</th>
+                      <th>Comida</th>
                       <th width="5%">Acciones</th>
                     </tr>
                   </thead>
@@ -72,9 +73,20 @@
           </button>
         </div>    
         <div class="modal-body">
-          <input type="hidden" id="id" name="id">
-          <label for='nombre' id="labelNombre">Nombre</label>
-          <input class="form-control" type="text" id="nombre" name="nombre" required  minlength="4" maxlength="64">
+            <input type="hidden" id="detalleMenuTipoPacienteId" name="detalleMenuTipoPacienteId" value="{{$menu->DetalleMenuTipoPacienteId}}">
+            <label for="tipoComida">Seleccione el tipo de menu</label>
+            <select name="tipoComida" id="tipoComida" class="form-control" required>
+                @foreach($tiposcomida as $tipoComida)
+                <option value="{{$tipoComida->TipoComidaId}}">{{$tipoComida->TipoComidaNombre}}</option>
+                @endforeach
+            </select>
+            <div id="mensaje"></div>
+            <div id="divComida">
+                <label for="comida">Seleccione la comida</label> 
+                <select name="comida" id="comida" class="form-control" required>
+                <!-- Aca se agregan las opciones por js -->
+                </select>
+            </div>
         </div>
         <div class="modal-footer">
           <div class="container-fluid">
@@ -102,7 +114,7 @@
 </div>
 
 @push('custom-scripts')
-<script type="text/javascript" src="{{asset('js/menues/principal.js')}}"></script>
+<script type="text/javascript" src="{{asset('js/comidaportipopaciente/principal.js')}}"></script>
 
 @endpush
 

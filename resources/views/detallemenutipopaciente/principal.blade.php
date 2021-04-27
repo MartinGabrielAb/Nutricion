@@ -5,12 +5,12 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1 class="m-0 text-dark">Menúes</h1>
+          <h1 class="m-0 text-dark">{{$menu->MenuNombre}}: Tipos de pacientes</h1>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <li class="breadcrumb-item active">Menúes</li>
+            <li class="breadcrumb-item"><a href="/menues">Menúes</a></li>
+            <li class="breadcrumb-item active">Menú por tipo de paciente</li>
           </ol>
         </div>
       </div>
@@ -39,11 +39,11 @@
               <!--------------TABLA PRINCIPAL-------------->
             <div class="row">
               <div class="col">
-                <table id="tableMenues" class="table table-sm table-striped table-bordered table-hover display nowrap" style="width:100%" cellspacing="0">
+                <table id="tableMenuesPorTipoPaciente" class="table table-sm table-striped table-bordered table-hover display nowrap" style="width:100%" cellspacing="0">
                   <!------Cabecera de la tabla------>
                   <thead>
                     <tr>
-                      <th>Menu</th>
+                      <th>Tipo de paciente</th>
                       <th width="5%">Acciones</th>
                     </tr>
                   </thead>
@@ -72,9 +72,14 @@
           </button>
         </div>    
         <div class="modal-body">
+            <input type="hidden" id="menuId" name="menuId" value="{{$menu->MenuId}}">
           <input type="hidden" id="id" name="id">
-          <label for='nombre' id="labelNombre">Nombre</label>
-          <input class="form-control" type="text" id="nombre" name="nombre" required  minlength="4" maxlength="64">
+          <label for="tipoPaciente">Seleccione el tipo de menu</label>
+            <select name="tipoPaciente" id="tipoPaciente" class="form-control" required>
+            @foreach($tipospaciente as $tipopaciente)
+            <option value="{{$tipopaciente->TipoPacienteId}}">{{$tipopaciente->TipoPacienteNombre}}</option>
+            @endforeach
+            </select>        
         </div>
         <div class="modal-footer">
           <div class="container-fluid">
@@ -102,7 +107,7 @@
 </div>
 
 @push('custom-scripts')
-<script type="text/javascript" src="{{asset('js/menues/principal.js')}}"></script>
+<script type="text/javascript" src="{{asset('js/detallemenutipopaciente/principal.js')}}"></script>
 
 @endpush
 

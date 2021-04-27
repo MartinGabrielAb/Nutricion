@@ -146,6 +146,7 @@ Route::middleware(['auth'])->group(function(){
 	Route::get('comidas/{id}','ComidaController@show')->name('comidas.show')->middleware('permission:comidas.show');
 	Route::delete('comidas/{id}','ComidaController@destroy')->name('comidas.destroy')->middleware('permission:comidas.destroy');
 	Route::get('comidas/{id}/edit','ComidaController@edit')->name('comidas.edit')->middleware('permission:comidas.edit');
+
 });
 //alimentosporcomida
 Route::middleware(['auth'])->group(function(){

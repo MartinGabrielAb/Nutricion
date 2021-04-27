@@ -107,6 +107,7 @@ class RoleSeeder extends Seeder
         $permission = Permission::create(['name' => 'comidas.show'])->syncRoles(['Admin','Nutricion']);
         $permission = Permission::create(['name' => 'comidas.destroy'])->syncRoles(['Admin','Nutricion']);
         $permission = Permission::create(['name' => 'comidas.edit'])->syncRoles(['Admin','Nutricion']);
+
         //alimentosporcomida
         $permission = Permission::create(['name' => 'alimentosporcomida.store'])->syncRoles(['Admin','Nutricion']);
         $permission = Permission::create(['name' => 'alimentosporcomida.index'])->syncRoles(['Admin','Nutricion']);
@@ -115,6 +116,7 @@ class RoleSeeder extends Seeder
         $permission = Permission::create(['name' => 'alimentosporcomida.show'])->syncRoles(['Admin','Nutricion']);
         $permission = Permission::create(['name' => 'alimentosporcomida.destroy'])->syncRoles(['Admin','Nutricion']);
         $permission = Permission::create(['name' => 'alimentosporcomida.edit'])->syncRoles(['Admin','Nutricion']);
+       
         //nutrientesporalimento
         $permission = Permission::create(['name' => 'nutrientesporalimento.store'])->syncRoles(['Admin','Despensa']);
         $permission = Permission::create(['name' => 'nutrientesporalimento.index'])->syncRoles(['Admin','Despensa']);

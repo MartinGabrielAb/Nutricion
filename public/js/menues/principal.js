@@ -1,146 +1,121 @@
 $(document).ready( function () {
-    $('#tableMenues').DataTable({
-          "serverSide":true,
-          "ajax": '../api/menues',
-            rowId: 'MenuId',
-          "columns": [
-            {data: 'MenuId'},
-            {data: 'MenuNombre'},
-            {data: 'MenuCostoTotal'},
-            {data:'btn',orderable:false,sercheable:false},
-          ],
-          "language": {
-          "url": '../JSON/Spanish_dataTables.json',
-          },
-          responsive: true
-      });
+  var table = $('#tableMenues').DataTable({
+    responsive: true,
+    "serverSide":true,
+    "ajax": "/menu",
+      rowId: "MenuId",
+    "columns": [
+      {data: "MenuNombre"},
+      {data:'btn',orderable:false,sercheable:false},
+    ],
+    "language": { "url": "../JSON/Spanish_dataTables.json"},
+  });
 
-    $('#tableParticulares').DataTable({
-          "serverSide":true,
-          "ajax": '../api/particulares',
-            rowId: 'MenuId',
-          "columns": [
-            {data: 'MenuId'},
-            {data: 'MenuNombre'},
-            {data: 'MenuCostoTotal'},
-            {data:'btn',orderable:false,sercheable:false},
-          ],
-          "language": {
-          "url": '../JSON/Spanish_dataTables.json',
-          },
-          responsive: true
-      });
+  $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
+  
+  /*------Funcion para llenar los campos cuando selecciono una fila -----*/ 
+  $('#tableMenues tbody').on( 'click', 'button', function () {
+    $("#tituloModal").text("Editar menú");
+    $("#btnGuardar span").text("Editar");
+    vaciarCampos();
+    var data = table.row( $(this).parents('tr') ).data();
+    $("#id").val(data['MenuId']);
+    $("#nombre").val(data['MenuNombre']);
+  });
 });
 
- /*--------------Editar Menu------------------*/
-function editarMenu(id){
-      $('#divMensaje').removeClass('alert-success alert-danger');
-      $('#divMensaje').fadeIn();
-      $('#divMensaje').text("");
-      $('#labelComprobar'+id).removeClass('alert-success alert-danger');
-      $('#labelComprobar'+id).fadeIn();
-      $('#labelComprobar'+id).text("");
-      $('#btnGuardar'+id).attr('disabled',true);
-      $.ajaxSetup({
-              headers: {
-                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-              }
-      });
-      $.ajax({
-        type:'GET',
-        url:"getMenues",
-        dataType:"json",
-        beforeSend: function(response){
-          $("#labelComprobar"+id).text("Verificando datos...");
-        },
-       success: function(response) {
-          $("#labelComprobar"+id).text("");
-          var nombre = $('#menuNombre'+id).val();
-          var devolver = true;
-          for (let index = 0; index < response.menues.length; index++){
-            var menuNombre = response.menues[index]['MenuNombre'];
-            var menuId = response.menues[index]['MenuId'];
-            if(menuNombre == nombre && menuId != id){
-              devolver = false;
-              $("#labelNombre"+id).text("El menú ingresada ya existe");
-              $("#labelNombre"+id).addClass('text-danger');
-              break;
-            }
-          }
-          if(devolver == true){
-              $.ajax({
-                type:'PUT',
-                url:"menu/"+id,
-                dataType:"json",
-                data:{
-                  menuNombre: $('#menuNombre'+id).val(),
-                },
-                success: function(response){
-                  $('#labelComprobar'+id).addClass('alert-success');
-                  $('#labelComprobar'+id).text("Registro editado.");
-                  $('#labelComprobar'+id).fadeOut(4000);
-                  $('#menuNombre'+id).val("");
-                  var table = $('#tableMenues').DataTable();
-                  table.draw();
-                  $('#modalEditar'+id).modal('hide');
-                  $('#divMensaje').addClass('alert-success');
-                  $('#divMensaje').text("Registro editado correctamente.");
-                  $('#divMensaje').fadeOut(4000);
-                  },
-                error:function(){
-                  $("#labelComprobar"+id).text("ERROR 2");
-                },
-              });
-            }
-        },
-        error:function(){
-          $("#labelComprobar"+id).text("ERROR 1");
-          devolver = false;
-        },
-      });
-
-    $("#menuNombre"+id).click(function(){
-    $('#labelNombre'+id).removeClass('text-danger');
-    $('#labelNombre'+id).text('Nombre');
-    $('#btnGuardar'+id).attr('disabled',false);
-  }); 
+function vaciarCampos(){
+  $("#nombre").val("");
+  $("#listaErrores").empty();
 }
 
- /*--------------Eliminar Menu------------------*/
-
-function eliminarMenu(id){
-      $('#modalEliminar'+id).modal('hide');
-      $('#divMensaje').removeClass('alert-success alert-danger');
-      $('#divMensaje').fadeIn();
-      $('#divMensaje').text("");
-      $.ajaxSetup({
-              headers: {
-                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-              }
-      });
-      $.ajax({
-        type:"DELETE",
-        url: "menu/"+id,
-        data: {
-          "_method": 'DELETE',
-          "id": id
-        },
-        beforeSend: function(response){
-
-        },
-       success: function(response) {
-          $('#divMensaje').addClass('alert-success');
-          $('#divMensaje').text("Registro eliminado correctamente.");
-          $('#divMensaje').fadeOut(4000);
-          var table = $('#tableMenues').DataTable();
-          table.row('#'+id).remove().draw();
-          var table = $('#tableParticulares').DataTable();
-          table.row('#'+id).remove().draw();
-        },
-        error:function(){
-          $('#divMensaje').addClass('alert-danger');
-          $('#divMensaje').text("Error al eliminar el registro.");
-          $('#divMensaje').fadeOut(4000);
-        }
-      });
+function agregar(){
+  $("#id").val(0);
+  vaciarCampos();
+  $("#tituloModal").text("Agregar menú");
+  $("#btnGuardar span").text("Guardar");
 }
+
+
+function guardar(e){
+  $("#listaErrores").empty();
+  e.preventDefault();
+  var id = $("#id").val();
+  if(id == 0){
+    $.ajax({
+      type:'POST',
+      url:"menu",
+      dataType:"json",
+      data:{
+        menuNombre: $('#nombre').val(),
+      },
+      success: function(response){
+        $('#modal').modal('hide');
+        mostrarCartel('Registro agregado correctamente.','alert-success');
+        var table = $('#tableMenues').DataTable();
+        table.draw();
+        },
+      error:function(response){
+        var errors =  response.responseJSON.errors;
+        for (var campo in errors) {
+          $("#listaErrores").append('<li type="square">'+errors[campo]+'</li>');
+        }       
+      }
+    });
+  }else{
+    editar(id);
+  }
+}
+function editar(id){
+  $("#listaErrores").empty();
+  $.ajax({
+    type:'PUT',
+    url:"menu/"+id,
+    dataType:"json",
+    data:{
+      menuNombre: $('#nombre').val(),
+    },
+    success: function(response){
+      $('#modal').modal('hide');
+      mostrarCartel('Registro editado correctamente.','alert-success');
+      var table = $('#tableMenues').DataTable();
+      table.draw();
+      $('#modalEditar').modal('hide');
+      },
+      error:function(response){
+        var errors =  response.responseJSON.errors;
+        for (var campo in errors) {
+          console.log(errors[campo]);
+          $("#listaErrores").append('<li type="square">'+errors[campo]+'</li>');
+        }       
+      }
+  });
+}
+function eliminar(id){
+  $.ajax({
+    type:"DELETE",
+    url: "menu/"+id,
+    data: {
+      "_method": 'DELETE',
+      "id": id
+    },
+    success: function(response) {
+      mostrarCartel('Registro eliminado correctamente.','alert-success');
+      var table = $('#tableMenues').DataTable();
+      table.row('#'+id).remove().draw();
+    },
+    error:function(){
+      mostrarCartel('Error al eliminar el registro.','alert-danger');
+    }
+  });
+}
+function mostrarCartel(texto,clase){
+    $('#divMensaje').removeClass('alert-success alert-danger');
+    $('#divMensaje').fadeIn();
+    $('#divMensaje').text(texto);
+    $('#divMensaje').addClass(clase);  
+    $('#divMensaje').fadeOut(4000);
+}
+
+
+

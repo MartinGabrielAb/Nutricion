@@ -9,9 +9,11 @@ use App\Comida;
 use App\Alimento;
 use App\DetalleMenuTipoPaciente;
 use App\TipoPaciente;
-use App\Menu    ;
+use App\Menu;
 use DB;
 use App\Nutriente;
+use App\Http\Requests\ComidaPorTipoPacienteRequest;
+
 class ComidaPorTipoPacienteController extends Controller
 {
     public function __construct()
@@ -43,12 +45,11 @@ class ComidaPorTipoPacienteController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ComidaPorTipoPacienteRequest $request)
     {
         $nuevo =new ComidaPorTipoPaciente();
-        $nuevo->DetalleMenuTipoPacienteId = $request['menuId'];
-        $nuevo->TipoComidaId = $request['tipoComida'];
-        $nuevo->ComidaPorTipoPacienteCostoTotal = 0;
+        $nuevo->DetalleMenuTipoPacienteId = $request['detalleMenuTipoPacienteId'];
+        $nuevo->ComidaId = $request['comida'];
         $resultado = $nuevo->save();
         if ($resultado) {
             return response()->json(['success' => 'true']);
@@ -184,18 +185,18 @@ class ComidaPorTipoPacienteController extends Controller
     {
 
         $comidaPorTipoPaciente = ComidaPorTipoPaciente::FindOrFail($id);
-        $detalleMenuTipoPaciente = DetalleMenuTipoPaciente::FindOrFail($comidaPorTipoPaciente->DetalleMenuTipoPacienteId);
-        $menu = Menu::FindOrFail($detalleMenuTipoPaciente->MenuId);
+        // $detalleMenuTipoPaciente = DetalleMenuTipoPaciente::FindOrFail($comidaPorTipoPaciente->DetalleMenuTipoPacienteId);
+        // $menu = Menu::FindOrFail($detalleMenuTipoPaciente->MenuId);
 
-        $comida = Comida::where('ComidaId','=',$comidaPorTipoPaciente->ComidaId)->first();
-        if($comida != NULL){
-            $comidaPorTipoPaciente->ComidaPorTipoPacienteCostoTotal -= $comida->ComidaCostoTotal;
-            $comidaPorTipoPaciente->update();
-            $detalleMenuTipoPaciente->DetalleMenuTipoPacienteCostoTotal -= $comida->ComidaCostoTotal;
-            $detalleMenuTipoPaciente->update();
-            $menu->MenuCostoTotal -= $comida->ComidaCostoTotal;
-            $menu->update();
-        }
+        // $comida = Comida::where('ComidaId','=',$comidaPorTipoPaciente->ComidaId)->first();
+        // if($comida != NULL){
+        //     $comidaPorTipoPaciente->ComidaPorTipoPacienteCostoTotal -= $comida->ComidaCostoTotal;
+        //     $comidaPorTipoPaciente->update();
+        //     $detalleMenuTipoPaciente->DetalleMenuTipoPacienteCostoTotal -= $comida->ComidaCostoTotal;
+        //     $detalleMenuTipoPaciente->update();
+        //     $menu->MenuCostoTotal -= $comida->ComidaCostoTotal;
+        //     $menu->update();
+        // }
         $resultado = $comidaPorTipoPaciente->delete();
         if ($resultado) {
             return response()->json(['success' => 'true']);
