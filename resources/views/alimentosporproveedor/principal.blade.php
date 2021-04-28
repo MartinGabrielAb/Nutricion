@@ -80,7 +80,7 @@
         </div>    
         <div class="modal-body">
             <label for='proveedor' id="labelProveedor">Proveedor</label>
-            <select class="form-control" id="proveedor" name="proveedor" >
+            <select class="form-control" id="proveedor" name="proveedor" required >
                 @foreach($proveedores as $proveedor)
                     <option value="{{$proveedor->ProveedorId}}">{{$proveedor->ProveedorNombre}}</option>  
                 @endforeach
@@ -90,7 +90,7 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text">$</span>
                 </div>
-                <input type="number" class="form-control" id="costo">
+                <input type="number" class="form-control" id="costo" required>
             </div>
             <label for='cantidad'>Cantidad</label>
             <input class="form-control" type="number" id="cantidad" name="cantidad" required>

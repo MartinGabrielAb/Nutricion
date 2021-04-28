@@ -104,69 +104,24 @@ class AlimentoPorProveedorController extends Controller
                         $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * $costoPorUnidadMedida;
                 
                     }else{
-
                         switch($nombreUnidadMedidaDetalle){
-                            case "Mililitro":
-                                switch($nombreUnidadMedidaAlimento){
-                                    case 'Litro':
-                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida/1000);
-                                    break;
-                                    case 'Kilolitro':
-                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida/1000000);
-                                    break;
-                                }
-                            break;
-                            case "Litro":
-                                switch($nombreUnidadMedidaAlimento){
-                                    case 'Mililitro':
-                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida*1000);
-                                    
-                                    break;
-                                    case 'Kilolitro':
-                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida/1000);
-                                    break;
-                                }
-                            break;
-                            case "Kilolitro":
-                                switch($nombreUnidadMedidaAlimento){
-                                    case 'Mililitro':
-                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida*1000000);
-                                    break;
-                                    case 'Litro':
-                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida*1000);
-                                    break;
-                                }
-                            break;
-                            case "Miligramo":
-                                switch($nombreUnidadMedidaAlimento){
-                                    case 'Gramo':
-                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida/1000);
-                                    break;
-                                    case 'Kilogramo':
-                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida/1000000);
-                                    break;
-                                }
-                            break;
                             case "Gramo":
                                 switch($nombreUnidadMedidaAlimento){
-                                    case 'Miligramo':
-                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida*1000);
+                                    case 'Unidad':
+                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida);
+                                    break;
+                                    case 'Gramo':
+                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida);
+                                    break;
+                                    case 'Litro':
+                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * $costoPorUnidadMedida / $alimento->AlimentoEquivalenteGramos;
                                     break;
                                     case 'Kilogramo':
                                         $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida/1000);
                                     break;
                                 }
                             break;
-                            case "Kilogramo":
-                                switch($nombreUnidadMedidaAlimento){
-                                    case 'Miligramo':
-                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida*1000000);
-                                    break;
-                                    case 'Gramo':
-                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida*1000);
-                                    break;
-                                }
-                            break;    
+                           
                         }
 
                     }

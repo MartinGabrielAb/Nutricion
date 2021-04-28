@@ -79,8 +79,15 @@ class ComidaController extends Controller
         return view('alimentosporcomida.principal',compact('comida','alimentos','unidadesMedida'));
     }
 
+    // Este lo uso para traer comidas por tipo 
+    //el id es el tipo de comida
     public function edit($id)
     {
+        $comidas = DB::table('comida')
+            ->where('TipoComidaId',intval($id))
+            ->where('ComidaEstado',1)
+            ->get();
+        return $comidas;
     }
 
     public function update(ComidaRequest $request, $id)
@@ -132,4 +139,5 @@ class ComidaController extends Controller
             return response()->json(['success'=>'false']);
         }
     }
+
 }
