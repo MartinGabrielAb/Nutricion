@@ -31,37 +31,54 @@ class PiezaRequest extends FormRequest
         $metodo = $this->getMethod();
         if ( $metodo == 'POST') {
             return [
-            'salaId' => 'required | numeric | exists:sala,SalaId',
-            'piezaNombre' => [
-                'required',
-                'min:4',
-                'max:64',
-                Rule::unique('pieza','PiezaNombre')
-                    ->where(function ($query) use ($request) { 
-                        return $query->where('SalaId',$request->salaId);
-                    })    
-                    ->where(function ($query) { 
+                'salaId' => 'required | numeric | exists:sala,SalaId',
+                'piezaNombre' => [
+                    'required',
+                    'max:64',
+                    Rule::unique('pieza','PiezaNombre')
+                        ->where(function ($query) use ($request) { 
+                            return $query->where('SalaId',$request->salaId);
+                        })    
+                        ->where(function ($query) { 
+                            return $query->where('PiezaEstado', 1);
+                        })
+                        
+                    ],
+                'pseudonimo' => [
+                    'required',
+                    'max:64',
+                    Rule::unique('pieza','PiezaPseudonimo')->where(function ($query) { 
                         return $query->where('PiezaEstado', 1);
                     })
-                    
-                ]      
+                ],
             ];
         //validacion para el update
         }
         if ($metodo == "PUT" || $metodo == "PATCH") {
             return  [
-            'piezaNombre' => ['required','min:4','max:64',
-                Rule::unique('pieza','PiezaNombre')
-                    ->where(function ($query) use ($request) { 
-                        return $query->where('PiezaId','!=',$request->id);
-                    })
-                    ->where(function ($query) use ($request) { 
-                        return $query->where('SalaId',$request->salaId);
-                    })
-                    ->where(function ($query) { 
-                        return $query->where('PiezaEstado', 1);
+                'piezaNombre' => ['required','max:64',
+                    Rule::unique('pieza','PiezaNombre')
+                        ->where(function ($query) use ($request) { 
+                            return $query->where('PiezaId','!=',$request->id);
                         })
-                    ],
+                        ->where(function ($query) use ($request) { 
+                            return $query->where('SalaId',$request->salaId);
+                        })
+                        ->where(function ($query) { 
+                            return $query->where('PiezaEstado', 1);
+                            })
+                        ],
+                'pseudonimo' => [
+                    'required',
+                    'max:64',
+                    Rule::unique('pieza','PiezaPseudonimo')
+                        ->where(function ($query) use ($request) { 
+                            return $query->where('PiezaId','!=',$request->id);
+                        })
+                        ->where(function ($query) { 
+                            return $query->where('PiezaEstado', 1);
+                        })
+                ],
             ];
         }
         
@@ -70,13 +87,18 @@ class PiezaRequest extends FormRequest
     public function messages()
     {
         return [
+            //sala
             'salaId.required'  => 'El ID de la sala es requerido.',
             'salaId.exists'  => 'El ID de la sala es debe existir.',
             'salaId.numeric'  => 'El ID de la sala debe ser numérico.',
+            //pieza
             'piezaNombre.required' => 'Nombre es requerido.',
-            'piezaNombre.min' => 'Nombre debe sobrepasar los 4 caractéres.',
-            'piezaNombre.max' => 'Nombre no debe sobrepasar 64 caractéres.',
-            'piezaNombre.unique' => 'Ya existe una pieza con ese nombre en esta sala.'
+            'piezaNombre.max' => 'Nombre no debe sobrepasar 64 caracteres.',
+            'piezaNombre.unique' => 'Ya existe una pieza con ese nombre en esta sala.',
+            //pseudonimo
+            'pseudonimo.required' => 'Pseudónimo es requerido.',
+            'pseudonimo.max' => 'Pseudónimo no debe sobrepasar 64 caracteres.',
+            'pseudonimo.unique' => 'Ya existe una pieza con ese pseudónimo.',
         ];
     }
 }

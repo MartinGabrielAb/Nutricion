@@ -30,31 +30,47 @@ class SalaRequest extends FormRequest
         $metodo = $this->getMethod();
         if ( $metodo == 'POST') {
             return [
-            'salaNombre' => [
-                'required',
-                'min:4',
-                'max:64',
-                Rule::unique('sala','SalaNombre')->where(function ($query) { 
-                    return $query->where('SalaEstado', 1);
+                'salaNombre' => [
+                    'required',
+                    'max:64',
+                    Rule::unique('sala','SalaNombre')->where(function ($query) { 
+                        return $query->where('SalaEstado', 1);
                     })
-                ]      
+                ],
+                'pseudonimo' => [
+                    'required',
+                    'max:64',
+                    Rule::unique('sala','SalaPseudonimo')->where(function ($query) { 
+                        return $query->where('SalaEstado', 1);
+                    })
+                ],
             ];
         //validacion para el update
         }
         if ($metodo == "PUT" || $metodo == "PATCH") {
             return  [
-            'salaNombre' => [
-                'required',
-                'min:4',
-                'max:64',
-                Rule::unique('sala','SalaNombre')
-                    ->where(function ($query) use ($request) { 
-                        return $query->where('SalaId','!=',$request->id);
+                'salaNombre' => [
+                    'required',
+                    'max:64',
+                    Rule::unique('sala','SalaNombre')
+                        ->where(function ($query) use ($request) { 
+                            return $query->where('SalaId','!=',$request->id);
                         })
-                    ->where(function ($query) { 
-                        return $query->where('SalaEstado', 1);
+                        ->where(function ($query) { 
+                            return $query->where('SalaEstado', 1);
                         })
-                ]   
+                ],
+                'pseudonimo' => [
+                    'required',
+                    'max:64',
+                    Rule::unique('sala','SalaPseudonimo')
+                        ->where(function ($query) use ($request) { 
+                            return $query->where('SalaId','!=',$request->id);
+                        })
+                        ->where(function ($query) { 
+                            return $query->where('SalaEstado', 1);
+                        })
+                ],  
             ];
         }
         
@@ -63,10 +79,14 @@ class SalaRequest extends FormRequest
     public function messages()
     {
         return [
+            //nombre
             'salaNombre.required' => 'Nombre es requerido.',
-            'salaNombre.min' => 'Nombre debe pasar los 4 caractéres.',
-            'salaNombre.max' => 'Nombre no debe sobrepasar 64 caractéres.',
-            'salaNombre.unique' => 'Ya existe una sala con ese nombre.'
+            'salaNombre.max' => 'Nombre no debe sobrepasar 64 caracteres.',
+            'salaNombre.unique' => 'Ya existe una sala con ese nombre.',
+            //pseudonimo
+            'pseudonimo.required' => 'Pseudónimo es requerido.',
+            'pseudonimo.max' => 'Pseudónimo no debe sobrepasar 64 caracteres.',
+            'pseudonimo.unique' => 'Ya existe una sala con ese pseudónimo.',
         ];
     }
 }

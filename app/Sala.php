@@ -8,6 +8,6 @@ class Sala extends Model
 {
     protected $table = 'sala';
 	protected $primaryKey = 'SalaId';
-	protected $filliable=['SalaNombre','SalaEstado'];
+	protected $filliable=['SalaNombre','SalaEstado','SalaPseudonimo'];
 	public $timestamps = false;
 }

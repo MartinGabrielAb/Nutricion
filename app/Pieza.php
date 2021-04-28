@@ -8,6 +8,6 @@ class Pieza extends Model
 {
     protected $table = 'pieza';
 	protected $primaryKey = 'PiezaId';
-	protected $filliable=['PiezaNombre','PiezaEstado','SalaId'];
+	protected $filliable=['PiezaNombre','PiezaEstado','SalaId','PiezaPseudonimo'];
 	public $timestamps = false;
 }

@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Sala;
 use App\Pieza;
 use App\Cama;
-use Illuminate\Support\Facades\Auth;
 use Exception;
 use Illuminate\Support\Facades\DB as FacadesDB;
 use Yajra\DataTables\DataTables;
@@ -14,9 +12,9 @@ use App\Http\Requests\PiezaRequest;
 
 class PiezaController extends Controller
 {
-
     public function index()
     { }
+
     public function create()
     { }
 
@@ -24,6 +22,7 @@ class PiezaController extends Controller
     {
         $pieza = New Pieza();
         $pieza->PiezaNombre = $request['piezaNombre'];
+        $pieza->PiezaPseudonimo = $request['pseudonimo'];
         $pieza->PiezaEstado = 1;
         $pieza->SalaId = $request['salaId'];
         $resultado = $pieza->save();
@@ -33,6 +32,7 @@ class PiezaController extends Controller
             return response()->json(['success'=>'false']);
         }
     }
+
     public function show(Request $request,$id)
     {
         if($request->ajax()){
@@ -53,7 +53,7 @@ class PiezaController extends Controller
                             ->toJson();
             }catch(Exception $ex){
                 return response()->json([
-                    'error' => 'Internal server error.'
+                    'error' => $ex->getMessage()
                 ], 500);
             }
         }
@@ -69,6 +69,7 @@ class PiezaController extends Controller
     {
         $pieza = Pieza::FindOrFail($id);
         $pieza->PiezaNombre = $request['piezaNombre'];
+        $pieza->PiezaPseudonimo = $request['pseudonimo'];
         $resultado = $pieza->update();
         if ($resultado) {
             return response()->json(['success'=>'true']);
