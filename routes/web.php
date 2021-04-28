@@ -263,5 +263,5 @@ Route::get('getNutrientesPorAlimento','AjaxDataController@getNutrientesPorAlimen
 
 Route::get('getRelevamientos','AjaxDataController@getRelevamientos')->name('ajaxData.getRelevamientos');
 
-Route::get('getDetallesRelevamiento/{id}','AjaxDataController@getDetallesRelevamiento')->name('ajaxData.getDetallesRelevamiento');
+
 Route::get('getUsuarios','AjaxDataController@getUsuarios')->name('ajaxData.getUsuarios');

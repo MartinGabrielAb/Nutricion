@@ -7,7 +7,6 @@ $(document).ready( function () {
     "columns": [
       {data: "RelevamientoId"},
       {data: "RelevamientoFecha"},
-      {data: "MenuNombre"},
       {data:'btn',orderable:false,sercheable:false},
     ],
     "language": { "url": "../JSON/Spanish_dataTables.json"},
@@ -25,10 +24,10 @@ $(document).ready( function () {
     $("#id").val(data['RelevamientoId']);
     $("#fecha").val(data['RelevamientoFecha']);
     // $("#turno").val(data['RelevamientoTurno']).trigger('change');
-    $("#menu").val(data['MenuId']).trigger('change');
+    // $("#menu").val(data['MenuId']).trigger('change');
   });
 
-  // select2
+  //select2
   // $('#turno').select2({
   //   width: 'resolve',
   //   theme: "classic",
@@ -38,15 +37,15 @@ $(document).ready( function () {
   //   },
   //   allowClear: true,
   // });
-  $('#menu').select2({
-    width: 'resolve',
-    theme: "classic",
-    placeholder: {
-      id: '-1', 
-      text: "Menú",
-    },
-    allowClear: true,
-  });
+  // $('#menu').select2({
+  //   width: 'resolve',
+  //   theme: "classic",
+  //   placeholder: {
+  //     id: '-1', 
+  //     text: "Menú",
+  //   },
+  //   allowClear: true,
+  // });
 });
 //POST AJAX
 function guardar(e){
@@ -60,7 +59,6 @@ function guardar(e){
       dataType:"json",
       data:{
         fecha: $('#fecha').val(),
-        menu: $('#menu').val(),
       },
       success: function(response){
         $('#modal').modal('hide');
@@ -89,7 +87,6 @@ function editar(id){
     data:{
       id: id,
       fecha: $('#fecha').val(),
-      menu: $('#menu').val(),
     },
     success: function(response){
       $('#modal').modal('hide');
@@ -130,7 +127,7 @@ function eliminar(id){
 function vaciarCampos(){
   $("#fecha").val("");
   // $("#turno").val(-1).trigger('change');
-  $("#menu").val(-1).trigger('change');
+  // $("#menu").val(-1).trigger('change');
   $("#listaErrores").empty();
 }
 function agregar(){

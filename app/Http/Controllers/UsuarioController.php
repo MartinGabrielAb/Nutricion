@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\User;
 use App\Rol;
-use App\Http\Requests\UsuarioRequest;
-use DB;
-use Illuminate\Support\Facades\Hash;
-USE App\RolesUsuario;
+use App\User;
+use Exception;
+use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\DB;
+use App\Http\Requests\UsuarioRequest;
 
 class UsuarioController extends Controller
 {
@@ -38,7 +37,7 @@ class UsuarioController extends Controller
                             ->toJson();
             }catch(Exception $ex){
                 return response()->json([
-                    'error' => 'Internal server error.'
+                    'error' => $ex->getMessage()
                 ], 500);
             }
         }
@@ -101,7 +100,9 @@ class UsuarioController extends Controller
                 return response()->json(['success'=>'false']);
             }
         }catch(Exception $ex){
-            return response()->json(['success'=>'false']);
+            return response()->json([
+                'error' => $ex->getMessage()
+            ], 500);
         }
         
     }

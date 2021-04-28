@@ -28,7 +28,7 @@ class PacienteController extends Controller
                                 ->toJson();
             }catch(Exception $ex){
                 return response()->json([
-                    'error' => 'Internal server error.'
+                    'error' => $ex->getMessage()
                 ], 500);
             }
         }
@@ -72,7 +72,7 @@ class PacienteController extends Controller
                                 ->toJson();
             }catch(Exception $ex){
                 return response()->json([
-                    'error' => 'Internal server error.'
+                    'error' => $ex->getMessage()
                 ], 500);
             }
         }

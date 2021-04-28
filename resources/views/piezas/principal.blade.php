@@ -46,6 +46,7 @@
                     <tr>
                       <th scope="col">#</th>
                       <th scope="col">Pieza</th>
+                      <th scope="col">Pseudónimo</th>
                       <th scope="col" width="5%">Acciones</th>
                     </tr>
                   </thead>
@@ -76,7 +77,9 @@
         <div class="modal-body">
           <input type="hidden" id="id" name="id">
           <label for='nombre' id="labelNombre">Nombre</label>
-          <input class="form-control" type="text" id="nombre" name="nombre" required  minlength="4" maxlength="64">
+          <input class="form-control" type="text" id="nombre" name="nombre" required  maxlength="64">
+          <label for='pseudonimo' id="labelPseudonimo">Pseudónimo</label>
+          <input class="form-control" type="text" id="pseudonimo" name="pseudonimo" required  maxlength="64">
         </div>
         <div class="modal-footer">
           <div class="container-fluid">

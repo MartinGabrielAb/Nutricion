@@ -17,16 +17,16 @@ class AddMenuToRelevamientoTable extends Migration
             if (Schema::hasColumn('relevamiento', 'RelevamientoTurno')){
                 $table->dropColumn('RelevamientoTurno');
             }
-            //agrego menuId como clave foranea
-            if (!Schema::hasColumn('relevamiento', 'MenuId')){
-                $table->integer('MenuId');
-                $table->foreign('MenuId')->references('MenuId')->on('menu')->onDelete('cascade');
-            }
         });
         Schema::table('detallerelevamiento', function (Blueprint $table){
-            //agrego DetalleRelevamientoTurno como clave foranea
+            //agrego DetalleRelevamientoTurno
             if (!Schema::hasColumn('detallerelevamiento', 'DetalleRelevamientoTurno')){
                 $table->string('DetalleRelevamientoTurno');
+            }
+            //agrego MenuId
+            if (!Schema::hasColumn('detallerelevamiento', 'MenuId')){
+                $table->integer('MenuId');
+                $table->foreign('MenuId')->references('MenuId')->on('menu')->onDelete('cascade');
             }
         });
     }
@@ -34,6 +34,11 @@ class AddMenuToRelevamientoTable extends Migration
     public function down()
     {
         Schema::table('relevamiento', function (Blueprint $table) {
+            //elimino menuId como clave foranea
+            if (Schema::hasColumn('relevamiento', 'MenuId')){
+                $table->dropForeign(['MenuId']);
+                $table->dropColumn('MenuId');
+            }
         });
     }
 }

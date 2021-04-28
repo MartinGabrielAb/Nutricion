@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Http\Requests;
-use App\Persona;
-use App\Paciente;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -27,9 +25,6 @@ class RelevamientoRequest extends FormRequest
                             return $query->where('RelevamientoEstado', 1);
                         })
                 ],
-                'menu' => [
-                    'required',
-                ],
             ];
         }
         //validacion para el update
@@ -46,9 +41,6 @@ class RelevamientoRequest extends FormRequest
                             return $query->where('RelevamientoId','!=',$request->id);
                         })
                 ],
-                'menu' => [
-                    'required',
-                ],
             ];
         }
     }
@@ -60,8 +52,6 @@ class RelevamientoRequest extends FormRequest
             'fecha.required' => 'Fecha es requerido.',
             'fecha.date' => 'Fecha debe tener formato de fecha.',
             'fecha.unique' => 'Ya existe un relevamiento con la fecha seleccionada.',
-            //Menu
-            'menu.required' => 'Menu es requerido.',
         ];
     }
 }

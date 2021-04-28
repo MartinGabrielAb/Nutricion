@@ -7,6 +7,7 @@ $(document).ready( function () {
     "columns": [
       {data: "SalaId"},
       {data: "SalaNombre"},
+      {data: "SalaPseudonimo"},
       {data:'btn',orderable:false,sercheable:false},
     ],
     "language": { "url": "../JSON/Spanish_dataTables.json"},
@@ -22,11 +23,13 @@ $(document).ready( function () {
     var data = table.row( $(this).parents('tr') ).data();
     $("#id").val(data['SalaId']);
     $("#nombre").val(data['SalaNombre']);
+    $("#pseudonimo").val(data['SalaPseudonimo']);
   });
 });
 
 function vaciarCampos(){
   $("#nombre").val("");
+  $("#pseudonimo").val("");
   $("#listaErrores").empty();
 }
 
@@ -49,6 +52,7 @@ function guardar(e){
       dataType:"json",
       data:{
         salaNombre: $('#nombre').val(),
+        pseudonimo: $('#pseudonimo').val(),
       },
       success: function(response){
         $('#modal').modal('hide');
@@ -77,6 +81,7 @@ function editar(id){
     dataType:"json",
     data:{
       salaNombre: $('#nombre').val(),
+      pseudonimo: $('#pseudonimo').val(),
     },
     success: function(response){
       $('#modal').modal('hide');

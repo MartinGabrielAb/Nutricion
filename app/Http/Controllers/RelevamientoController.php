@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Menu;
+use App\Sala;
 use Exception;
+use App\Paciente;
 use App\Relevamiento;
+use App\TipoPaciente;
 use App\DetalleRelevamiento;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\RelevamientoRequest;
-use Illuminate\Support\Facades\DB as FacadesDB;
 
 class RelevamientoController extends Controller
 {
@@ -18,9 +21,9 @@ class RelevamientoController extends Controller
         /*---Pregunto si es una peticion ajax----*/
         if($request->ajax()){
             try{
-                $relevamientos = FacadesDB::table('relevamiento as r')
-                                            ->join('menu as m','m.MenuId','r.MenuId')
+                $relevamientos = DB::table('relevamiento as r')
                                             ->where('r.RelevamientoEstado',1)
+                                            ->select('r.RelevamientoId',DB::raw('DATE_FORMAT(r.RelevamientoFecha, "%d/%m/%Y") as RelevamientoFecha','r.RelevamientoEstado'))
                                             ->get();
                 return DataTables::of($relevamientos)
                             ->addColumn('btn','relevamientos/actions')
@@ -28,12 +31,11 @@ class RelevamientoController extends Controller
                              ->toJson();
             }catch(Exception $ex){
                 return response()->json([
-                    'error' => 'Internal server error.'
+                    'error' => $ex->getMessage()
                 ], 500);
             }
         }
-        $menus = Menu::where('MenuEstado',1)->where('MenuParticular',0)->get();
-        return view('relevamientos.principal',compact('menus'));
+        return view('relevamientos.principal');
     }
 
     public function create()
@@ -44,7 +46,6 @@ class RelevamientoController extends Controller
         $relevamiento = new Relevamiento;
         $relevamiento->RelevamientoEstado = 1;
         $relevamiento->RelevamientoFecha = $request->get('fecha');
-        $relevamiento->MenuId = $request->get('menu');
         $resultado = $relevamiento->save();
         if ($resultado) {
             return response()->json(['success'=> $relevamiento]);
@@ -56,7 +57,19 @@ class RelevamientoController extends Controller
     public function show($id)
     {
         $relevamiento = Relevamiento::findOrFail($id);
-        return view('relevamientos.show',compact('relevamiento'));
+        //datos necesarios para agregar y editar un detalle de relevamiento
+        $pacientes = Paciente::select('paciente.PersonaId','paciente.PacienteId','persona.PersonaApellido','persona.PersonaNombre','persona.PersonaCuil')
+                ->join('persona', 'persona.PersonaId', '=', 'paciente.PersonaId')
+                ->get();
+        $salasPiezasCamas = Sala::join('pieza','pieza.SalaId','sala.SalaId')
+                                    ->join('cama','cama.PiezaId','pieza.PiezaId')
+                                    ->orderby('SalaNombre','desc')
+                                    ->orderby('pieza.PiezaNombre','asc')
+                                    ->orderby('cama.CamaNumero','asc')
+                                    ->get();
+        $tiposPaciente = TipoPaciente::all();
+        $menus = Menu::where('MenuEstado',1)->get();
+        return view('relevamientos.show',compact('relevamiento','pacientes','salasPiezasCamas','tiposPaciente','menus'));
     }
 
     public function edit($id)
@@ -67,7 +80,6 @@ class RelevamientoController extends Controller
         $relevamiento = Relevamiento::findOrFail($id);
         $relevamiento->RelevamientoEstado = 1;
         $relevamiento->RelevamientoFecha = $request->get('fecha');
-        $relevamiento->MenuId = $request->get('menu');
         $resultado = $relevamiento->update();
         if ($resultado) {
             return response()->json(['success'=> $relevamiento]);

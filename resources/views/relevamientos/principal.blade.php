@@ -45,9 +45,8 @@
                   <!------Cabecera de la tabla------>
                   <thead>
                     <tr>
-                      <th scope="col">#</th>
+                      <th scope="col" width="5%">#</th>
                       <th scope="col">Fecha</th>
-                      <th scope="col">Menú</th>
                       <th scope="col" width="5%">Acciones</th>
                     </tr>
                   </thead>
@@ -79,17 +78,6 @@
           <input type="hidden" id="id" name="id">
           <label for='fecha' id="labelFecha">Fecha</label>
           <input class="form-control" type="date" id="fecha" name="fecha" required>
-          {{-- <label for='turno' id="labelTurno">Turno</label>
-          <select class="form-control" id="turno" name="turno" required style="width: 100%">
-            <option value="Mañana">Mañana</option>
-            <option value="Tarde">Tarde</option>
-          </select> --}}
-          <label for='menu' id="labelMenu">Menú</label>
-          <select class="form-control" id="menu" name="menu" required style="width: 100%">
-            @foreach ($menus as $menu)
-              <option value="{{$menu->MenuId}}">{{$menu->MenuNombre}}</option>  
-            @endforeach
-          </select>
         </div>
         <div class="modal-footer">
           <div class="container-fluid">

@@ -8,6 +8,7 @@ $(document).ready( function () {
       "columns": [
         {data: "PiezaId"},
         {data: "PiezaNombre"},
+        {data: "PiezaPseudonimo"},
         {data:'btn',orderable:false,sercheable:false},
       ],
       "language": { "url": "../JSON/Spanish_dataTables.json"
@@ -23,11 +24,13 @@ $(document).ready( function () {
       var data = table.row( $(this).parents('tr') ).data();
       $("#id").val(data['PiezaId']);
       $("#nombre").val(data['PiezaNombre']);
+      $("#pseudonimo").val(data['PiezaPseudonimo']);
     });
   });
   
   function vaciarCampos(){
     $("#nombre").val("");
+    $("#pseudonimo").val("");
     $("#listaErrores").empty();
   }
   
@@ -51,6 +54,7 @@ $(document).ready( function () {
         data:{
             salaId : $("#SalaId").val(),
             piezaNombre: $('#nombre').val(),
+            pseudonimo: $('#pseudonimo').val(),
         },
         success: function(response){
           $('#modal').modal('hide');
@@ -79,6 +83,7 @@ $(document).ready( function () {
       data:{
         salaId : $("#SalaId").val(),
         piezaNombre: $('#nombre').val(),
+        pseudonimo: $('#pseudonimo').val(),
       },
       success: function(response){
         $('#modal').modal('hide');
