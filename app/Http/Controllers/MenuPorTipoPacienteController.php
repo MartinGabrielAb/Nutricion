@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\DetalleMenuTipoPaciente;
-use App\ComidaPorTipoPaciente;
 use App\Menu;
-use DB;
-use App\Http\Requests\MenuPorTipoRequest;
+use Illuminate\Http\Request;
+use App\ComidaPorTipoPaciente;
+use App\DetalleMenuTipoPaciente;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\DB;
+use App\Http\Requests\MenuPorTipoRequest;
 
 class MenuPorTipoPacienteController extends Controller
 {

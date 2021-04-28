@@ -3,5 +3,5 @@
     <i class="fas fa-trash"></i>
 </button>
 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-    <button class="dropdown-item" onClick ="eliminar({{$MenuId}})" ><i class="fas fa-exclamation-circle"></i>Confirmar eliminación</button>
+    <button class="dropdown-item" onClick ="eliminar({{$DetalleMenuTipoPacienteId}})" ><i class="fas fa-exclamation-circle"></i>Confirmar eliminación</button>
 </div>

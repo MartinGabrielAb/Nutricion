@@ -28,12 +28,14 @@ class MenuPorTipoRequest extends FormRequest
     { 
         
             return [
-            'menuId' => ['required','exists:menu,MenuId'],
-            'tipoPaciente' => ['required',Rule::unique('detalleMenuTipoPaciente','TipoPacienteId')
-            ->where(function ($query) use ($request) { 
-                return $query->where('MenuId','!=',$request->MenuId);
-                })
-                ]      
+                'menuId' => ['required','exists:menu,MenuId'],
+                'tipoPaciente' => 
+                    ['required',
+                    Rule::unique('detalleMenuTipoPaciente','TipoPacienteId')
+                        ->where(function ($query) use($request) {
+                            return $query->where('MenuId', $request->menuId)->where('TipoPacienteId', $request->tipoPaciente);
+                        }),
+                    ]      
             ];
         
     }
