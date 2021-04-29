@@ -141,6 +141,14 @@ class RoleSeeder extends Seeder
         $permission = Permission::create(['name' => 'detallesrelevamiento.show'])->syncRoles(['Admin','Nutricion','Relevamiento']);
         $permission = Permission::create(['name' => 'detallesrelevamiento.destroy'])->syncRoles(['Admin','Nutricion','Relevamiento']);
         $permission = Permission::create(['name' => 'detallesrelevamiento.edit'])->syncRoles(['Admin','Nutricion','Relevamiento']);
+        //detallesrelevamiento
+        $permission = Permission::create(['name' => 'detrelevamientoporcomida.store'])->syncRoles(['Admin','Nutricion','Relevamiento']);
+        $permission = Permission::create(['name' => 'detrelevamientoporcomida.index'])->syncRoles(['Admin','Nutricion','Relevamiento']);
+        $permission = Permission::create(['name' => 'detrelevamientoporcomida.create'])->syncRoles(['Admin','Nutricion','Relevamiento']);
+        $permission = Permission::create(['name' => 'detrelevamientoporcomida.update'])->syncRoles(['Admin','Nutricion','Relevamiento']);
+        $permission = Permission::create(['name' => 'detrelevamientoporcomida.show'])->syncRoles(['Admin','Nutricion','Relevamiento']);
+        $permission = Permission::create(['name' => 'detrelevamientoporcomida.destroy'])->syncRoles(['Admin','Nutricion','Relevamiento']);
+        $permission = Permission::create(['name' => 'detrelevamientoporcomida.edit'])->syncRoles(['Admin','Nutricion','Relevamiento']);
         //historial
         $permission = Permission::create(['name' => 'historial.elegirMenu'])->syncRoles(['Admin','Nutricion']);
         $permission = Permission::create(['name' => 'historial.store'])->syncRoles(['Admin','Nutricion']);

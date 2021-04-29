@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Menu;
+use Exception;
 use Illuminate\Http\Request;
 use App\ComidaPorTipoPaciente;
 use App\DetalleMenuTipoPaciente;
@@ -12,7 +13,35 @@ use App\Http\Requests\MenuPorTipoRequest;
 
 class MenuPorTipoPacienteController extends Controller
 {
-
+    public function index(Request $request)//$request: menu, tipopaciente
+    {
+        //retorna todas las comidas del menu y tipopaciente ingresados por request ajax
+        if($request->ajax()){
+            if($request->get('menu') && $request->get('tipopaciente')){
+                try{
+                    $menuportipopaciente = 
+                        DB::table('detallemenutipopaciente')
+                            ->where('MenuId', $request->menu)
+                            ->where('TipoPacienteId', $request->tipopaciente)
+                            ->first();
+                    if($menuportipopaciente){
+                        $comidasportipopaciente = 
+                            DB::table('comidaportipopaciente as cptp')
+                                ->join('comida as c','c.ComidaId','cptp.ComidaId')
+                                ->where('cptp.DetalleMenuTipoPacienteId',$menuportipopaciente->DetalleMenuTipoPacienteId)
+                                ->get();
+                    }else{
+                        return response()->json(['success' => []]);    
+                    }
+                    return response()->json(['success' => $comidasportipopaciente]);
+                }catch(Exception $ex){
+                    return response()->json([
+                        'error' => $ex->getMessage()
+                    ], 500);
+                }
+            }
+        }
+    }
 
     public function store(MenuPorTipoRequest $request)
     {

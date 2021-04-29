@@ -11,7 +11,6 @@
                         <!-- Mensaje de exito/error -->
                     </div>
                 </div>
-                <h1>Crear tabla detallerelevamiento_por_comidas, agregar al crud la opcion de elegir las variantes de comida del menu y regimen elegidos. Terminar controlador y validaciones</h1>
                 <div class="col">
                     <p class="text-right">
                         <button type="button" class="btn btn-sm btn-default" id="btnAgregar" onClick="agregar()" data-toggle="modal"  data-target="#modal">
@@ -30,15 +29,15 @@
                         <th scope="col">#</th>
                         <th scope="col">Turno</th>
                         <th scope="col">Paciente</th>
+                        <th scope="col">Menú</th>
                         <th scope="col">TipoPaciente</th>
-                        <th scope="col">S/P/C</th>
-                        <th scope="col">Hora</th>
-                        <th scope="col">Estado</th>
-                        <th scope="col">Observaciones</th>
-                        <th scope="col">Diagnóstico</th>
                         <th scope="col">Acompañante</th>
                         <th scope="col">VD</th>
-                        <th scope="col">Menú</th>
+                        <th scope="col">S/P/C</th>
+                        <th scope="col">Diagnóstico</th>
+                        <th scope="col">Obs.</th>
+                        <th scope="col">Hora</th>
+                        <th scope="col">Estado</th>
                         <th scope="col">Relevador</th>
                         <th scope="col" width="5%">Acciones</th>
                         </tr>
@@ -66,7 +65,8 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div id="modal-body-comidas" class="moda-body d-none"></div>
+                <div id="modal-body" class="modal-body">
                     <input type="hidden" id="id" name="id">
                     <label for="turno">Turno</label>
                     <div class="form-inline">
@@ -123,6 +123,9 @@
                             @endforeach
                         </select>
                     </div>
+                    <div id="comidas" class="form-check mt-3 border-top border-bottom">
+                        
+                    </div>
                     <div class="form-check mt-3">
                         <input class="form-check-input" type="checkbox" value="1" id="acompanianteId" name="acompanianteId">
                         <label class="form-check-label" for="acompanianteId">
@@ -136,7 +139,16 @@
                         </label>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div id="modal-footer-comidas" class="modal-footer d-none">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col">
+                                <button type="button" class="btn btn-sm btn-secondary w-100" data-dismiss="modal"><i class="fas fa-times"></i> Salir</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="modal-footer" class="modal-footer">
                     <div class="container-fluid">
                         <div class="row mb-2">
                             <div class="col">

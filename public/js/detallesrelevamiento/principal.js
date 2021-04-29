@@ -17,44 +17,44 @@ $(document).ready( function () {
         data: null,
         render: function ( data, type, row ) {
           return '<a title="Historial del paciente" href=../pacientes/'+data.PacienteId+'>'+data.PersonaApellido+', '+data.PersonaNombre+'</a>';
-      }},
-      {data: 'TipoPacienteNombre'},
-      {
-        data: null,
-        render: function ( data, type, row ) {
-          return data.SalaPseudonimo+'/'+data.PiezaPseudonimo+'/'+data.CamaNumero;
-      }},
-      {data: 'DetalleRelevamientoHora'},
-      {
-        data: null,
-        render: function ( data, type, row ) {
-          if (data.DetalleRelevamientoEstado == 1) {
-            return '<td><p class="text-success">Activo</p></td>';
-          }else{
-              return '<td><p class="text-danger">Inactivo</p></td>';
-          }
-      }},
-      {data: 'DetalleRelevamientoObservaciones'},
-      {data: 'DetalleRelevamientoDiagnostico'},
+        }},
+      {data: 'MenuNombre'},
+      {data:  'TipoPacienteNombre'},
       {
         data: null,
         render: function ( data, type, row ) {
           if (data.DetalleRelevamientoAcompaniante == 1) {
-            return '<td><p class="text-success">Si</p></td>';
+            return '<span class="text-success ml-1">Si</span>';
         }else{
-            return '<td><p class="text-danger">No</p></td>';
+            return '<span class="text-danger ml-1">No</span>';
         }
       }},
       {
         data: null,
         render: function ( data, type, row ) {
           if (data.DetalleRelevamientoVajillaDescartable == 1) {
-            return '<td><p class="text-success">Si</p></td>';
+            return '<span class="text-success ml-1">Si</span>';
         }else{
-            return '<td><p class="text-danger">No</p></td>';
+            return '<span class="text-danger ml-1">No</span>';
         }
       }},
-      {data: 'MenuNombre'},
+      {
+        data: null,
+        render: function ( data, type, row ) {
+          return data.SalaPseudonimo+'/'+data.PiezaPseudonimo+'/'+data.CamaNumero;
+      }},
+      {data: 'DetalleRelevamientoDiagnostico'},
+      {data: 'DetalleRelevamientoObservaciones'},
+      {data: 'DetalleRelevamientoHora'},
+      {
+        data: null,
+        render: function ( data, type, row ) {
+          if (data.DetalleRelevamientoEstado == 1) {
+            return '<span class="text-success ml-1">Activo</span>';
+          }else{
+              return '<span class="text-danger ml-1">Inactivo</span>';
+          }
+      }},
       {data: 'Relevador'},
       {data: 'btn',orderable:false,sercheable:false},
     ],
@@ -63,16 +63,16 @@ $(document).ready( function () {
     },
     responsive: true,
         columnDefs: [
-          { responsivePriority: 1, targets: 13 },
-      //     { responsivePriority: 2, targets: 1 },
-      //     { responsivePriority: 3, targets: 10 },
-      //     { responsivePriority: 4, targets: 3 },
-      //     { responsivePriority: 5, targets: 2 },
-      //     { responsivePriority: 6, targets: 5 },
-      //     { responsivePriority: 7, targets: 8 },
-      //     { responsivePriority: 8, targets: 4 },
-      //     { responsivePriority: 9, targets: 9 },
-      //     { responsivePriority: 10, targets: 6 },
+          { responsivePriority: 1, targets: 0 },
+          { responsivePriority: 2, targets: 13 },
+          { responsivePriority: 3, targets: 2 },
+          { responsivePriority: 4, targets: 3 },
+          { responsivePriority: 5, targets: 4 },
+          { responsivePriority: 6, targets: 5 },
+          { responsivePriority: 7, targets: 6 },
+          { responsivePriority: 8, targets: 7 },
+          { responsivePriority: 9, targets: 1 },
+          { responsivePriority: 10, targets: 11 },
       ],
       // order: [[ 0, "desc" ]],
       // order: [[ 5, "desc" ]]
@@ -128,27 +128,61 @@ $(document).ready( function () {
   $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
   
   /*------Funcion para llenar los campos cuando selecciono una fila -----*/ 
-  $('#tableDetallesRelevamiento tbody').on( 'click', 'button', function () {
-    $("#tituloModal").text("Editar paciente");
-    $("#btnGuardar span").text("Editar");
-    vaciarCampos();
+  $('#tableDetallesRelevamiento tbody').on( 'click', 'button',function () {
     var data = table.row( $(this).parents('tr') ).data();
-    $('#turno').val(data['DetalleRelevamientoTurno']).trigger('change');
-    $('#pacienteId').val(data['PersonaCuil']).trigger('change');
-    $('#camaId').val(data['CamaId']).trigger('change');
-    $('#diagnosticoId').val(data['DetalleRelevamientoDiagnostico']);
-    $('#observacionesId').val(data['DetalleRelevamientoObservaciones']);
-    $('#menu').val(data['MenuId']).trigger('change');
-    $('#tipoPacienteId').val(data['TipoPacienteId']).trigger('change');
-    if(data['DetalleRelevamientoAcompaniante'] == 1){
-      $( "#acompanianteId" ).prop( "checked", true );
+    if($(this).attr('id') == 'editrelevamiento'){
+      $('#modal-body-comidas').addClass('d-none');
+      $('#modal-footer-comidas').addClass('d-none');
+      $('#modal-body').removeClass('d-none');
+      $('#modal-footer').removeClass('d-none');
+      $("#tituloModal").text("Editar paciente");
+      $("#btnGuardar span").text("Editar");
+      vaciarCampos();
+      $('#id').val(data['DetalleRelevamientoId']);
+      $('#turno').val(data['DetalleRelevamientoTurno']).trigger('change');
+      $('#pacienteId').val(data['PersonaCuil']).trigger('change');
+      $('#camaId').val(data['CamaId']).trigger('change');
+      $('#diagnosticoId').val(data['DetalleRelevamientoDiagnostico']);
+      $('#observacionesId').val(data['DetalleRelevamientoObservaciones']);
+      $('#menu').val(data['MenuId']).trigger('change');
+      $('#tipoPacienteId').val(data['TipoPacienteId']).trigger('change');
+      if(data['DetalleRelevamientoAcompaniante'] == 1){
+        $( "#acompanianteId" ).prop( "checked", true );
+      }else{
+        $( "#acompanianteId" ).prop( "checked", false );
+      }
+      if(data['DetalleRelevamientoVajillaDescartable'] == 1){
+        $( "#vajilladescartable" ).prop( "checked", true );
+      }else{
+        $( "#vajilladescartable" ).prop( "checked", false );
+      }
     }else{
-      $( "#acompanianteId" ).prop( "checked", false );
+      $("#tituloModal").text("Comidas del paciente");
+      $('#modal-body').addClass('d-none');
+      $('#modal-footer').addClass('d-none');
+      $('#modal-body-comidas').empty().removeClass('d-none');
+      $('#modal-footer-comidas').removeClass('d-none');
+      $('#modal-body-comidas').append('<ul class="list-group"></ul>');
     }
-    if(data['DetalleRelevamientoVajillaDescartable'] == 1){
-      $( "#vajilladescartable" ).prop( "checked", true );
+    menuId = $("#menu").val();
+    tipopacienteId = $("#tipoPacienteId").val();
+    menuportipopaciente(menuId,tipopacienteId,data['DetalleRelevamientoId']);
+  });
+  //eventos para seleccionar las comidas del menú
+  $('#menu').on("select2:select", function(e) { 
+    $("#tipoPacienteId").val(-1).trigger('change');
+    $('#comidas').empty();
+  });
+  $('#tipoPacienteId').on("select2:select", function(e) { 
+    menuId = $("#menu").val();
+    tipopacienteId = $("#tipoPacienteId").val();
+    if($("#id").val() != 0){
+      detallerelevamientoId = $("#id").val();
     }else{
-      $( "#vajilladescartable" ).prop( "checked", false );
+      detallerelevamientoId = null;
+    }
+    if(menuId != -1){
+      menuportipopaciente(menuId,tipopacienteId,detallerelevamientoId);
     }
   });
 });
@@ -172,6 +206,7 @@ function guardar(e){
         observaciones: $('#observacionesId').val(),
         menu: $('#menu').val(),
         tipopaciente: $('#tipoPacienteId').val(),
+        comidas: $('input[name="comidas[]"]:checked').map(function(){return $(this).val();}).get(),
         acompaniante: $('#acompanianteId').is(':checked'),
         vajilladescartable: $('#vajilladescartable').is(':checked'),
         user: $('#usuarioId').val(),
@@ -210,6 +245,7 @@ function editar(id){
       observaciones: $('#observacionesId').val(),
       menu: $('#menu').val(),
       tipopaciente: $('#tipoPacienteId').val(),
+      comidas: $('input[name="comidas[]"]:checked').map(function(){return $(this).val();}).get(),
       acompaniante: $('#acompanianteId').is(':checked'),
       vajilladescartable: $('#vajilladescartable').is(':checked'),
       user: $('#usuarioId').val(),
@@ -249,7 +285,53 @@ function eliminar(id){
   });
 }
 
+//GET menusportipopaciente
+function menuportipopaciente(menu,tipopaciente,detallerelevamientoId = null){
+  $.ajax({
+    type:"GET",
+    url: "../menuportipopaciente/",
+    data: {
+      "menu": menu,
+      "tipopaciente": tipopaciente
+    },
+    success: function(response) {
+      menuportipopacienteComidas = response.success;
+      if(detallerelevamientoId){
+        $.ajax({
+          type:"GET",
+          url: "../detrelevamientoporcomida/"+detallerelevamientoId,
+          success: function(response) {
+            detalleRelevamientoComidas = response.success;
+            llenarCheckboxComida(menuportipopacienteComidas,detalleRelevamientoComidas);
+          },
+          error:function(){
+            mostrarCartel('Error al eliminar el registro.','alert-danger');
+          }
+        });
+      }else{
+        llenarCheckboxComida(menuportipopacienteComidas,null);
+      }
+    },
+    error:function(){
+      mostrarCartel('Error al eliminar el registro.','alert-danger');
+    }
+  });
+}
 
+//GET comidas del relevamiento
+function getComidasDelRelevamiento(detalleRelevamientoId){
+  $.ajax({
+    type:"GET",
+    url: "../detrelevamientoporcomida/"+detalleRelevamientoId,
+    success: function(response) {
+      comidas = response.success;
+      return comidas;
+    },
+    error:function(){
+      mostrarCartel('Error al eliminar el registro.','alert-danger');
+    }
+  });
+}
 //funciones auxiliares
 function vaciarCampos(){
   $("#turno").val(-1).trigger('change');
@@ -261,10 +343,15 @@ function vaciarCampos(){
   $("#tipoPacienteId").val(-1).trigger('change');
   $('#acompanianteId').prop( "checked", false );
   $('#vajilladescartable').prop( "checked", false );
+  $('#comidas').empty();
   $("#listaErrores").empty();
 }
 function agregar(){
   $("#id").val(0);
+  $('#modal-body-comidas').addClass('d-none');
+  $('#modal-footer-comidas').addClass('d-none');
+  $('#modal-body').removeClass('d-none');
+  $('#modal-footer').removeClass('d-none');
   vaciarCampos();
   $("#tituloModal").text("Agregar paciente");
   $("#btnGuardar span").text("Guardar");
@@ -275,4 +362,33 @@ function mostrarCartel(texto,clase){
     $('#divMensaje').text(texto);
     $('#divMensaje').addClass(clase);  
     $('#divMensaje').fadeOut(4000);
+}
+
+function llenarCheckboxComida(comidasmenuportipopaciente,comidasDelRelevamiento){
+  $('#comidas').empty();
+  if(comidasmenuportipopaciente.length>0){
+    comidasmenuportipopaciente.forEach(comidamenuportipopaciente => {
+      html = `<p><input class="form-check-input" type="checkbox" id="comida${comidamenuportipopaciente.ComidaId}" name="comidas[]" value="${comidamenuportipopaciente.ComidaId}">
+                  <label class="form-check-label" for="comida${comidamenuportipopaciente.ComidaId}">
+                      ${comidamenuportipopaciente.ComidaNombre}
+                  </label></p>`;
+        $('#comidas').append(html);
+      if(comidasDelRelevamiento != null && comidasDelRelevamiento.length>0){
+        console.log(comidasDelRelevamiento);
+        comidasDelRelevamiento.forEach(comidadelrelevamiento => {
+          if(comidamenuportipopaciente.ComidaId == comidadelrelevamiento.ComidaId){
+            $('#comida'+comidadelrelevamiento.ComidaId).attr('checked',true);
+            htmlcomidas = `<li class="list-group-item">${comidadelrelevamiento.ComidaNombre}</li>`
+            $('#modal-body-comidas ul').append(htmlcomidas);
+          }
+        });
+      }
+    });
+    if(comidasDelRelevamiento != null && comidasDelRelevamiento.length<1){
+      $('#modal-body-comidas ul').append('<li class="list-group-item">No existen Comidas.</li>');
+    }
+  }else{
+    $('#comidas').empty().append("<p>No existen comidas</p>");
+  }
+  
 }

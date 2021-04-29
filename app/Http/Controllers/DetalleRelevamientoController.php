@@ -7,12 +7,16 @@ use App\Persona;
 use App\Paciente;
 use App\DetalleRelevamiento;
 use Illuminate\Http\Request;
+use App\DetRelevamientoPorComida;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
 class DetalleRelevamientoController extends Controller
 {
-
+    public function __construct()
+    {
+        date_default_timezone_set('America/Argentina/Salta');
+    }
     public function index(Request $request)//request: relevamientoId
     { 
         /*---Pregunto si es una peticion ajax----*/
@@ -29,7 +33,7 @@ class DetalleRelevamientoController extends Controller
                     ->join('users as u','u.id','dr.UserId')
                     ->join('menu as m','m.MenuId','dr.MenuId')
                     ->where('dr.RelevamientoId',$request->relevamientoId)
-                    ->where('dr.DetalleRelevamientoEstado','!=',-1)
+                    ->where('dr.DetalleRelevamientoEstado',1)
                     // ->whereIn('DetalleRelevamientoId', function ($sub) use ($request) {
                     //     $sub->selectRaw('MAX(DetalleRelevamientoId)')->from('detallerelevamiento')->where('RelevamientoId',$request->relevamientoId)->groupBy('PacienteId')->orderBy('updated_at')->orderBy('DetalleRelevamientoEstado'); // <---- la clave
                     // })
@@ -65,7 +69,41 @@ class DetalleRelevamientoController extends Controller
 
     public function store(Request $request)//request: relevamiento, turno, paciente, cama, diagnostico, observaciones, menu, tipopaciente, acompaniante, vajilladescartable, user
     {
-        dd($request->all());
+        $persona = Persona::where('PersonaCuil',$request->get('paciente'))->where('PersonaEstado',1)->first();
+        $paciente = Paciente::where('PersonaId',$persona->PersonaId)->where('PacienteEstado','!=',-1)->first();
+        $detalleRelevamiento = new DetalleRelevamiento;
+        $detalleRelevamiento->DetalleRelevamientoEstado = 1;
+        $detalleRelevamiento->RelevamientoId = $request->get('relevamiento');
+        $detalleRelevamiento->DetalleRelevamientoTurno = $request->get('turno');
+        $detalleRelevamiento->PacienteId = $paciente->PacienteId;
+        $detalleRelevamiento->CamaId = $request->get('cama');
+        $detalleRelevamiento->DetalleRelevamientoDiagnostico = $request->get('diagnostico');
+        $detalleRelevamiento->DetalleRelevamientoObservaciones = $request->get('observaciones');
+        $detalleRelevamiento->MenuId = $request->get('menu');
+        $detalleRelevamiento->TipoPacienteId = $request->get('tipopaciente');
+        if($request->get('acompaniante') == 'true'){
+            $detalleRelevamiento->DetalleRelevamientoAcompaniante = 1;
+        }else{
+            $detalleRelevamiento->DetalleRelevamientoAcompaniante = 0;
+        }
+        if($request->get('vajilladescartable') == 'true'){
+            $detalleRelevamiento->DetalleRelevamientoVajillaDescartable = 1;
+        }else{
+            $detalleRelevamiento->DetalleRelevamientoVajillaDescartable = 0;
+        }
+        $detalleRelevamiento->UserId = $request->get('user');
+        $resultado = $detalleRelevamiento->save();
+        foreach ($request->get('comidas') as $key => $comidaId) {
+            $detRelevamientoPorComida = new DetRelevamientoPorComida;
+            $detRelevamientoPorComida->DetalleRelevamientoId = $detalleRelevamiento->DetalleRelevamientoId;
+            $detRelevamientoPorComida->ComidaId = $comidaId;
+            $detRelevamientoPorComida->save();
+        }
+        if ($resultado) {
+            return response()->json(['success'=>$detalleRelevamiento]);
+        }else{
+            return response()->json(['success'=>'false']);
+        }
     }
 
     public function show($id)
@@ -76,7 +114,45 @@ class DetalleRelevamientoController extends Controller
 
     public function update(Request $request, $id)//request: relevamiento, turno, paciente, cama, diagnostico, observaciones, menu, tipopaciente, acompaniante, vajilladescartable, user
     {
-        dd($request->all());
+        //actualizo estado del relevamiento que se está queriendo editar para guardarlo como historial del paciente
+        $detalleRelevamiento = DetalleRelevamiento::where('DetalleRelevamientoId',$id)->where('DetalleRelevamientoEstado',1)->first();
+        $detalleRelevamiento->DetalleRelevamientoEstado = 0;
+        $detalleRelevamiento->update();
+        $persona = Persona::where('PersonaCuil',$request->get('paciente'))->where('PersonaEstado',1)->first();
+        $paciente = Paciente::where('PersonaId',$persona->PersonaId)->where('PacienteEstado','!=',-1)->first();
+        $detalleRelevamiento = new DetalleRelevamiento;
+        $detalleRelevamiento->DetalleRelevamientoEstado = 1;
+        $detalleRelevamiento->RelevamientoId = $request->get('relevamiento');
+        $detalleRelevamiento->DetalleRelevamientoTurno = $request->get('turno');
+        $detalleRelevamiento->PacienteId = $paciente->PacienteId;
+        $detalleRelevamiento->CamaId = $request->get('cama');
+        $detalleRelevamiento->DetalleRelevamientoDiagnostico = $request->get('diagnostico');
+        $detalleRelevamiento->DetalleRelevamientoObservaciones = $request->get('observaciones');
+        $detalleRelevamiento->MenuId = $request->get('menu');
+        $detalleRelevamiento->TipoPacienteId = $request->get('tipopaciente');
+        if($request->get('acompaniante') == 'true'){
+            $detalleRelevamiento->DetalleRelevamientoAcompaniante = 1;
+        }else{
+            $detalleRelevamiento->DetalleRelevamientoAcompaniante = 0;
+        }
+        if($request->get('vajilladescartable') == 'true'){
+            $detalleRelevamiento->DetalleRelevamientoVajillaDescartable = 1;
+        }else{
+            $detalleRelevamiento->DetalleRelevamientoVajillaDescartable = 0;
+        }
+        $detalleRelevamiento->UserId = $request->get('user');
+        $resultado = $detalleRelevamiento->save();
+        foreach ($request->get('comidas') as $key => $comidaId) {
+            $detRelevamientoPorComida = new DetRelevamientoPorComida;
+            $detRelevamientoPorComida->DetalleRelevamientoId = $detalleRelevamiento->DetalleRelevamientoId;
+            $detRelevamientoPorComida->ComidaId = $comidaId;
+            $detRelevamientoPorComida->save();
+        }
+        if ($resultado) {
+            return response()->json(['success'=>$detalleRelevamiento]);
+        }else{
+            return response()->json(['success'=>'false']);
+        }
     }
 
     public function destroy($id)

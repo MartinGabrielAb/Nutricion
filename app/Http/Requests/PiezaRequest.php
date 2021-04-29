@@ -75,6 +75,9 @@ class PiezaRequest extends FormRequest
                         ->where(function ($query) use ($request) { 
                             return $query->where('PiezaId','!=',$request->id);
                         })
+                        ->where(function ($query) use ($request) { 
+                            return $query->where('SalaId',$request->salaId);
+                        })
                         ->where(function ($query) { 
                             return $query->where('PiezaEstado', 1);
                         })

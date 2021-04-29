@@ -188,6 +188,16 @@ Route::middleware(['auth'])->group(function(){
 	Route::delete('detallesrelevamiento/{id}','DetalleRelevamientoController@destroy')->name('detallesrelevamiento.destroy')->middleware('permission:detallesrelevamiento.destroy');
 	Route::get('detallesrelevamiento/{id}/edit','DetalleRelevamientoController@edit')->name('detallesrelevamiento.edit')->middleware('permission:detallesrelevamiento.edit');
 });
+//detrelevamientoporcomida
+Route::middleware(['auth'])->group(function(){
+	Route::post('detrelevamientoporcomida','DetRelevamientoPorComidaController@store')->name('detrelevamientoporcomida.store')->middleware('permission:detrelevamientoporcomida.store');
+	Route::get('detrelevamientoporcomida','DetRelevamientoPorComidaController@index')->name('detrelevamientoporcomida.index')->middleware('permission:detrelevamientoporcomida.index');
+	Route::get('detrelevamientoporcomida/create','DetRelevamientoPorComidaController@create')->name('detrelevamientoporcomida.create')->middleware('permission:detrelevamientoporcomida.create');
+	Route::put('detrelevamientoporcomida/{id}','DetRelevamientoPorComidaController@update')->name('detrelevamientoporcomida.update')->middleware('permission:detrelevamientoporcomida.update');
+	Route::get('detrelevamientoporcomida/{id}','DetRelevamientoPorComidaController@show')->name('detrelevamientoporcomida.show')->middleware('permission:detrelevamientoporcomida.show');
+	Route::delete('detrelevamientoporcomida/{id}','DetRelevamientoPorComidaController@destroy')->name('detrelevamientoporcomida.destroy')->middleware('permission:detrelevamientoporcomida.destroy');
+	Route::get('detrelevamientoporcomida/{id}/edit','DetRelevamientoPorComidaController@edit')->name('detrelevamientoporcomida.edit')->middleware('permission:detrelevamientoporcomida.edit');
+});
 //historial
 Route::middleware(['auth'])->group(function(){
 	Route::get('historial/elegirMenu/{idRelevamiento}', 'HistorialController@elegirMenu')->name('historial.elegirMenu')->middleware('permission:historial.elegirMenu');
