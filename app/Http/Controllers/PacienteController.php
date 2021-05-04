@@ -7,7 +7,7 @@ use App\Paciente;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use App\Http\Requests\PacienteRequest;
-use Illuminate\Support\Facades\DB as FacadesDB;
+use Illuminate\Support\Facades\DB;
 
 class PacienteController extends Controller
 {
@@ -16,10 +16,10 @@ class PacienteController extends Controller
         /*---Pregunto si es una peticion ajax----*/
         if($request->ajax()){
             try{
-                $pacientes = FacadesDB::table('paciente as pac')
+                $pacientes = DB::table('paciente as pac')
                     ->join('persona as per','per.PersonaId','=','pac.PersonaId')
-                    ->where('PacienteEstado',1)
-                    ->orwhere('PacienteEstado',0)
+                    ->where('pac.PacienteEstado',1)
+                    ->orwhere('pac.PacienteEstado',0)
                     ->get();
 
                 return DataTables::of($pacientes)
@@ -57,18 +57,38 @@ class PacienteController extends Controller
          /*---Pregunto si es una peticion ajax----*/
         if($request->ajax()){
             try{
-                $detallesrelevamiento = FacadesDB::table('detallerelevamiento as dr')
-                                ->join('relevamiento as r','r.RelevamientoId','=','dr.RelevamientoId')
-                                ->join('tipopaciente as tp','tp.TipoPacienteId','=','dr.TipoPacienteId')
-                                ->join('cama as c','c.CamaId','=','dr.CamaId')
-                                ->join('pieza as p','p.PiezaId','=','c.PiezaId')
-                                ->join('sala as s','s.SalaId','=','p.SalaId')
-                                ->join('users as u','u.id','=','dr.UserId')
-                                ->where('dr.PacienteId',$id)
-                                ->select('r.RelevamientoId',FacadesDB::raw('DATE_FORMAT(r.RelevamientoFecha, "%d/%m/%Y") as RelevamientoFecha'),'r.RelevamientoTurno','tp.TipoPacienteNombre','c.CamaNumero','p.PiezaNombre','s.SalaNombre','u.name','dr.DetalleRelevamientoId','dr.DetalleRelevamientoFechora','dr.DetalleRelevamientoEstado','dr.DetalleRelevamientoAcompaniante','dr.DetalleRelevamientoObservaciones','dr.DetalleRelevamientoDiagnostico')
-                                ->orderBy('dr.created_at')
-                                ->get();
-                return DataTables::of($detallesrelevamiento)
+                $detallesRelevamiento = 
+                    DB::table('detallerelevamiento as dr')
+                    ->join('relevamiento as re','re.RelevamientoId','dr.RelevamientoId')
+                    ->join('paciente as pa','pa.PacienteId','dr.PacienteId')
+                    ->join('persona as pe','pe.PersonaId','pa.PersonaId')
+                    ->join('tipopaciente as tp','tp.TipoPacienteId','dr.TipoPacienteId')
+                    ->join('cama as c','c.CamaId','dr.CamaId')
+                    ->join('pieza as pi','pi.PiezaId','c.PiezaId')
+                    ->join('sala as s','s.SalaId','pi.SalaId')
+                    ->join('users as u','u.id','dr.UserId')
+                    ->join('menu as m','m.MenuId','dr.MenuId')
+                    ->where('dr.PacienteId',$id)
+                    ->where('dr.DetalleRelevamientoEstado','!=',-1)
+                    // ->orwhere('dr.DetalleRelevamientoEstado',0)
+                    ->select(DB::raw('DATE_FORMAT(re.RelevamientoFecha, "%d/%m/%Y") as RelevamientoFecha'),'re.RelevamientoId',
+                            'dr.DetalleRelevamientoId',
+                            'dr.DetalleRelevamientoTurno',
+                            DB::raw('DATE_FORMAT(dr.updated_at, "%H:%i:%s") as DetalleRelevamientoHora'),
+                            'dr.DetalleRelevamientoDiagnostico',
+                            'dr.DetalleRelevamientoAcompaniante',
+                            'dr.DetalleRelevamientoVajillaDescartable',
+                            'dr.DetalleRelevamientoEstado','dr.DetalleRelevamientoObservaciones',
+                            'm.MenuNombre',
+                            'pa.PacienteId','pe.PersonaNombre','pe.PersonaApellido','pe.PersonaCuil',
+                            'tp.TipoPacienteNombre',
+                            'c.CamaNumero','pi.PiezaPseudonimo','s.SalaPseudonimo',
+                            'u.name as Relevador')
+                    ->orderby('dr.DetalleRelevamientoId','desc')
+                    ->get();
+                return DataTables::of($detallesRelevamiento)
+                                ->addColumn('btn','pacientes/actionsShow')
+                                ->rawColumns(['btn'])
                                 ->toJson();
             }catch(Exception $ex){
                 return response()->json([
@@ -76,7 +96,7 @@ class PacienteController extends Controller
                 ], 500);
             }
         }
-        $paciente = FacadesDB::table('paciente as pa')
+        $paciente = DB::table('paciente as pa')
                     ->join('persona as pe','pe.PersonaId','pa.PersonaId')
                     ->where('pa.PacienteId',$id)
                     ->first();

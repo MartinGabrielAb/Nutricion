@@ -37,6 +37,7 @@ function vaciarCampos(){
   $("#nombre").val("");
   $("#unidad").val(0);
   $("#divEquivalencia").hide();
+  $('#listaErrores').empty();
 }
 
 function agregar(){

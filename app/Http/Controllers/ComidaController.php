@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\TipoComida;
-use App\Comida;
-use App\ComidaPorTipoPaciente;
-use App\AlimentoPorComida;
-use App\DetalleMenuTipoPaciente;
 use App\Menu;
+use App\Comida;
 use App\Alimento;
+use App\TipoComida;
 use App\UnidadMedida;
+use App\AlimentoPorComida;
+use Illuminate\Http\Request;
+use App\ComidaPorTipoPaciente;
 
 use Yajra\DataTables\DataTables;
-use DB;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\ComidaRequest;
 
 
@@ -118,19 +117,7 @@ class ComidaController extends Controller
          } 
         $comidasPorTipoPaciente = ComidaPorTipoPaciente::where('ComidaId','=',$comida->ComidaId)->get();
         foreach($comidasPorTipoPaciente as $comidaPorTipoPaciente){
-            $comidaPorTipoPaciente->ComidaId = NULL;
-            $comidaPorTipoPaciente->comidaPorTipoPacienteCostoTotal -= $comida->ComidaCostoTotal;
-            $detallesMenuTipoPaciente= DetalleMenuTipoPaciente::where('DetalleMenuTipoPacienteId','=',$comidaPorTipoPaciente->DetalleMenuTipoPacienteId)->get();
-            foreach($detallesMenuTipoPaciente as $detalleMenuTipoPaciente){
-                $detalleMenuTipoPaciente->DetalleMenuTipoPacienteCostoTotal -= $comida->ComidaCostoTotal;
-                
-                $menu = Menu::findOrFail($detalleMenuTipoPaciente->MenuId);
-                $menu->MenuCostoTotal -= $comida->ComidaCostoTotal; 
-                 
-                $detalleMenuTipoPaciente->update();
-                $menu->update();
-            }
-            $comidaPorTipoPaciente->update();
+            $comidaPorTipoPaciente->delete();
         }
         $resultado = $comida->delete();
         if ($resultado) {

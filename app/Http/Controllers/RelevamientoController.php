@@ -56,7 +56,10 @@ class RelevamientoController extends Controller
 
     public function show($id)
     {
-        $relevamiento = Relevamiento::findOrFail($id);
+        $relevamiento = 
+            Relevamiento::where('RelevamientoId',$id)
+                        ->select('RelevamientoId',DB::raw('DATE_FORMAT(RelevamientoFecha, "%d/%m/%Y") as RelevamientoFecha'))
+                        ->first();
         //datos necesarios para agregar y editar un detalle de relevamiento
         $pacientes = Paciente::select('paciente.PersonaId','paciente.PacienteId','persona.PersonaApellido','persona.PersonaNombre','persona.PersonaCuil')
                 ->join('persona', 'persona.PersonaId', '=', 'paciente.PersonaId')

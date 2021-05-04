@@ -10,7 +10,7 @@ $(document).ready( function () {
       {data:'btn',orderable:false,sercheable:false},
     ],
     "language": { "url": "../JSON/Spanish_dataTables.json"},
-    "order": [[ 1, "desc" ],[2, "desc"]],
+    "order": [[ 0, "desc" ]],
   });
 
   $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
@@ -27,25 +27,6 @@ $(document).ready( function () {
     // $("#menu").val(data['MenuId']).trigger('change');
   });
 
-  //select2
-  // $('#turno').select2({
-  //   width: 'resolve',
-  //   theme: "classic",
-  //   placeholder: {
-  //     id: '-1', 
-  //     text: "Turno",
-  //   },
-  //   allowClear: true,
-  // });
-  // $('#menu').select2({
-  //   width: 'resolve',
-  //   theme: "classic",
-  //   placeholder: {
-  //     id: '-1', 
-  //     text: "Menú",
-  //   },
-  //   allowClear: true,
-  // });
 });
 //POST AJAX
 function guardar(e){
@@ -126,8 +107,6 @@ function eliminar(id){
 //funciones auxiliares
 function vaciarCampos(){
   $("#fecha").val("");
-  // $("#turno").val(-1).trigger('change');
-  // $("#menu").val(-1).trigger('change');
   $("#listaErrores").empty();
 }
 function agregar(){

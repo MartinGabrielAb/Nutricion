@@ -26,20 +26,20 @@
                     <!------Cabecera de la tabla------>
                     <thead>
                         <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Turno</th>
-                        <th scope="col">Paciente</th>
-                        <th scope="col">Menú</th>
-                        <th scope="col">TipoPaciente</th>
-                        <th scope="col">Acompañante</th>
-                        <th scope="col">VD</th>
-                        <th scope="col">S/P/C</th>
-                        <th scope="col">Diagnóstico</th>
-                        <th scope="col">Obs.</th>
-                        <th scope="col">Hora</th>
-                        <th scope="col">Estado</th>
-                        <th scope="col">Relevador</th>
-                        <th scope="col" width="5%">Acciones</th>
+                            <th scope="col">#</th>
+                            <th scope="col">Turno</th>
+                            <th scope="col">Paciente</th>
+                            <th scope="col">Menú</th>
+                            <th scope="col">Regímen</th>
+                            <th scope="col">Acompañante</th>
+                            <th scope="col">VD</th>
+                            <th scope="col">S/P/C</th>
+                            <th scope="col">Diagnóstico</th>
+                            <th scope="col">Obs.</th>
+                            <th scope="col">Hora</th>
+                            <th scope="col">Estado</th>
+                            <th scope="col">Relevador</th>
+                            <th scope="col" width="5%">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>

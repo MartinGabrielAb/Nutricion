@@ -48,7 +48,7 @@
                         <th>Cantidad Total</th>
                         <th>Costo Unitario</th>
 			                  <th>Costo Total</th>
-                        <th width="10%">&nbsp;</th>
+                        <th width="5%">Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -77,7 +77,7 @@
         </div>    
         <div class="modal-body">
           <label for='nombre' id="labelNombre">Nombre</label>
-          <input class="form-control" type="text" id="nombre" name="nombre" required>
+          <input class="form-control" type="text" id="nombre" name="nombre" required autocomplete="off">
           <label for="unidad">Unidad de medida:</label>
           <select class="form-control" id="unidad" name="unidad" required>
             @foreach($unidadesMedida as $unidad)

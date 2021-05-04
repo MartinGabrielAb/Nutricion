@@ -54,30 +54,59 @@ $(document).ready( function () {
     responsive: true,
     "serverSide":true,
     "ajax": "/pacientes/"+id,
-      rowId: "DetalleRelevamientoId",
+    rowId: "DetalleRelevamientoId",
     "columns": [
-      {data: "DetalleRelevamientoId"},
-      {data: "RelevamientoFecha"},
-      {data: "RelevamientoTurno"},
-      {data: "TipoPacienteNombre"},
+      {data: 'DetalleRelevamientoId'},
+      {data: 'RelevamientoFecha'},
+      {data: 'DetalleRelevamientoTurno'},
       {
         data: null,
         render: function ( data, type, row ) {
-          return data.SalaNombre+'/'+data.PiezaNombre+'/'+data.CamaNumero;
+          return data.PersonaApellido+', '+data.PersonaNombre;
+        }},
+      {data: 'MenuNombre'},
+      {data:  'TipoPacienteNombre'},
+      {
+        data: null,
+        render: function ( data, type, row ) {
+          if (data.DetalleRelevamientoAcompaniante == 1) {
+            return '<span class="text-success ml-1">Si</span>';
+        }else{
+            return '<span class="text-danger ml-1">No</span>';
+        }
       }},
       {
         data: null,
         render: function ( data, type, row ) {
-          if(data.DetalleRelevamientoEstado == 1){
-            return '<td><p class="text-success">Activo</p></td>';
+          if (data.DetalleRelevamientoVajillaDescartable == 1) {
+            return '<span class="text-success ml-1">Si</span>';
+        }else{
+            return '<span class="text-danger ml-1">No</span>';
+        }
+      }},
+      {
+        data: null,
+        render: function ( data, type, row ) {
+          return data.SalaPseudonimo+'/'+data.PiezaPseudonimo+'/'+data.CamaNumero;
+      }},
+      {data: 'DetalleRelevamientoDiagnostico'},
+      {data: 'DetalleRelevamientoObservaciones'},
+      {data: 'DetalleRelevamientoHora'},
+      {
+        data: null,
+        render: function ( data, type, row ) {
+          if (data.DetalleRelevamientoEstado == 1) {
+            return '<span class="text-success ml-1">Activo</span>';
           }else{
-            return '<td><p class="text-danger">Inactivo</p></td>';
+              return '<span class="text-danger ml-1">Inactivo</span>';
           }
       }},
-      {data: "DetalleRelevamientoAcompaniante"},
-      {data: "DetalleRelevamientoDiagnostico"},
-      {data: "DetalleRelevamientoObservaciones"},
-      // {data:'btn',orderable:false,sercheable:false},
+      {data: 'Relevador'},
+      {data: 'btn',orderable:false,sercheable:false},
+    ],
+    columnDefs: [
+      { responsivePriority: 1, targets: 0 },
+      { responsivePriority: 2, targets: 14 },
     ],
     "language": { "url": "../JSON/Spanish_dataTables.json"
   }});
@@ -195,6 +224,22 @@ function eliminar(id){
     success: function(response) {
       mostrarCartel('Registro eliminado correctamente.','alert-success');
       var table = $('#tablePacientes').DataTable();
+      table.row('#'+id).remove().draw();
+    },
+    error:function(){
+      mostrarCartel('Error al eliminar el registro.','alert-danger');
+    }
+  });
+}
+
+//PacientesShow: DELETE AJAX
+function eliminarHistorialPaciente(id){
+  $.ajax({
+    type:"DELETE",
+    url: "../detallesrelevamiento/"+id,
+    success: function(response) {
+      mostrarCartel('Registro eliminado correctamente.','alert-success');
+      var table = $('#tableHistorialPaciente').DataTable();
       table.row('#'+id).remove().draw();
     },
     error:function(){
