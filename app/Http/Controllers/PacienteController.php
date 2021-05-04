@@ -42,8 +42,14 @@ class PacienteController extends Controller
     public function store(PacienteRequest $request)
     {
         $paciente = new Paciente();
-        $paciente->PersonaId = $request->personaId;
-        $paciente->PacienteEstado = (int)$request->estado;
+        $datos = $request->all();
+        $paciente->PacienteNombre = $datos['nombre'];
+        $paciente->PacienteApellido = $datos['apellido'];
+        $paciente->PacienteDireccion = $datos['direccion'];
+        $paciente->PacienteCuil = $datos['cuil'];
+        $paciente->PacienteTelefono = $datos['telefono'];
+        $paciente->PacienteEmail = $datos['email'];
+        $paciente->PacienteEstado = $datos['estado'];;
         $resultado = $paciente->save();
         if ($resultado) {
             return response()->json(['success' => $paciente]);
@@ -111,7 +117,13 @@ class PacienteController extends Controller
     {
         $datos = $request->all();
         $paciente = Paciente::FindOrFail($id);
-        $paciente->PacienteEstado = $datos['estado'];
+        $paciente->PacienteNombre = $datos['nombre'];
+        $paciente->PacienteApellido = $datos['apellido'];
+        $paciente->PacienteDireccion = $datos['direccion'];
+        $paciente->PacienteCuil = $datos['cuil'];
+        $paciente->PacienteTelefono = $datos['telefono'];
+        $paciente->PacienteEmail = $datos['email'];
+        $paciente->PacienteEstado = $datos['estado'];;
         $resultado = $paciente->Update();
         if ($resultado) {
             return response()->json(['success' => [$paciente]]);
@@ -126,7 +138,7 @@ class PacienteController extends Controller
         $paciente->PacienteEstado = -1;
         $resultado = $paciente->update();
         if ($resultado) {
-            return response()->json(['success' => ['true']]);
+            return response()->json(['success' => 'true']);
         }else{
             return response()->json(['success'=>'false']);
         }

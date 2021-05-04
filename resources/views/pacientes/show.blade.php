@@ -33,17 +33,15 @@
                     <input hidden type="text" id="pacienteId" value="{{$paciente->PacienteId}}">
                     <dl class="row">
                       <dt class="col-sm-3 col-md-3 col-lg-3 col-xl-2">Paciente</dt>
-                      <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PersonaApellido}}, {{$paciente->PersonaNombre}}</dd>
+                      <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PacienteApellido}}, {{$paciente->PacienteNombre}}</dd>
                       <dt class="col-sm-3 col-md-3 col-lg-3 col-xl-2">Dirección</dt>
-                      <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PersonaDireccion}}</dd>
+                      <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PacienteDireccion}}</dd>
                       <dt class="col-sm-3 col-md-3 col-lg-3 col-xl-2">Email</dt>
-                      <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PersonaEmail}}</dd>
+                      <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PacienteEmail}}</dd>
                       <dt class="col-sm-3 col-md-3 col-lg-3 col-xl-2">Teléfono</dt>
-                      <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PersonaTelefono}}</dd>
+                      <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PacienteTelefono}}</dd>
                       <dt class="col-sm-3 col-md-3 col-lg-3 col-xl-2">DNI</dt>
-                      <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PersonaCuil}}</dd>
-                      <dt class="col-sm-3 col-md-3 col-lg-3 col-xl-2">Sexo</dt>
-                      <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PersonaSexo}}</dd>
+                      <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PacienteCuil}}</dd>
                     </dl>
                   </div>
                 </div>

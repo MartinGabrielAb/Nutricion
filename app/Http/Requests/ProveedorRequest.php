@@ -1,14 +1,13 @@
 <?php
 
 namespace App\Http\Requests;
-use App\Persona;
-use App\Paciente;
+use App\Proveedor;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
-class PersonaRequest extends FormRequest
+class ProveedorRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -30,89 +29,78 @@ class PersonaRequest extends FormRequest
         $metodo = $this->getMethod();
         if ( $metodo == 'POST') {
             return [
-                'apellido' => [
-                    'required',
-                    'min:2',
-                    'max:64',
-                ],
                 'nombre' => [
                     'required',
-                    'min:2',
+                    'min:4',
                     'max:64',
                 ],
-                'dni' => [
+                'cuit' => [
                     'required',
                     'numeric',
                     'digits_between:7,15',
-                    Rule::unique('persona as pe','pe.PersonaCuil')->where(function ($query) use ($request) {
-                        $persona = Persona::where('PersonaCuil',$request->dni)->first();
-                        if($persona){
-                            $paciente = Paciente::where('PersonaId',$persona->PersonaId)->first();
-                            if($paciente){
-                                return $query->where('pe.PersonaEstado',1)->where('pe.PersonaId','!=',$persona->PersonaId);
-                            }
-                        }
-                        return $query->where('pe.PersonaEstado', 1);
+                    Rule::unique('proveedor','ProveedorCuit')->where(function ($query) {
+                        return $query->where('ProveedorEstado', 1)->orwhere('ProveedorEstado',0);
                     })
                 ],
                 'direccion' => [
-                    'nullable',
+                    'required',
                     'min:4',
                     'max:128',
                 ],
                 'email' => [
-                    'nullable',
+                    'required',
                     'email',
                     'max:64',
                 ],
                 'telefono' => [
-                    'nullable',
+                    'required',
                     'min:4',
                     'max:64',
+                ],
+                'estado' => [
+                    'required',
+                    'numeric'
                 ],
             ];
         //validacion para el update
         }
         if ($metodo == "PUT" || $metodo == "PATCH") {
-            $paciente = Paciente::findOrFail($request->id);
-            $persona = Persona::findOrFail($paciente->PersonaId);
             return  [
-                'apellido' => [
-                    'required',
-                    'min:4',
-                    'max:64',
-                ],
                 'nombre' => [
                     'required',
-                    'min:4',
+                    'min:2',
                     'max:64',
                 ],
-                'dni' => [
+                'cuit' => [
                     'required',
                     'numeric',
                     'digits_between:7,15',
-                    Rule::unique('persona','PersonaCuil')
+                    Rule::unique('proveedor','ProveedorCuit')
                         ->where(function ($query) { 
-                            return $query->where('PersonaEstado', 1);
+                            return $query->where('ProveedorEstado', 1)->orwhere('ProveedorEstado', 0);
                         })
-                        ->where(function ($query) use ($persona) { 
-                            return $query->where('PersonaId','!=',$persona->PersonaId);
+                        ->where(function ($query) use ($request) { 
+                            return $query->where('ProveedorId','!=',$request->id);
                         })
                 ],
                 'direccion' => [
-                    'nullable',
+                    'required',
                     'min:4',
                     'max:128',
                 ],
                 'email' => [
-                    'nullable',
+                    'required',
                     'email',
                     'max:64',
                 ],
                 'telefono' => [
-                    'nullable',
+                    'required',
                     'min:4',
                     'max:64',
+                ],
+                'estado' => [
+                    'required',
+                    'numeric'
                 ],
             ];
         }
@@ -121,25 +109,31 @@ class PersonaRequest extends FormRequest
     public function messages()
     {
         return [
-            //apellido
-            'apellido.required' => 'Apellido es requerido.',
-            'apellido.max' => 'Apellido no debe sobrepasar 64 caracteres.',
+
             //nombre
             'nombre.required' => 'Nombre es requerido.',
+            'nombre.min' => 'Nombre debe sobrepasar 2 caracteres.',
             'nombre.max' => 'Nombre no debe sobrepasar 64 caracteres.',
             //DNI
-            'dni.required' => 'DNI es requerido.',
-            'dni.numeric' => 'DNI debe contener sólo números sin puntos.',
-            'dni.digits_between' => 'DNI debe estar entre los 7 y 15 dígitos.',
-            'dni.unique' => 'Ya existe un paciente con ese DNI. Si se da el caso de dos personas con el mismo DNI, use CUIL de la segunda persona.',
+            'cuit.required' => 'Cuit es requerido.',
+            'cuit.numeric' => 'Cuit debe contener sólo números sin puntos.',
+            'cuit.digits_between' => 'Cuit debe estar entre los 7 y 15 dígitos.',
+            'cuit.unique' => 'Ya existe un paciente con ese cuit',
             //direccion
-            'direccion.max' => 'Dirección no debe sobrepasar 128 caracteres.',
+            'direccion.required' => 'Direccion es requerido.',
+            'direccion.min' => 'Direccion debe sobrepasar 4 caracteres.',
+            'direccion.max' => 'Direccion no debe sobrepasar 64 caracteres.',
             //email
+            'email.required' => 'Email es requerido.',
             'email.email' => 'Email debe tener un formato de email válido (ejemplo@ejemplo).',
             'email.max' => 'Email no debe sobrepasar 64 caracteres.',
             //telefono
             'telefono.required' => 'Teléfono es requerido.',
+            'telefono.min' => 'Teléfono debe sobrepasar 2 caracteres.',
             'telefono.max' => 'Teléfono no debe sobrepasar 64 caracteres.',
+            //estado
+            'estado.required' => 'Estado es requerido.',
+
         ];
     }
 }

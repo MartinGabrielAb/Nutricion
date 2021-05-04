@@ -3,19 +3,17 @@ $(document).ready( function () {
   var table = $('#tablePacientes').DataTable({
     responsive: true,
     "serverSide":true,
+    "processing": true,
+
     "ajax": "/pacientes",
       rowId: "PacienteId",
     "columns": [
-      {data: "PacienteId"},
-      {
-        data: null,
-        render: function ( data, type, row ) {
-          return '<a title="Historial del paciente" href=pacientes/'+data.PacienteId+'>'+data.PersonaApellido+', '+data.PersonaNombre+'</a>';
-      }},
-      {data: "PersonaCuil"},
-      {data: "PersonaDireccion"},
-      {data: "PersonaEmail"},
-      {data: "PersonaTelefono"},
+      {data: "PacienteApellido"},
+      {data: "PacienteNombre"},
+      {data: "PacienteCuil"},
+      {data: "PacienteDireccion"},
+      {data: "PacienteEmail"},
+      {data: "PacienteTelefono"},
       {
         data: null,
         render: function ( data, type, row ) {
@@ -40,12 +38,14 @@ $(document).ready( function () {
     vaciarCampos();
     var data = table.row( $(this).parents('tr') ).data();
     $("#id").val(data['PacienteId']);
-    $("#apellido").val(data['PersonaApellido']);
-    $("#nombre").val(data['PersonaNombre']);
-    $("#dni").val(data['PersonaCuil']);
-    $("#direccion").val(data['PersonaDireccion']);
-    $("#email").val(data['PersonaEmail']);
-    $("#telefono").val(data['PersonaTelefono']);
+    $("#apellido").val(data['PacienteApellido']);
+    $("#nombre").val(data['PacienteNombre']);
+    $("#cuil").val(data['PacienteCuil']);
+    $("#direccion").val(data['PacienteDireccion']);
+    $("#email").val(data['PacienteEmail']);
+    $("#telefono").val(data['PacienteTelefono']);
+    $("#estado").val(data['PacienteEstado']);
+
   });
 
   //Pacientes: show
@@ -120,38 +120,23 @@ function guardar(e){
   if(id == 0){
     $.ajax({
       type:'POST',
-      url:"personas",
+      url:"pacientes",
       dataType:"json",
       data:{
         apellido: $('#apellido').val(),
         nombre: $('#nombre').val(),
-        dni: $('#dni').val(),
+        cuil: $('#cuil').val(),
         direccion: $('#direccion').val(),
         email: $('#email').val(),
         telefono: $('#telefono').val(),
+        estado: $('#estado').val(),
+
       },
       success: function(response){
-        $.ajax({
-          type: 'POST',
-          url: "pacientes",
-          dataType: "json",
-          data:{
-            personaId: response.success[0].PersonaId,
-            estado: $('#estado').val(),
-          },
-          success: function(response){
-            $('#modal').modal('hide');
-            mostrarCartel('Registro agregado correctamente.','alert-success');
-            var table = $('#tablePacientes').DataTable();
-            table.draw();
-          },
-          error: function(response){
-            var errors =  response.responseJSON.errors;
-            for (var campo in errors) {
-              $("#listaErrores").append('<li type="square">'+errors[campo]+'</li>');
-            }
-          }
-        });
+        $('#modal').modal('hide');
+        mostrarCartel('Registro agregado correctamente.','alert-success');
+        var table = $('#tablePacientes').DataTable();
+        table.draw();
       },
       error:function(response){
         var errors =  response.responseJSON.errors;
@@ -170,38 +155,24 @@ function editar(id){
   $("#listaErrores").empty();
   $.ajax({
     type:'PUT',
-    url:"personas/"+id,
+    url:"pacientes/"+id,
     dataType:"json",
     data:{
+      id:id,
       apellido: $('#apellido').val(),
       nombre: $('#nombre').val(),
-      dni: $('#dni').val(),
+      cuil: $('#cuil').val(),
       direccion: $('#direccion').val(),
       email: $('#email').val(),
       telefono: $('#telefono').val(),
+      estado: $('#estado').val(),
+
     },
     success: function(response){
-      $.ajax({
-        type: 'PUT',
-        url: "pacientes/"+id,
-        dataType: "json",
-        data:{
-          personaId: response.success.PersonaId,
-          estado: $('#estado').val(),
-        },
-        success: function(response){
-          $('#modal').modal('hide');
-          mostrarCartel('Registro editado correctamente.','alert-success');
-          var table = $('#tablePacientes').DataTable();
-          table.draw();
-        },
-        error: function(response){
-          var errors =  response.responseJSON.errors;
-          for (var campo in errors) {
-            $("#listaErrores").append('<li type="square">'+errors[campo]+'</li>');
-          }
-        }
-      });
+      $('#modal').modal('hide');
+      mostrarCartel('Registro editado correctamente.','alert-success');
+      var table = $('#tablePacientes').DataTable();
+      table.draw();
     },
     error:function(response){
       var errors =  response.responseJSON.errors;
@@ -252,10 +223,11 @@ function eliminarHistorialPaciente(id){
 function vaciarCampos(){
   $("#apellido").val("");
   $("#nombre").val("");
-  $("#dni").val("");
+  $("#cuil").val("");
   $("#direccion").val("");
   $("#email").val("");
   $("#telefono").val("");
+  $("#estado").val("");
   $("#listaErrores").empty();
 }
 
