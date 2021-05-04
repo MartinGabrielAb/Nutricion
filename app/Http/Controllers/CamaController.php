@@ -3,13 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Sala;
-use App\Pieza;
 use App\Cama;
-use Illuminate\Support\Facades\Auth;
-use Exception;
-use Illuminate\Support\Facades\DB as FacadesDB;
-use Yajra\DataTables\DataTables;
 use App\Http\Requests\CamaRequest;
 
 class CamaController extends Controller

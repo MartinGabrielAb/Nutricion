@@ -2,49 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\ComidaPorTipoPaciente;
-use App\TipoComida;
+use App\Menu;
 use App\Comida;
 use App\Alimento;
-use App\DetalleMenuTipoPaciente;
-use App\TipoPaciente;
-use App\Menu;
-use DB;
 use App\Nutriente;
+use App\TipoComida;
+use App\TipoPaciente;
+use Illuminate\Http\Request;
+use App\ComidaPorTipoPaciente;
+use App\DetalleMenuTipoPaciente;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\ComidaPorTipoPacienteRequest;
 
 class ComidaPorTipoPacienteController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
-    {
-        //
-    }
+    { }
 
     public function create()
-    {
-    }
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-   
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    { }
+
     public function store(ComidaPorTipoPacienteRequest $request)
     {
         $nuevo =new ComidaPorTipoPaciente();
@@ -58,12 +35,6 @@ class ComidaPorTipoPacienteController extends Controller
         }  
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         $detalles = ComidaPorTipoPaciente::where('DetalleMenuTipoPacienteId',$id)->get();
@@ -100,13 +71,6 @@ class ComidaPorTipoPacienteController extends Controller
             return view('menues.comidasporpaciente', compact('detalles','nombresNutriente','valoresTotales'));
     }
 
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {   
         
@@ -175,12 +139,6 @@ class ComidaPorTipoPacienteController extends Controller
 
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
 
@@ -203,8 +161,5 @@ class ComidaPorTipoPacienteController extends Controller
         }else{
             return response()->json(['success'=>'false']);
         }
-
     }
-
-
 }

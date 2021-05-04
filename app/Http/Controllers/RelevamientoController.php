@@ -61,15 +61,17 @@ class RelevamientoController extends Controller
                         ->select('RelevamientoId',DB::raw('DATE_FORMAT(RelevamientoFecha, "%d/%m/%Y") as RelevamientoFecha'))
                         ->first();
         //datos necesarios para agregar y editar un detalle de relevamiento
-        $pacientes = Paciente::select('paciente.PersonaId','paciente.PacienteId','persona.PersonaApellido','persona.PersonaNombre','persona.PersonaCuil')
-                ->join('persona', 'persona.PersonaId', '=', 'paciente.PersonaId')
-                ->get();
+        $pacientes = Paciente::where('PacienteEstado','!=',-1)
+                            ->select('PacienteId','PacienteApellido','PacienteNombre','PacienteCuil')
+                            ->get();
         $salasPiezasCamas = Sala::join('pieza','pieza.SalaId','sala.SalaId')
-                                    ->join('cama','cama.PiezaId','pieza.PiezaId')
-                                    ->orderby('SalaNombre','desc')
-                                    ->orderby('pieza.PiezaNombre','asc')
-                                    ->orderby('cama.CamaNumero','asc')
-                                    ->get();
+                                ->join('cama','cama.PiezaId','pieza.PiezaId')
+                                ->where('SalaEstado','1')
+                                ->where('PiezEstado','1')
+                                ->where('CamaEstado','1')
+                                ->orderby('SalaNombre','desc')
+                                ->orderby('pieza.PiezaNombre','asc')
+                                ->orderby('cama.CamaNumero','asc');
         $tiposPaciente = TipoPaciente::all();
         $menus = Menu::where('MenuEstado',1)->get();
         return view('relevamientos.show',compact('relevamiento','pacientes','salasPiezasCamas','tiposPaciente','menus'));

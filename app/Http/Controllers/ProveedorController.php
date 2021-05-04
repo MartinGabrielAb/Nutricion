@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Exception;
 use App\Proveedor;
-use App\Http\Requests\ProveedorRequest;
-use DB;
+use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\DB;
+use App\Http\Requests\ProveedorRequest;
 
 class ProveedorController extends Controller
 {
-
-
     public function index(Request $request)
     {
 
@@ -32,7 +31,6 @@ class ProveedorController extends Controller
                 ], 500);}
         }
         return view('proveedores.principal');
-
     }
 
     public function create()

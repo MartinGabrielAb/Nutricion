@@ -12,7 +12,6 @@ use App\Http\Requests\UsuarioRequest;
 
 class UsuarioController extends Controller
 {
-
     public function index(Request $request)
     {
         if($request->ajax()){
@@ -74,7 +73,7 @@ class UsuarioController extends Controller
     {  }
 
     public function edit($id)
-    {    }
+    {   }
 
     public function update(UsuarioRequest $data, $id)
     {
@@ -107,12 +106,6 @@ class UsuarioController extends Controller
         
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $usuario = User::FindOrFail($id);

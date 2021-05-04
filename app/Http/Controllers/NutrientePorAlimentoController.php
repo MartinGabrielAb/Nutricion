@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Alimento;
 use Illuminate\Http\Request;
 use App\NutrientePorAlimento;
-use App\Alimento;
-use DB;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\DB;
 
 class NutrientePorAlimentoController extends Controller
 {
@@ -67,24 +67,9 @@ class NutrientePorAlimentoController extends Controller
         return view('nutrientesporalimento.principal',compact('alimento','nutrientesPorAlimento','nutrientes'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
-    {
-        //
-    }
+    { }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         $nutrientePorAlimento = NutrientePorAlimento::findOrFail($id);
@@ -99,12 +84,6 @@ class NutrientePorAlimentoController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $nutrientePorAlimento = NutrientePorAlimento::findOrFail($id);

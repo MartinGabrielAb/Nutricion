@@ -16,12 +16,7 @@ class PacienteController extends Controller
         /*---Pregunto si es una peticion ajax----*/
         if($request->ajax()){
             try{
-                $pacientes = DB::table('paciente as pac')
-                    ->join('persona as per','per.PersonaId','=','pac.PersonaId')
-                    ->where('pac.PacienteEstado',1)
-                    ->orwhere('pac.PacienteEstado',0)
-                    ->get();
-
+                $pacientes = DB::table('paciente as pac')->where('PacienteEstado','!=',-1)->get();
                 return DataTables::of($pacientes)
                                 ->addColumn('btn','pacientes/actions')
                                 ->rawColumns(['btn'])
@@ -67,7 +62,6 @@ class PacienteController extends Controller
                     DB::table('detallerelevamiento as dr')
                     ->join('relevamiento as re','re.RelevamientoId','dr.RelevamientoId')
                     ->join('paciente as pa','pa.PacienteId','dr.PacienteId')
-                    ->join('persona as pe','pe.PersonaId','pa.PersonaId')
                     ->join('tipopaciente as tp','tp.TipoPacienteId','dr.TipoPacienteId')
                     ->join('cama as c','c.CamaId','dr.CamaId')
                     ->join('pieza as pi','pi.PiezaId','c.PiezaId')
@@ -86,7 +80,7 @@ class PacienteController extends Controller
                             'dr.DetalleRelevamientoVajillaDescartable',
                             'dr.DetalleRelevamientoEstado','dr.DetalleRelevamientoObservaciones',
                             'm.MenuNombre',
-                            'pa.PacienteId','pe.PersonaNombre','pe.PersonaApellido','pe.PersonaCuil',
+                            'pa.PacienteId','pa.PacienteNombre','pa.PacienteApellido','pa.PacienteCuil',
                             'tp.TipoPacienteNombre',
                             'c.CamaNumero','pi.PiezaPseudonimo','s.SalaPseudonimo',
                             'u.name as Relevador')
@@ -102,10 +96,7 @@ class PacienteController extends Controller
                 ], 500);
             }
         }
-        $paciente = DB::table('paciente as pa')
-                    ->join('persona as pe','pe.PersonaId','pa.PersonaId')
-                    ->where('pa.PacienteId',$id)
-                    ->first();
+        $paciente = DB::table('paciente as pa')->where('pa.PacienteId',$id)->first();
         return view('pacientes.show',compact('paciente'));
     }
 

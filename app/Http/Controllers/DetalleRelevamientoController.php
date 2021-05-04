@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Exception;
-use App\Persona;
 use App\Paciente;
 use App\DetalleRelevamiento;
 use Illuminate\Http\Request;
@@ -25,7 +24,6 @@ class DetalleRelevamientoController extends Controller
                 $detallesRelevamiento = 
                     DB::table('detallerelevamiento as dr')
                     ->join('paciente as pa','pa.PacienteId','dr.PacienteId')
-                    ->join('persona as pe','pe.PersonaId','pa.PersonaId')
                     ->join('tipopaciente as tp','tp.TipoPacienteId','dr.TipoPacienteId')
                     ->join('cama as c','c.CamaId','dr.CamaId')
                     ->join('pieza as pi','pi.PiezaId','c.PiezaId')
@@ -45,7 +43,7 @@ class DetalleRelevamientoController extends Controller
                             'dr.DetalleRelevamientoVajillaDescartable',
                             'dr.DetalleRelevamientoEstado','dr.DetalleRelevamientoObservaciones',
                             'm.MenuNombre','m.MenuId',
-                            'pa.PacienteId','pe.PersonaNombre','pe.PersonaApellido','pe.PersonaCuil',
+                            'pa.PacienteId','pa.PacienteNombre','pa.PacienteApellido','pa.PacienteCuil',
                             'tp.TipoPacienteNombre','tp.TipoPacienteId',
                             'c.CamaNumero','pi.PiezaPseudonimo','s.SalaPseudonimo','c.CamaId',
                             'u.name as Relevador','u.id as UserId')
@@ -69,8 +67,7 @@ class DetalleRelevamientoController extends Controller
 
     public function store(Request $request)//request: relevamiento, turno, paciente, cama, diagnostico, observaciones, menu, tipopaciente, acompaniante, vajilladescartable, user
     {
-        $persona = Persona::where('PersonaCuil',$request->get('paciente'))->where('PersonaEstado',1)->first();
-        $paciente = Paciente::where('PersonaId',$persona->PersonaId)->where('PacienteEstado','!=',-1)->first();
+        $paciente = Paciente::where('PacienteCuil',$request->get('paciente'))->where('PacienteEstado','!=',-1)->first();
         $detalleRelevamiento = new DetalleRelevamiento;
         $detalleRelevamiento->DetalleRelevamientoEstado = 1;
         $detalleRelevamiento->RelevamientoId = $request->get('relevamiento');
@@ -118,8 +115,7 @@ class DetalleRelevamientoController extends Controller
         $detalleRelevamiento = DetalleRelevamiento::where('DetalleRelevamientoId',$id)->where('DetalleRelevamientoEstado',1)->first();
         $detalleRelevamiento->DetalleRelevamientoEstado = 0;
         $detalleRelevamiento->update();
-        $persona = Persona::where('PersonaCuil',$request->get('paciente'))->where('PersonaEstado',1)->first();
-        $paciente = Paciente::where('PersonaId',$persona->PersonaId)->where('PacienteEstado','!=',-1)->first();
+        $paciente = Paciente::where('PacienteCuil',$request->get('paciente'))->where('PacienteEstado','!=',-1)->first();
         $detalleRelevamiento = new DetalleRelevamiento;
         $detalleRelevamiento->DetalleRelevamientoEstado = 1;
         $detalleRelevamiento->RelevamientoId = $request->get('relevamiento');

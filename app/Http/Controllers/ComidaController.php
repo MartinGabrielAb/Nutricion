@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Menu;
 use App\Comida;
 use App\Alimento;
-use App\TipoComida;
 use App\UnidadMedida;
 use App\AlimentoPorComida;
 use Illuminate\Http\Request;
@@ -36,10 +34,7 @@ class ComidaController extends Controller
     }
 
     public function create()
-    {
-        //
-    }
-
+    { }
     
     public function store(ComidaRequest $request)
     {

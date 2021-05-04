@@ -2,29 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Historial;
-use App\Relevamiento;
-use App\DetalleRelevamiento;
-use App\HistorialTipoPaciente;
-use App\TipoPaciente;
-use App\DetalleMenuTipoPaciente;
-use App\ComidaPorTipoPaciente;
 use App\Menu;
-use App\TipoComida;
-use App\Alimento;
-use App\HistorialComidaPorTipoPaciente;
-use App\AlimentoPorComida;
-use App\HistorialAlimentoPorComida;
-use App\UnidadMedida;
 use App\Comida;
-use DB;
+use App\Alimento;
+use App\Historial;
+use App\TipoComida;
+use App\Relevamiento;
+use App\TipoPaciente;
+use App\UnidadMedida;
+use App\AlimentoPorComida;
+use App\DetalleRelevamiento;
+use Illuminate\Http\Request;
+use App\ComidaPorTipoPaciente;
+use App\HistorialTipoPaciente;
+use App\DetalleMenuTipoPaciente;
+use Illuminate\Support\Facades\DB;
+use App\HistorialAlimentoPorComida;
+use App\HistorialComidaPorTipoPaciente;
 class HistorialController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
     public function index(Request $request)
     {

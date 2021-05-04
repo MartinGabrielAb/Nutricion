@@ -82,8 +82,6 @@ class MenuPorTipoPacienteController extends Controller
         return view('comidaportipopaciente.principal',compact('menu','tiposcomida'));
     }
 
-
-
     public function destroy($id)
     {
         $detalleMenuTipoPaciente = DetalleMenuTipoPaciente::FindOrFail($id);

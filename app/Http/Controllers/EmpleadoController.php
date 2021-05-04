@@ -6,8 +6,8 @@ use Exception;
 use App\Empleado;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\EmpleadoRequest;
-use DB;
 
 class EmpleadoController extends Controller
 {
@@ -58,8 +58,7 @@ class EmpleadoController extends Controller
     }
 
     public function show(Request $request,$id)
-    {
-    }
+    { }
 
 
     public function edit($id)

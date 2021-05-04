@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Exception;
 use App\Alimento;
-use App\AlimentoPorProveedor;
-use App\UnidadMedida;
 use App\Proveedor;
+use App\UnidadMedida;
+use Illuminate\Http\Request;
+use App\AlimentoPorProveedor;
 use App\NutrientePorAlimento;
 use Yajra\DataTables\DataTables;
-use DB;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\AlimentoRequest;
 
 class AlimentoController extends Controller

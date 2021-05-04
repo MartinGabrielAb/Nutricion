@@ -2,18 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Menu;
-use App\Comida;
-use App\TipoComida;
-use App\Nutriente;
-use App\TipoPaciente;
-use App\DetalleMenuTipoPaciente;
+use Illuminate\Http\Request;
 use App\ComidaPorTipoPaciente;
-use Illuminate\Support\Facades\Auth;
+use App\DetalleMenuTipoPaciente;
 use Yajra\DataTables\DataTables;
 use App\Http\Requests\MenuRequest;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class MenuController extends Controller
 {
@@ -46,12 +41,6 @@ class MenuController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show(Request $request,$id)
     {
         if($request->ajax()){
@@ -70,7 +59,6 @@ class MenuController extends Controller
                 ->get();
         return view('detallemenutipopaciente.principal',compact('menu','tipospaciente'));
     }
-
 
     public function update(MenuRequest $request, $id)
     {
