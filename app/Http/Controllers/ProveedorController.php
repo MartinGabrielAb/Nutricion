@@ -19,8 +19,7 @@ class ProveedorController extends Controller
             try{
                 $proveedores = DB::table('proveedor as p')
                     ->where('ProveedorEstado',1)
-                    ->orwhere('ProveedorEstado',0)
-                    ->get();
+                    ->orwhere('ProveedorEstado',0);
                 return DataTables::of($proveedores)
                                 ->addColumn('btn','proveedores/actions')
                                 ->rawColumns(['btn'])

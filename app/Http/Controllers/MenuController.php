@@ -16,8 +16,7 @@ class MenuController extends Controller
     public function index(Request $request)
     {   
         if($request->ajax()){
-            $menues = DB::table('menu')->where('MenuEstado',1)
-								->get();
+            $menues = DB::table('menu')->where('MenuEstado',1);
             return DataTables::of($menues)			
                                 ->addColumn('btn','menues/actions')
                                 ->rawColumns(['btn'])

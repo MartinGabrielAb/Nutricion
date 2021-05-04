@@ -47,8 +47,7 @@ class DetalleRelevamientoController extends Controller
                             'tp.TipoPacienteNombre','tp.TipoPacienteId',
                             'c.CamaNumero','pi.PiezaPseudonimo','s.SalaPseudonimo','c.CamaId',
                             'u.name as Relevador','u.id as UserId')
-                    ->orderby('dr.DetalleRelevamientoId','desc')
-                    ->get();
+                    ->orderby('dr.DetalleRelevamientoId','desc');
                 return DataTables::
                     of($detallesRelevamiento)
                     ->addColumn('btn','detallesrelevamiento/actions')

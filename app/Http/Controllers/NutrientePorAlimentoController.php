@@ -53,8 +53,7 @@ class NutrientePorAlimentoController extends Controller
                                     ->join('alimento as a','a.AlimentoId','npa.AlimentoId')
                                     ->join('unidadmedida as u','u.UnidadMedidaId','n.UnidadMedidaId')
                                     ->orderBy('n.NutrienteId','asc')
-                                    ->where('npa.AlimentoId',$id)
-                                    ->get();
+                                    ->where('npa.AlimentoId',$id);
         if($request->ajax()){
              return DataTables::of($nutrientesPorAlimento)
                                 ->toJson();

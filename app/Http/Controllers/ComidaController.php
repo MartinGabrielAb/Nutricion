@@ -60,8 +60,7 @@ class ComidaController extends Controller
 								->join('alimento as a','a.AlimentoId','apc.AlimentoId')
 								->join('unidadmedida as um','um.UnidadMedidaId','apc.UnidadMedidaId')
 								->where('apc.ComidaId',$id)
-								->where('apc.AlimentoPorComidaEstado',1)
-								->get();
+								->where('apc.AlimentoPorComidaEstado',1);
 	        return DataTables::of($alimentosPorComida)
 						->addColumn('btn','alimentosporcomida/actions')
 						->rawColumns(['AlimentoPorComidaEstado','btn'])

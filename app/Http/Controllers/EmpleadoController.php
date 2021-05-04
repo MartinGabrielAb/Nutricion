@@ -18,8 +18,7 @@ class EmpleadoController extends Controller
             try{
                 $empleados = DB::table('empleado as e')
                     ->where('EmpleadoEstado',1)
-                    ->orwhere('EmpleadoEstado',0)
-                    ->get();
+                    ->orwhere('EmpleadoEstado',0);
 
                 return DataTables::of($empleados)
                                 ->addColumn('btn','empleados/actions')

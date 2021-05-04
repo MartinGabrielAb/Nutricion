@@ -22,7 +22,7 @@ class AlimentoController extends Controller
         /*---Pregunto si es una peticion ajax----*/
         if($request->ajax()){
             try{
-                $alimentos = DB::table('alimento')->where('AlimentoEstado',1)->get();
+                $alimentos = DB::table('alimento')->where('AlimentoEstado',1);
 	            return DataTables::of($alimentos)
 							->addColumn('AlimentoCantidadTotal',function($alimento){
 								$unidadMedida = DB::table('unidadmedida')->where('UnidadMedidaId',$alimento->UnidadMedidaId)->first();

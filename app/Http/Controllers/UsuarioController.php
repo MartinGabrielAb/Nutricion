@@ -16,7 +16,7 @@ class UsuarioController extends Controller
     {
         if($request->ajax()){
             try{
-                $usuarios = DB::table('users')->get();
+                $usuarios = DB::table('users');
                 return DataTables::of($usuarios)
                     
                             ->addColumn('roles',function($usuario){

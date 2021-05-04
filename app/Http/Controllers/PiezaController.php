@@ -38,8 +38,7 @@ class PiezaController extends Controller
         if($request->ajax()){
             try{
                 $camas = FacadesDB::table('cama')
-                                ->where('PiezaId', $id)
-                                ->get();
+                                ->where('PiezaId', $id);
                 return DataTables::of($camas)
                             ->addColumn('CamaEstado',function($cama){
                                 if ($cama->CamaEstado == 1) {

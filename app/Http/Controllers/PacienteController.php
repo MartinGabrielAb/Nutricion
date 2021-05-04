@@ -16,7 +16,7 @@ class PacienteController extends Controller
         /*---Pregunto si es una peticion ajax----*/
         if($request->ajax()){
             try{
-                $pacientes = DB::table('paciente as pac')->where('PacienteEstado','!=',-1)->get();
+                $pacientes = DB::table('paciente')->where('PacienteEstado','!=',-1);
                 return DataTables::of($pacientes)
                                 ->addColumn('btn','pacientes/actions')
                                 ->rawColumns(['btn'])

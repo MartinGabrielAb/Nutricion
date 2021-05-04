@@ -19,7 +19,7 @@ class SalaController extends Controller
         /*---Pregunto si es una peticion ajax----*/
         if($request->ajax()){
             try{
-                $salas = FacadesDB::table('sala')->where('SalaEstado',1)->get();
+                $salas = FacadesDB::table('sala')->where('SalaEstado',1);
                 return DataTables::of($salas)
                             ->addColumn('btn','salas/actions')
                             ->rawColumns(['btn'])
@@ -57,8 +57,7 @@ class SalaController extends Controller
                 try{
                     $piezas = FacadesDB::table('pieza')
                                     ->where('SalaId', $id)
-                                    ->where('PiezaEstado',1)
-                                    ->get();
+                                    ->where('PiezaEstado',1);
                     return DataTables::of($piezas)
                                 ->addColumn('btn','piezas/actions')
                                 ->rawColumns(['btn'])

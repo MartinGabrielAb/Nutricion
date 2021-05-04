@@ -64,8 +64,7 @@ class MenuPorTipoPacienteController extends Controller
             $comidas = DB::table('comidaportipopaciente as c')
                                 ->join('comida as com','com.ComidaId','c.ComidaId')
                                 ->join('tipocomida as tc','tc.TipoComidaId','com.TipoComidaId')
-								->where('DetalleMenuTipoPacienteId',$id)
-                                ->get();
+								->where('DetalleMenuTipoPacienteId',$id);
             return DataTables::of($comidas)			
                                 ->addColumn('btn','comidaportipopaciente/actions')
                                 ->rawColumns(['btn'])
