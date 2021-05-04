@@ -8,5 +8,6 @@ class Empleado extends Model
 	protected $table = 'empleado';
 	protected $primaryKey = 'EmpleadoId';
 	public $timestamps = false;
-	protected $filliable=['EmpleadoEstado','PersonaId'];
+	protected $filliable=['EmpleadoId','EmpleadoNombre','EmpleadoApellido','EmpleadoDireccion','EmpleadoEmail','EmpleadoTelefono','EmpleadoCuil','EmpleadoEstado'];
+
 }

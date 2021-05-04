@@ -36,7 +36,7 @@
                   </div>
                   <div class="col">
                       <p class="text-right">
-                        <button type="button" class="btn btn-sm btn-default" id="btnAgregar" onClick="agregar()" data-toggle="modal"  data-target="#modal">
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnAgregar" onClick="agregar()" data-toggle="modal"  data-target="#modal">
                           Agregar paciente
                         </button>
                       </p>	
@@ -49,9 +49,9 @@
                       <!------Cabecera de la tabla------>
                       <thead>
                         <tr>
-                          <th scope="col">#</th>
-                          <th scope="col">Paciente</th>
-                          <th scope="col">DNI</th>
+                          <th scope="col">Apellido</th>
+                          <th scope="col">Nombre</th>
+                          <th scope="col">Cuil</th>
                           <th scope="col">Direccion</th>
                           <th scope="col">Email</th>
                           <th scope="col">Teléfono</th>
@@ -91,15 +91,15 @@
           <div class="modal-body">
             <input type="hidden" id="id" name="id">
             <label for='apellido' id="labelApellido">Apellido</label>
-            <input class="form-control" type="text" id="apellido" name="apellido" required minlength="4" maxlength="64">
+            <input class="form-control" type="text" id="apellido" name="apellido" required minlength="2" maxlength="64">
             <label for='nombre' id="labelNombre">Nombre</label>
-            <input class="form-control" type="text" id="nombre" name="nombre" required minlength="4" maxlength="64">
-            <label for='dni' id="labelDni">DNI</label>
-            <input class="form-control" type="number" id="dni" name="dni" required minlength="7" maxlength="15">
+            <input class="form-control" type="text" id="nombre" name="nombre" required minlength="2" maxlength="64">
+            <label for='cuil' id="labelCuil">Cuil</label>
+            <input class="form-control" type="number" id="cuil" name="cuil" required minlength="7" maxlength="15">
             <label for='direccion' id="labelDireccion">Dirección</label>
-            <input class="form-control" type="text" id="direccion" name="direccion" minlength="4" maxlength="128">
+            <input class="form-control" type="text" id="direccion" name="direccion" minlength="4" maxlength="64">
             <label for='email' id="labelEmail">Email</label>
-            <input class="form-control" type="text" id="email" name="email" minlength="4" maxlength="64">
+            <input class="form-control" type="email" id="email" name="email" minlength="4" maxlength="64">
             <label for='telefono' id="labelTelefono">Teléfono</label>
             <input class="form-control" type="text" id="telefono" name="telefono" minlength="4" maxlength="64">
             <label for='estado' id="labelEstado">Estado</label>

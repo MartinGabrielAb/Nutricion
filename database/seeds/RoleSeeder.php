@@ -51,6 +51,14 @@ class RoleSeeder extends Seeder
         $permission = Permission::create(['name' => 'pacientes.show'])->syncRoles(['Admin']);
         $permission = Permission::create(['name' => 'pacientes.destroy'])->syncRoles(['Admin']);
         $permission = Permission::create(['name' => 'pacientes.edit'])->syncRoles(['Admin']);
+        //empleados
+        $permission = Permission::create(['name' => 'empleados.store'])->syncRoles(['Admin']);
+        $permission = Permission::create(['name' => 'empleados.index'])->syncRoles(['Admin']);
+        $permission = Permission::create(['name' => 'empleados.create'])->syncRoles(['Admin']);
+        $permission = Permission::create(['name' => 'empleados.update'])->syncRoles(['Admin']);
+        $permission = Permission::create(['name' => 'empleados.show'])->syncRoles(['Admin']);
+        $permission = Permission::create(['name' => 'empleados.destroy'])->syncRoles(['Admin']);
+        $permission = Permission::create(['name' => 'empleados.edit'])->syncRoles(['Admin']);
         //piezas
         $permission = Permission::create(['name' => 'piezas.store'])->syncRoles(['Admin']);
         $permission = Permission::create(['name' => 'piezas.index'])->syncRoles(['Admin']);

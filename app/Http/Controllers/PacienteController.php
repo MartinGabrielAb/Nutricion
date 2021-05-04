@@ -7,7 +7,7 @@ use App\Paciente;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use App\Http\Requests\PacienteRequest;
-use Illuminate\Support\Facades\DB as FacadesDB;
+use DB ;
 
 class PacienteController extends Controller
 {
@@ -16,8 +16,7 @@ class PacienteController extends Controller
         /*---Pregunto si es una peticion ajax----*/
         if($request->ajax()){
             try{
-                $pacientes = FacadesDB::table('paciente as pac')
-                    ->join('persona as per','per.PersonaId','=','pac.PersonaId')
+                $pacientes = DB::table('paciente')
                     ->where('PacienteEstado',1)
                     ->orwhere('PacienteEstado',0)
                     ->get();
@@ -42,8 +41,14 @@ class PacienteController extends Controller
     public function store(PacienteRequest $request)
     {
         $paciente = new Paciente();
-        $paciente->PersonaId = $request->personaId;
-        $paciente->PacienteEstado = (int)$request->estado;
+        $datos = $request->all();
+        $paciente->PacienteNombre = $datos['nombre'];
+        $paciente->PacienteApellido = $datos['apellido'];
+        $paciente->PacienteDireccion = $datos['direccion'];
+        $paciente->PacienteCuil = $datos['cuil'];
+        $paciente->PacienteTelefono = $datos['telefono'];
+        $paciente->PacienteEmail = $datos['email'];
+        $paciente->PacienteEstado = $datos['estado'];;
         $resultado = $paciente->save();
         if ($resultado) {
             return response()->json(['success' => $paciente]);
@@ -57,7 +62,7 @@ class PacienteController extends Controller
          /*---Pregunto si es una peticion ajax----*/
         if($request->ajax()){
             try{
-                $detallesrelevamiento = FacadesDB::table('detallerelevamiento as dr')
+                $detallesrelevamiento = DB::table('detallerelevamiento as dr')
                                 ->join('relevamiento as r','r.RelevamientoId','=','dr.RelevamientoId')
                                 ->join('tipopaciente as tp','tp.TipoPacienteId','=','dr.TipoPacienteId')
                                 ->join('cama as c','c.CamaId','=','dr.CamaId')
@@ -65,7 +70,7 @@ class PacienteController extends Controller
                                 ->join('sala as s','s.SalaId','=','p.SalaId')
                                 ->join('users as u','u.id','=','dr.UserId')
                                 ->where('dr.PacienteId',$id)
-                                ->select('r.RelevamientoId',FacadesDB::raw('DATE_FORMAT(r.RelevamientoFecha, "%d/%m/%Y") as RelevamientoFecha'),'r.RelevamientoTurno','tp.TipoPacienteNombre','c.CamaNumero','p.PiezaNombre','s.SalaNombre','u.name','dr.DetalleRelevamientoId','dr.DetalleRelevamientoFechora','dr.DetalleRelevamientoEstado','dr.DetalleRelevamientoAcompaniante','dr.DetalleRelevamientoObservaciones','dr.DetalleRelevamientoDiagnostico')
+                                ->select('r.RelevamientoId',DB::raw('DATE_FORMAT(r.RelevamientoFecha, "%d/%m/%Y") as RelevamientoFecha'),'r.RelevamientoTurno','tp.TipoPacienteNombre','c.CamaNumero','p.PiezaNombre','s.SalaNombre','u.name','dr.DetalleRelevamientoId','dr.DetalleRelevamientoFechora','dr.DetalleRelevamientoEstado','dr.DetalleRelevamientoAcompaniante','dr.DetalleRelevamientoObservaciones','dr.DetalleRelevamientoDiagnostico')
                                 ->orderBy('dr.created_at')
                                 ->get();
                 return DataTables::of($detallesrelevamiento)
@@ -76,8 +81,7 @@ class PacienteController extends Controller
                 ], 500);
             }
         }
-        $paciente = FacadesDB::table('paciente as pa')
-                    ->join('persona as pe','pe.PersonaId','pa.PersonaId')
+        $paciente = DB::table('paciente as pa')
                     ->where('pa.PacienteId',$id)
                     ->first();
         return view('pacientes.show',compact('paciente'));
@@ -91,7 +95,13 @@ class PacienteController extends Controller
     {
         $datos = $request->all();
         $paciente = Paciente::FindOrFail($id);
-        $paciente->PacienteEstado = $datos['estado'];
+        $paciente->PacienteNombre = $datos['nombre'];
+        $paciente->PacienteApellido = $datos['apellido'];
+        $paciente->PacienteDireccion = $datos['direccion'];
+        $paciente->PacienteCuil = $datos['cuil'];
+        $paciente->PacienteTelefono = $datos['telefono'];
+        $paciente->PacienteEmail = $datos['email'];
+        $paciente->PacienteEstado = $datos['estado'];;
         $resultado = $paciente->Update();
         if ($resultado) {
             return response()->json(['success' => [$paciente]]);
@@ -106,7 +116,7 @@ class PacienteController extends Controller
         $paciente->PacienteEstado = -1;
         $resultado = $paciente->update();
         if ($resultado) {
-            return response()->json(['success' => ['true']]);
+            return response()->json(['success' => 'true']);
         }else{
             return response()->json(['success'=>'false']);
         }

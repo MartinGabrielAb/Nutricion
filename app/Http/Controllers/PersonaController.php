@@ -10,7 +10,23 @@ use App\Http\Requests\PersonaRequest;
 class PersonaController extends Controller
 {
     public function index()
-    { }
+    { 
+         /*---Pregunto si es una peticion ajax----*/
+         if($request->ajax()){
+            try{
+                $personas = FacadesDB::table('sala')->where('SalaEstado',1)->get();
+                return DataTables::of($salas)
+                            ->addColumn('btn','salas/actions')
+                            ->rawColumns(['btn'])
+                            ->toJson();
+            }catch(Exception $ex){
+                return response()->json([
+                    'error' => $ex->getMessage()
+                ], 500);
+            }
+        }
+        return view('salas.principal');
+    }
 
     public function create()
     { }

@@ -19,61 +19,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-/* -----------------MENU POR TIPO PACIENTE---------------------- -*/
-
-Route::get('menuTipo',function(Request $request){
-	$id = $request['id'];
-	$menues = DB::table('detallemenutipopaciente')
-								->where('MenuId',$id)
-								->get();
-
-	return DataTables::of($menues)
-						->addColumn('TipoPaciente',function($menu){
-							$tipoPaciente = DB::table('tipopaciente')
-												->where('TipoPacienteId',$menu->TipoPacienteId)
-												->first();
-							return $tipoPaciente->TipoPacienteNombre;
-						})
-						->addColumn('DetalleMenuTipoPacienteCostoTotal',function($menu){
-								return "$".$menu->DetalleMenuTipoPacienteCostoTotal;
-							})
-						->addColumn('btn','menues/actions/menuTipoActions')
-	 					->rawColumns(['btn'])
-	 					->toJson();
-});
-/* -----------------Comidas por tipo paciente---------------------- -*/
-
-Route::get('comidasPorTipoPaciente',function(Request $request){
-	$id = $request['id'];
-	$comidas = DB::table('comidaportipopaciente')
-								->where('DetalleMenuTipoPacienteId',$id)
-								->get();
-	return DataTables::of($comidas)
-						->addColumn('TipoComida',function($comida){
-							$tipoComida = DB::table('tipocomida')
-												->where('TipoComidaId',$comida->TipoComidaId)
-												->first();
-							return $tipoComida->TipoComidaNombre;
-						})
-						->addColumn('ComidaId',function($comida){
-							$comida = DB::table('comida')
-												->where('ComidaId',$comida->ComidaId)
-												->first();
-							if ($comida) {
-								return $comida->ComidaNombre;
-							}else{
-								return '<p class="text-danger text-sm">No asignada</p>';
-							}
-						})
-						->addColumn('ComidaPorTipoPacienteCostoTotal',function($comida){
-								return "$".$comida->ComidaPorTipoPacienteCostoTotal;
-							})
-						->addColumn('btn','menues/actions/comidasActions')
-	 					->rawColumns(['btn','ComidaId'])
-	 					->toJson();
-});
-
-
 
 
 

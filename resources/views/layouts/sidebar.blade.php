@@ -115,6 +115,10 @@
                 </a>
               </li> -->
               <li class="nav-item">
+                <a href="{{URL::action('EmpleadoController@index')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Empleados</p>
+                </a>
                 <a href="{{URL::action('PacienteController@index')}}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Pacientes</p>

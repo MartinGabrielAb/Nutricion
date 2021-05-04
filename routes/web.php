@@ -67,16 +67,16 @@ Route::middleware(['auth'])->group(function(){
 // 	Route::delete('profesionales/{id}','ProfesionalController@destroy')->name('profesionales.destroy')->middleware('permission:profesionales.destroy');
 // 	Route::get('profesionales/{id}/edit','ProfesionalController@edit')->name('profesionales.edit')->middleware('permission:profesionales.edit');
 // });
-// //empleados // ****ver que se va a hacer con esta ruta.
-// Route::middleware(['auth'])->group(function(){
-// 	Route::post('empleados/store','EmpleadoController@store')->name('empleados.store')->middleware('permission:empleados.store');
-// 	Route::get('empleados','EmpleadoController@index')->name('empleados.index')->middleware('permission:empleados.index');
-// 	Route::get('empleados/create','EmpleadoController@create')->name('empleados.create')->middleware('permission:empleados.create');
-// 	Route::put('empleados/{id}','EmpleadoController@update')->name('empleados.update')->middleware('permission:empleados.update');
-// 	Route::get('empleados/{id}','EmpleadoController@show')->name('empleados.show')->middleware('permission:empleados.show');
-// 	Route::delete('empleados/{id}','EmpleadoController@destroy')->name('empleados.destroy')->middleware('permission:empleados.destroy');
-// 	Route::get('empleados/{id}/edit','EmpleadoController@edit')->name('empleados.edit')->middleware('permission:empleados.edit');
-// });
+//empleados // ****ver que se va a hacer con esta ruta.
+Route::middleware(['auth'])->group(function(){
+	Route::post('empleados','EmpleadoController@store')->name('empleados.store')->middleware('permission:empleados.store');
+	Route::get('empleados','EmpleadoController@index')->name('empleados.index')->middleware('permission:empleados.index');
+	Route::get('empleados/create','EmpleadoController@create')->name('empleados.create')->middleware('permission:empleados.create');
+	Route::put('empleados/{id}','EmpleadoController@update')->name('empleados.update')->middleware('permission:empleados.update');
+	Route::get('empleados/{id}','EmpleadoController@show')->name('empleados.show')->middleware('permission:empleados.show');
+	Route::delete('empleados/{id}','EmpleadoController@destroy')->name('empleados.destroy')->middleware('permission:empleados.destroy');
+	Route::get('empleados/{id}/edit','EmpleadoController@edit')->name('empleados.edit')->middleware('permission:empleados.edit');
+});
 //piezas
 Route::middleware(['auth'])->group(function(){
 	Route::post('piezas','PiezaController@store')->name('piezas.store')->middleware('permission:piezas.store');
@@ -254,25 +254,25 @@ Auth::routes();
 // Las rutas comentadas habría que borrarlas
 // Route::get('getPacientes','AjaxDataController@getPacientes')->name('ajaxData.getPacientes');
 
-Route::get('getEmpleados','AjaxDataController@getEmpleados')->name('ajaxData.getEmpleados');
+// Route::get('getEmpleados','AjaxDataController@getEmpleados')->name('ajaxData.getEmpleados');
 
-Route::get('getProfesionales','AjaxDataController@getProfesionales')->name('ajaxData.getProfesionales');
+// Route::get('getProfesionales','AjaxDataController@getProfesionales')->name('ajaxData.getProfesionales');
 
-Route::get('getMenues','AjaxDataController@getMenues')->name('ajaxData.getMenues');
-Route::get('getMenuTipo','AjaxDataController@getMenuTipo')->name('ajaxData.getMenuTipo');
-Route::get('getComidaPorTipoPaciente','AjaxDataController@getComidaPorTipoPaciente')->name('ajaxData.getComidaPorTipoPaciente');
+// Route::get('getMenues','AjaxDataController@getMenues')->name('ajaxData.getMenues');
+// Route::get('getMenuTipo','AjaxDataController@getMenuTipo')->name('ajaxData.getMenuTipo');
+// Route::get('getComidaPorTipoPaciente','AjaxDataController@getComidaPorTipoPaciente')->name('ajaxData.getComidaPorTipoPaciente');
 
-Route::get('getParticulares','AjaxDataController@getParticulares')->name('ajaxData.getParticulares');
+// Route::get('getParticulares','AjaxDataController@getParticulares')->name('ajaxData.getParticulares');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('getAlimentos','AjaxDataController@getAlimentos')->name('ajaxData.getAlimentos');
+// Route::get('getAlimentos','AjaxDataController@getAlimentos')->name('ajaxData.getAlimentos');
 
-Route::get('getComidas','AjaxDataController@getComidas')->name('ajaxData.getComidas');
+// Route::get('getComidas','AjaxDataController@getComidas')->name('ajaxData.getComidas');
 
-Route::get('getNutrientesPorAlimento','AjaxDataController@getNutrientesPorAlimento')->name('ajaxData.getNutrientesPorAlimento');
+// Route::get('getNutrientesPorAlimento','AjaxDataController@getNutrientesPorAlimento')->name('ajaxData.getNutrientesPorAlimento');
 
 Route::get('getRelevamientos','AjaxDataController@getRelevamientos')->name('ajaxData.getRelevamientos');
 
 
-Route::get('getUsuarios','AjaxDataController@getUsuarios')->name('ajaxData.getUsuarios');
+// Route::get('getUsuarios','AjaxDataController@getUsuarios')->name('ajaxData.getUsuarios');

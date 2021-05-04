@@ -4,31 +4,35 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Proveedor;
-use App\Http\Requests\RequestProveedor;
+use App\Http\Requests\ProveedorRequest;
+use DB;
+use Yajra\DataTables\DataTables;
 
 class ProveedorController extends Controller
 {
 
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
     public function index(Request $request)
     {
+
+       /*---Pregunto si es una peticion ajax----*/
         if($request->ajax()){
-            # Ejecuta si la petición es a través de AJAX.
-            $proveedores = Proveedor::where('ProveedorEstado',1)->get();
-            if ($proveedores) {
-                return datatables()->of($proveedores)
-                                    ->addColumn('btn','proveedores/actions')
-                                    ->rawColumns(['btn'])
-                                    ->toJson();
-            }
-            return $this->genericResponse(null,"No se encontraron proveedores",500);
+            try{
+                $proveedores = DB::table('proveedor as p')
+                    ->where('ProveedorEstado',1)
+                    ->orwhere('ProveedorEstado',0)
+                    ->get();
+                return DataTables::of($proveedores)
+                                ->addColumn('btn','proveedores/actions')
+                                ->rawColumns(['btn'])
+                                ->toJson();
+            }catch(Exception $ex){
+                return response()->json([
+                    'error' => $ex->getMessage()
+                ], 500);}
         }
-        # Ejecuta si la petición NO es a través de AJAX.
-        return view('proveedores/principal');
+        return view('proveedores.principal');
+
     }
 
     public function create()
@@ -36,88 +40,58 @@ class ProveedorController extends Controller
       
     }
 
-    public function store(RequestProveedor $request)
+    public function store(ProveedorRequest $request)
     {
-        $datos = $request->all();
         $proveedor = new Proveedor();
+        $datos = $request->all();
         $proveedor->ProveedorNombre = $datos['nombre'];
-        $proveedor->ProveedorCuit = $datos['cuit'];
         $proveedor->ProveedorDireccion = $datos['direccion'];
+        $proveedor->ProveedorCuit = $datos['cuit'];
         $proveedor->ProveedorTelefono = $datos['telefono'];
         $proveedor->ProveedorEmail = $datos['email'];
-        $proveedor->ProveedorEstado = 1;
-        $proveedor->save();
-        return $this->genericResponse($proveedor,null,200);
+        $proveedor->ProveedorEstado = $datos['estado'];;
+        $resultado = $proveedor->save();
+        if ($resultado) {
+            return response()->json(['success' => $proveedor]);
+        }else{
+            return response()->json(['success'=>'false']);
+        }
     }
 
-    public function show($id)
-    {
-        if ($id == null) {
-            
-            $this->genericResponse(null,"ID no fue encontrado",500);
-        }   
-        $proveedor = Proveedor::findOrFail($id);              
-        if (!$proveedor) {
-            return $this->genericResponse(null,"Proveedor no encontrado",500);
-        }
-        return $this->genericResponse($proveedor,"",200);
-    }
 
     public function edit($id)
     {    
     }
 
-    public function update(RequestProveedor $request, $id = null)
+    public function update(ProveedorRequest $request, $id = null)
     {
     
         $datos = $request->all();
-        $proveedor = Proveedor::findOrFail($id);
-        if (!$proveedor) {
-                return $this->genericResponse(null,"El proveedor no existe",500); 
-            }
+        $proveedor = Proveedor::FindOrFail($id);
         $proveedor->ProveedorNombre = $datos['nombre'];
-        $proveedor->ProveedorCuit = $datos['cuit'];
         $proveedor->ProveedorDireccion = $datos['direccion'];
+        $proveedor->ProveedorCuit = $datos['cuit'];
         $proveedor->ProveedorTelefono = $datos['telefono'];
         $proveedor->ProveedorEmail = $datos['email'];
-        $proveedor->ProveedorEstado = 1;
-        $respuesta = $proveedor->update();
-        if ($respuesta) {
-            return $this->genericResponse($proveedor,null,200);
+        $proveedor->ProveedorEstado = $datos['estado'];;
+        $resultado = $proveedor->Update();
+        if ($resultado) {
+            return response()->json(['success' => [$proveedor]]);
+        }else{
+            return response()->json(['success'=>'false']);
         }
-         return $this->genericResponse(null,"Error al actualizar el registro.",500);
     }
 
     public function destroy($id)
     {
-        if ($id == null) {
-            $this->genericResponse(null,"ID no fue encontrado",500);
-        }   
-        $proveedor = Proveedor::findOrFail($id);              
-        if (!$proveedor) {
-            return $this->genericResponse(null,"Proveedor no encontrado",500);
+        $proveedor = Proveedor::FindOrFail($id);
+        $proveedor->ProveedorEstado = -1;
+        $resultado = $proveedor->update();
+        if ($resultado) {
+            return response()->json(['success' => 'true']);
+        }else{
+            return response()->json(['success'=>'false']);
         }
-        $proveedor->ProveedorEstado = 0;
-        $respuesta = $proveedor->update();
-        if ($respuesta) {
-            return $this->genericResponse("Proveedor eliminado con exito.","",200);
-            }
-        return $this->genericResponse(null,"No se pudo eliminar el proveedor",500);
     }
 
-    private function genericResponse($data, $msj, $code){
-        if ($code == 200) {
-            return response()
-                ->json([
-                    "data" => $data,
-                    "code" => $code,
-                    
-                ]);
-        }else{
-            return response()->json([
-                "msj" => $msj,
-                "code" => $code,
-            ]);
-        }
-    }
 }
