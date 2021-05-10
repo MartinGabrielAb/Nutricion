@@ -46,7 +46,9 @@
                   <thead>
                     <tr>
                       <th scope="col" width="5%">#</th>
+                      <th scope="col">Sala</th>
                       <th scope="col">Fecha</th>
+                      <th scope="col">Turno</th>
                       <th scope="col" width="5%">Acciones</th>
                     </tr>
                   </thead>
@@ -76,8 +78,23 @@
         </div>    
         <div class="modal-body">
           <input type="hidden" id="id" name="id">
+          <label for="salaId">Sala</label>
+          <div class="form-inline">
+            <select class="form-control" name="salaId" id="salaId" style="width: 100%" required>
+              @foreach ($salas as $sala)
+                  <option value="{{$sala->SalaId}}">{{$sala->SalaNombre}}</option>
+              @endforeach
+            </select>
+          </div>
           <label for='fecha' id="labelFecha">Fecha</label>
           <input class="form-control" type="date" id="fecha" name="fecha" required>
+          <label for="turno">Turno</label>
+          <div class="form-inline">
+            <select class="form-control" id="turno" name="turno" style="width: 100%" required>
+                <option value="Mañana">Mañana</option>
+                <option value="Tarde">Tarde</option>
+            </select>
+          </div>
         </div>
         <div class="modal-footer">
           <div class="container-fluid">
@@ -105,8 +122,6 @@
 </div>
 @push('custom-scripts')
   <script type="text/javascript" src="{{asset('js/relevamientos/principal.js')}}"></script>
-  {{-- <script type="text/javascript" src="{{asset('js/relevamientos/create.js')}}"></script>
-  <script type="text/javascript" src="{{asset('js/relevamientos/eliminar.js')}}"></script> --}}
 @endpush
 
 @endsection

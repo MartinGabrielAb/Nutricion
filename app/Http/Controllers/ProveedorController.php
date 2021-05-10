@@ -17,9 +17,8 @@ class ProveedorController extends Controller
        /*---Pregunto si es una peticion ajax----*/
         if($request->ajax()){
             try{
-                $proveedores = DB::table('proveedor as p')
-                    ->where('ProveedorEstado',1)
-                    ->orwhere('ProveedorEstado',0);
+                $proveedores = DB::table('proveedor')
+                    ->where('ProveedorEstado','!=',-1);
                 return DataTables::of($proveedores)
                                 ->addColumn('btn','proveedores/actions')
                                 ->rawColumns(['btn'])

@@ -9,11 +9,11 @@
 	<!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
-    <div class="content-header">
+    <div class="content-header border">
       <div class="container-fluid">
         <div class="row">
           <div class="col-lg-6">
-            <h2 class="m-0 text-dark">Detalle de Relevamiento:</h2>
+            <h4 class="m-0 text-dark">Detalle de Relevamiento</h4>
           </div><!-- /.col -->
           <div class="col-lg-6">
             <ol class="breadcrumb float-sm-right">
@@ -23,13 +23,16 @@
           </div><!-- /.col -->
         </div>
         <div class="row">
-            <div class="col-lg-6">
-              <h5>Relevamiento: {{$relevamiento->RelevamientoId}}</h5>
-            </div>
-            <div class="col-lg-6">
-              <h5>Fecha: {{$relevamiento->RelevamientoFecha}}</h5>
-            </div>
-          </div><!-- /.row -->
+          <div class="col-lg-4 text-center">
+            <h5 class="m-0">{{$relevamiento->SalaPseudonimo}}</h5>
+          </div>
+          <div class="col-lg-4 text-center">
+            <h5 class="m-0">{{$relevamiento->RelevamientoFecha}}</h5>
+          </div>
+          <div class="col-lg-4 text-center">
+            <h5 class="m-0">{{$relevamiento->RelevamientoTurno}}</h5>
+          </div>
+        </div><!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content-header -->
@@ -40,12 +43,3 @@
 
 
 @endsection
-
-@push('custom-scripts')
-<!-- Scripts actuales -->
-{{-- <script type="text/javascript" src="{{asset('js/detallesrelevamiento/principal.js')}}"></script>
-<script type="text/javascript" src="{{asset('js/detallesrelevamiento/create.js')}}"></script>
-<script type="text/javascript" src="{{asset('js/detallesrelevamiento/eliminar.js')}}"></script>
-<script type="text/javascript" src="{{asset('js/detallesrelevamiento/editar.js')}}"></script> --}}
-
-@endpush

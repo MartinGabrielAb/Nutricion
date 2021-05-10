@@ -21,33 +21,33 @@ class DetalleRelevamientoController extends Controller
         /*---Pregunto si es una peticion ajax----*/
         if($request->ajax()){
             try{
+                // $detallesRelevamiento = DetalleRelevamiento::where('RelevamientoId',36)->orderBy('RelevamientoId','desc')->get();
                 $detallesRelevamiento = 
                     DB::table('detallerelevamiento as dr')
-                    ->join('paciente as pa','pa.PacienteId','dr.PacienteId')
-                    ->join('tipopaciente as tp','tp.TipoPacienteId','dr.TipoPacienteId')
+                    // ->join('paciente as pa','pa.PacienteId','dr.PacienteId')
+                    // ->join('tipopaciente as tp','tp.TipoPacienteId','dr.TipoPacienteId')
                     ->join('cama as c','c.CamaId','dr.CamaId')
                     ->join('pieza as pi','pi.PiezaId','c.PiezaId')
-                    ->join('sala as s','s.SalaId','pi.SalaId')
-                    ->join('users as u','u.id','dr.UserId')
-                    ->join('menu as m','m.MenuId','dr.MenuId')
-                    ->where('dr.RelevamientoId',$request->relevamientoId)
-                    ->where('dr.DetalleRelevamientoEstado',1)
+                    // ->join('users as u','u.id','dr.UserId')
+                    // ->join('menu as m','m.MenuId','dr.MenuId')
+                    ->where('dr.RelevamientoId',36)
                     // ->whereIn('DetalleRelevamientoId', function ($sub) use ($request) {
                     //     $sub->selectRaw('MAX(DetalleRelevamientoId)')->from('detallerelevamiento')->where('RelevamientoId',$request->relevamientoId)->groupBy('PacienteId')->orderBy('updated_at')->orderBy('DetalleRelevamientoEstado'); // <---- la clave
                     // })
                     ->select('dr.DetalleRelevamientoId',
-                            'dr.DetalleRelevamientoTurno',
                             DB::raw('DATE_FORMAT(dr.updated_at, "%H:%i:%s") as DetalleRelevamientoHora'),
                             'dr.DetalleRelevamientoDiagnostico',
                             'dr.DetalleRelevamientoAcompaniante',
                             'dr.DetalleRelevamientoVajillaDescartable',
                             'dr.DetalleRelevamientoEstado','dr.DetalleRelevamientoObservaciones',
-                            'm.MenuNombre','m.MenuId',
-                            'pa.PacienteId','pa.PacienteNombre','pa.PacienteApellido','pa.PacienteCuil',
-                            'tp.TipoPacienteNombre','tp.TipoPacienteId',
-                            'c.CamaNumero','pi.PiezaPseudonimo','s.SalaPseudonimo','c.CamaId',
-                            'u.name as Relevador','u.id as UserId')
-                    ->orderby('dr.DetalleRelevamientoId','desc');
+                            // 'm.MenuNombre','m.MenuId',
+                            // 'pa.PacienteId','pa.PacienteNombre','pa.PacienteApellido','pa.PacienteCuil',
+                            // 'tp.TipoPacienteNombre','tp.TipoPacienteId',
+                            'c.CamaNumero','pi.PiezaPseudonimo','c.CamaId')
+                            // 'u.name as Relevador','u.id as UserId')
+                    ->orderby('dr.DetalleRelevamientoId','desc')
+                    ->get();
+                dd($detallesRelevamiento);
                 return DataTables::
                     of($detallesRelevamiento)
                     ->addColumn('btn','detallesrelevamiento/actions')
@@ -64,13 +64,12 @@ class DetalleRelevamientoController extends Controller
     public function create()
     { }
 
-    public function store(Request $request)//request: relevamiento, turno, paciente, cama, diagnostico, observaciones, menu, tipopaciente, acompaniante, vajilladescartable, user
+    public function store(Request $request)//request: relevamiento, paciente, cama, diagnostico, observaciones, menu, tipopaciente, acompaniante, vajilladescartable, user
     {
         $paciente = Paciente::where('PacienteCuil',$request->get('paciente'))->where('PacienteEstado','!=',-1)->first();
         $detalleRelevamiento = new DetalleRelevamiento;
         $detalleRelevamiento->DetalleRelevamientoEstado = 1;
         $detalleRelevamiento->RelevamientoId = $request->get('relevamiento');
-        $detalleRelevamiento->DetalleRelevamientoTurno = $request->get('turno');
         $detalleRelevamiento->PacienteId = $paciente->PacienteId;
         $detalleRelevamiento->CamaId = $request->get('cama');
         $detalleRelevamiento->DetalleRelevamientoDiagnostico = $request->get('diagnostico');
@@ -96,29 +95,59 @@ class DetalleRelevamientoController extends Controller
             $detRelevamientoPorComida->save();
         }
         if ($resultado) {
-            return response()->json(['success'=>$detalleRelevamiento]);
+            return response()->json(['success'=>$request->get('cama')]);
         }else{
             return response()->json(['success'=>'false']);
         }
     }
 
-    public function show($id)
-    { }
+    public function show($id,Request $request)
+    { 
+        
+        $detalleRelevamiento = 
+                    DB::table('detallerelevamiento as dr')
+                    ->join('paciente as pa','pa.PacienteId','dr.PacienteId')
+                    ->join('tipopaciente as tp','tp.TipoPacienteId','dr.TipoPacienteId')
+                    ->join('cama as c','c.CamaId','dr.CamaId')
+                    ->join('pieza as pi','pi.PiezaId','c.PiezaId')
+                    ->join('users as u','u.id','dr.UserId')
+                    ->join('menu as m','m.MenuId','dr.MenuId')
+                    ->where('dr.RelevamientoId',$request->get('relevamientoId'))
+                    ->where('dr.CamaId',$request->get('camaId'))
+                    // ->whereIn('DetalleRelevamientoId', function ($sub) use ($request) {
+                    //     $sub->selectRaw('MAX(DetalleRelevamientoId)')->from('detallerelevamiento')->where('RelevamientoId',$request->relevamientoId)->groupBy('PacienteId')->orderBy('updated_at')->orderBy('DetalleRelevamientoEstado'); // <---- la clave
+                    // })
+                    ->select('dr.DetalleRelevamientoId',
+                            DB::raw('DATE_FORMAT(dr.updated_at, "%H:%i:%s") as DetalleRelevamientoHora'),'dr.RelevamientoId',
+                            'dr.DetalleRelevamientoDiagnostico',
+                            'dr.DetalleRelevamientoAcompaniante',
+                            'dr.DetalleRelevamientoVajillaDescartable',
+                            'dr.DetalleRelevamientoEstado','dr.DetalleRelevamientoObservaciones',
+                            'm.MenuNombre','m.MenuId',
+                            'pa.PacienteId','pa.PacienteNombre','pa.PacienteApellido','pa.PacienteCuil',
+                            'tp.TipoPacienteNombre','tp.TipoPacienteId',
+                            'c.CamaNumero','pi.PiezaPseudonimo','c.CamaId',
+                            'u.name as Relevador','u.id as UserId')
+                    ->orderby('dr.DetalleRelevamientoId','desc')
+                    ->get();
+        return response()->json(['success'=>$detalleRelevamiento]);
+    }
 
     public function edit($id)
     { }
 
-    public function update(Request $request, $id)//request: relevamiento, turno, paciente, cama, diagnostico, observaciones, menu, tipopaciente, acompaniante, vajilladescartable, user
+    public function update(Request $request, $id)//request: relevamiento, paciente, cama, diagnostico, observaciones, menu, tipopaciente, acompaniante, vajilladescartable, user
     {
+        // dd($id);
         //actualizo estado del relevamiento que se está queriendo editar para guardarlo como historial del paciente
-        $detalleRelevamiento = DetalleRelevamiento::where('DetalleRelevamientoId',$id)->where('DetalleRelevamientoEstado',1)->first();
-        $detalleRelevamiento->DetalleRelevamientoEstado = 0;
-        $detalleRelevamiento->update();
+        
+        $detalleRelevamiento = DetalleRelevamiento::where('DetalleRelevamientoId', $id)->where('DetalleRelevamientoEstado', 1)->update(['DetalleRelevamientoEstado' => 0]);
+        // $detalleRelevamiento->DetalleRelevamientoEstado = 0;
+        // $detalleRelevamiento->update();
         $paciente = Paciente::where('PacienteCuil',$request->get('paciente'))->where('PacienteEstado','!=',-1)->first();
         $detalleRelevamiento = new DetalleRelevamiento;
         $detalleRelevamiento->DetalleRelevamientoEstado = 1;
         $detalleRelevamiento->RelevamientoId = $request->get('relevamiento');
-        $detalleRelevamiento->DetalleRelevamientoTurno = $request->get('turno');
         $detalleRelevamiento->PacienteId = $paciente->PacienteId;
         $detalleRelevamiento->CamaId = $request->get('cama');
         $detalleRelevamiento->DetalleRelevamientoDiagnostico = $request->get('diagnostico');
@@ -144,7 +173,7 @@ class DetalleRelevamientoController extends Controller
             $detRelevamientoPorComida->save();
         }
         if ($resultado) {
-            return response()->json(['success'=>$detalleRelevamiento]);
+            return response()->json(['success'=>$request->get('cama')]);
         }else{
             return response()->json(['success'=>'false']);
         }
@@ -153,9 +182,10 @@ class DetalleRelevamientoController extends Controller
     public function destroy($id)
     {
         $detalleRelevamiento = DetalleRelevamiento::findOrFail($id);
+        $camaid = $detalleRelevamiento->CamaId;
         $resultado = $detalleRelevamiento->delete();
         if ($resultado) {
-            return response()->json(['success'=>'true']);
+            return response()->json(['success'=>$camaid]);
         }else{
             return response()->json(['success'=>'false']);
         }

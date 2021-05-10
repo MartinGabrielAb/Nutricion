@@ -2,15 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Cama;
+use Exception;
+use Illuminate\Http\Request;
 use App\Http\Requests\CamaRequest;
 
 class CamaController extends Controller
 {
 
-    public function index()
-    { }
+    public function index(Request $request) //req: piezaId
+    { 
+        if($request->ajax()){
+            try{
+                $camas = Cama::where('PiezaId',$request->get('piezaId'))->where('CamaEstado',1)->get();
+                if ($camas) {
+                    return response()->json(['success' => $camas]);
+                }else{
+                    return response()->json(['success'=>'false']);
+                }
+            }catch(Exception $ex){
+                return response()->json([
+                    'error' => $ex->getMessage()
+                ], 500);
+            }
+        }
+    }
     public function create()
     { }
 

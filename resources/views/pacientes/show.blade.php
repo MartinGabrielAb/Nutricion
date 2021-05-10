@@ -35,13 +35,13 @@
                       <dt class="col-sm-3 col-md-3 col-lg-3 col-xl-2">Paciente</dt>
                       <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PacienteApellido}}, {{$paciente->PacienteNombre}}</dd>
                       <dt class="col-sm-3 col-md-3 col-lg-3 col-xl-2">Dirección</dt>
-                      <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PacienteDireccion}}</dd>
+                      <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PacienteDireccion != null ? $paciente->PacienteDireccion : '-'}}</dd>
                       <dt class="col-sm-3 col-md-3 col-lg-3 col-xl-2">Email</dt>
-                      <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PacienteEmail}}</dd>
+                      <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PacienteEmail != null ? $paciente->PacienteEmail : '-'}}</dd>
                       <dt class="col-sm-3 col-md-3 col-lg-3 col-xl-2">Teléfono</dt>
-                      <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PacienteTelefono}}</dd>
+                      <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PacienteTelefono != null ? $paciente->PacienteTelefono : '-'}}</dd>
                       <dt class="col-sm-3 col-md-3 col-lg-3 col-xl-2">DNI</dt>
-                      <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PacienteCuil}}</dd>
+                      <dd class="col-sm-9 col-md-9 col-lg-9 col-xl-10 ">{{$paciente->PacienteCuil != null ? $paciente->PacienteCuil : '-'}}</dd>
                     </dl>
                   </div>
                 </div>
@@ -59,13 +59,12 @@
                         <tr role="row">
                           <th scope="col">#</th>
                           <th scope="col">Fecha</th>
-                          <th scope="col">Turno</th>
                           <th scope="col">Paciente</th>
                           <th scope="col">Menú</th>
                           <th scope="col">Regímen</th>
                           <th scope="col">Acompañante</th>
                           <th scope="col">VD</th>
-                          <th scope="col">S/P/C</th>
+                          <th scope="col">P/C</th>
                           <th scope="col">Diagnóstico</th>
                           <th scope="col">Obs.</th>
                           <th scope="col">Hora</th>

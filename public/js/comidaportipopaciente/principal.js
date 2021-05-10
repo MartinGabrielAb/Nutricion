@@ -8,6 +8,15 @@ $(document).ready( function () {
       "columns": [
         {data: "TipoComidaNombre"},
         {data: "ComidaNombre"},
+        {
+          data: null, name: 'ComidaPorTipoPacientePrincipal',
+          render: function ( data, type, row ) {
+            if (data.ComidaPorTipoPacientePrincipal == 1) {
+              return '<span class="text-success ml-1">Principal</span>';
+            }else{
+              return '<span class="text-warning ml-1">Variante</span>';
+            }
+        }},
         {data:'btn',orderable:false,sercheable:false},
       ],
       "language": { "url": "../JSON/Spanish_dataTables.json"},
@@ -77,7 +86,9 @@ $(document).ready( function () {
         dataType:"json",
         data:{
             detalleMenuTipoPacienteId: $('#detalleMenuTipoPacienteId').val(),
+            tipocomida: $('#tipoComida').val(),
             comida: $('#comida').val(),
+            principal: $('[name="principal"]:checked').val(),
         },
         success: function(response){
           $('#modal').modal('hide');
@@ -87,8 +98,9 @@ $(document).ready( function () {
           },
         error:function(response){
           var errors =  response.responseJSON.errors;
+          console.log(errors);
           for (var campo in errors) {
-            $("#listaErrores").append('<li type="square">'+errors[campo]+'</li>');
+            $("#listaErrores").append('<li type="square">'+errors[campo][0]+'</li>');
           }       
         }
       });

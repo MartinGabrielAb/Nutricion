@@ -27,9 +27,10 @@ class ComidaPorTipoPacienteController extends Controller
         $nuevo =new ComidaPorTipoPaciente();
         $nuevo->DetalleMenuTipoPacienteId = $request['detalleMenuTipoPacienteId'];
         $nuevo->ComidaId = $request['comida'];
+        $nuevo->ComidaPorTipoPacientePrincipal = $request['principal'];
         $resultado = $nuevo->save();
         if ($resultado) {
-            return response()->json(['success' => 'true']);
+            return response()->json(['success' => $nuevo]);
         }else{
             return response()->json(['success'=>'false']);
         }  

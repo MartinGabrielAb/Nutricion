@@ -16,6 +16,7 @@ $(document).ready( function () {
       {data: "PacienteTelefono"},
       {
         data: null,
+        name:"PacienteEstado",
         render: function ( data, type, row ) {
           if (data.PacienteEstado == 1) {
             return '<td><p class="text-success">Activo</p></td>';
@@ -58,11 +59,10 @@ $(document).ready( function () {
     "columns": [
       {data: 'DetalleRelevamientoId'},
       {data: 'RelevamientoFecha'},
-      {data: 'DetalleRelevamientoTurno'},
       {
         data: null,
         render: function ( data, type, row ) {
-          return data.PersonaApellido+', '+data.PersonaNombre;
+          return data.PacienteApellido+', '+data.PacienteNombre;
         }},
       {data: 'MenuNombre'},
       {data:  'TipoPacienteNombre'},
@@ -106,7 +106,7 @@ $(document).ready( function () {
     ],
     columnDefs: [
       { responsivePriority: 1, targets: 0 },
-      { responsivePriority: 2, targets: 14 },
+      { responsivePriority: 2, targets: 13 },
     ],
     "language": { "url": "../JSON/Spanish_dataTables.json"
   }});

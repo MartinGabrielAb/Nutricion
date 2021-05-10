@@ -13,8 +13,9 @@
     <link href="{{asset('datatables.min.css')}}" rel="stylesheet">
     <link href="{{asset('css/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
     <link href="{{asset('css/responsive.dataTables.min.css')}}" rel="stylesheet">
-    <link href="{{asset('css/select2.min.css')}}" rel="stylesheet">    
-
+    <link href="{{asset('css/select2.min.css')}}" rel="stylesheet">
+    {{-- custom styles --}}
+    <link href="{{asset('css/custom.css')}}" rel="stylesheet">
   </head>
   <body class="hold-transition sidebar-mini">
     <!-- <div class="wrapper"> -->

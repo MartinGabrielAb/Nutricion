@@ -45,6 +45,7 @@
                     <tr>
                       <th>Tipo de comida</th>
                       <th>Comida</th>
+                      <th>Tipo</th>
                       <th width="5%">Acciones</th>
                     </tr>
                   </thead>
@@ -86,6 +87,19 @@
                 <select name="comida" id="comida" class="form-control" required>
                 <!-- Aca se agregan las opciones por js -->
                 </select>
+            </div>
+            <label>Seleccione si es principal o variante</label>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="principal" id="principal" value="1" checked required>
+              <label class="form-check-label" for="principal">
+                Principal
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="principal" id="variante" value="0" required>
+              <label class="form-check-label" for="variante">
+                Variante
+              </label>
             </div>
         </div>
         <div class="modal-footer">

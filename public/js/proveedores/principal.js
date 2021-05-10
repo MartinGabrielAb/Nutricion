@@ -9,10 +9,11 @@ $(document).ready( function () {
       {data: "ProveedorNombre"},
       {data: "ProveedorCuit"},
       {data: "ProveedorDireccion"},
-      {data: "ProveedorEmail"},
       {data: "ProveedorTelefono"},
+      {data: "ProveedorEmail"},
       {
-        data: null,
+        data: null, 
+        name: "ProveedorEstado",
         render: function ( data, type, row ) {
           if (data.ProveedorEstado == 1) {
             return '<td><p class="text-success">Activo</p></td>';

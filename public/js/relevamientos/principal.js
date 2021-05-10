@@ -5,8 +5,10 @@ $(document).ready( function () {
     "ajax": "/relevamientos",
     rowId: "RelevamientoId",
     "columns": [
-      {data: "RelevamientoId"},
-      {data: "RelevamientoFecha"},
+      {data: "RelevamientoId", name:"r.RelevamientoId"},
+      {data: "SalaNombre", name:"s.SalaNombre"},
+      {data: "RelevamientoFecha", name:"r.RelevamientoFecha"},
+      {data: "RelevamientoTurno", name:"r.RelevamientoTurno"},
       {data:'btn',orderable:false,sercheable:false},
     ],
     "language": { "url": "../JSON/Spanish_dataTables.json"},
@@ -22,11 +24,33 @@ $(document).ready( function () {
     vaciarCampos();
     var data = table.row( $(this).parents('tr') ).data();
     $("#id").val(data['RelevamientoId']);
-    $("#fecha").val(data['RelevamientoFecha']);
-    // $("#turno").val(data['RelevamientoTurno']).trigger('change');
-    // $("#menu").val(data['MenuId']).trigger('change');
+    $("#salaId").val(data['SalaId']).trigger('change');
+    fecha = data['RelevamientoFecha']; //dd/mm/YYYY
+    fechaseparada = fecha.split("/");
+    fecha = fechaseparada[2] + '-' + fechaseparada[1] + '-' + fechaseparada[0]; //YYYY/mm/dd
+    $("#fecha").val(fecha);
+    $('#turno').val(data['RelevamientoTurno']).trigger('change');
   });
 
+  //select2
+  $('#turno').select2({
+    width: 'resolve',
+    theme: "classic",
+    placeholder: {
+          id: '-1', 
+          text: "Turno",
+        },
+    allowClear: true
+  });
+  $('#salaId').select2({
+    width: 'resolve',
+    theme: "classic",
+    placeholder: {
+          id: '-1', 
+          text: "Sala",
+        },
+    allowClear: true
+  });
 });
 //POST AJAX
 function guardar(e){
@@ -39,7 +63,9 @@ function guardar(e){
       url:"relevamientos",
       dataType:"json",
       data:{
+        salaId: $('#salaId').val(),
         fecha: $('#fecha').val(),
+        turno: $('#turno').val(),
       },
       success: function(response){
         $('#modal').modal('hide');
@@ -67,7 +93,9 @@ function editar(id){
     dataType:"json",
     data:{
       id: id,
+      salaId: $('#salaId').val(),
       fecha: $('#fecha').val(),
+      turno: $('#turno').val(),
     },
     success: function(response){
       $('#modal').modal('hide');
@@ -106,7 +134,9 @@ function eliminar(id){
 }
 //funciones auxiliares
 function vaciarCampos(){
+  $("#salaId").val(-1).trigger('change');
   $("#fecha").val("");
+  $("#turno").val(-1).trigger('change');
   $("#listaErrores").empty();
 }
 function agregar(){

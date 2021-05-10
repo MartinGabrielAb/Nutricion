@@ -73,7 +73,6 @@ class PacienteController extends Controller
                     // ->orwhere('dr.DetalleRelevamientoEstado',0)
                     ->select(DB::raw('DATE_FORMAT(re.RelevamientoFecha, "%d/%m/%Y") as RelevamientoFecha'),'re.RelevamientoId',
                             'dr.DetalleRelevamientoId',
-                            'dr.DetalleRelevamientoTurno',
                             DB::raw('DATE_FORMAT(dr.updated_at, "%H:%i:%s") as DetalleRelevamientoHora'),
                             'dr.DetalleRelevamientoDiagnostico',
                             'dr.DetalleRelevamientoAcompaniante',
