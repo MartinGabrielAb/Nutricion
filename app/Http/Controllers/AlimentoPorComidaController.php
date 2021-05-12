@@ -11,7 +11,7 @@ use App\ComidaPorTipoPaciente;
 use App\DetalleMenuTipoPaciente;
 use App\Menu;
 use App\Http\Requests\AlimentoPorComidaRequest;
-
+use DB;
 class AlimentoPorComidaController extends Controller
 {
 
@@ -30,6 +30,11 @@ class AlimentoPorComidaController extends Controller
         $detalle->AlimentoId = $datos['alimentoId'];
         $detalle->AlimentoPorComidaCantidadNeto = $datos['cantidadNeto'];
         $nombreUnidad = $datos['unidadMedida'];
+        $alimento = DB::table('alimento as a')
+                            ->where('AlimentoId',$detalle->AlimentoId)
+                            ->join('unidadmedida as u','u.UnidadMedidaId','a.UnidadMedidaId')    
+                            ->first();
+        if($alimento->UnidadMedidaNombre == 'Litro') $nombreUnidad = 'cm3';
         $unidadMedida = UnidadMedida::where('UnidadMedidaNombre','=',$nombreUnidad)->first(); 
         $detalle->UnidadMedidaId = $unidadMedida->UnidadMedidaId;
         $detalle->AlimentoPorComidaEstado = 1;
@@ -97,7 +102,6 @@ class AlimentoPorComidaController extends Controller
                         }
                     break;
                     case "Gramo":
-
                         switch($unidadMedidaAlimento->UnidadMedidaNombre){
                             case 'Gramo':
                                 $cantidadNeto = $cantidadNeto;
@@ -108,15 +112,30 @@ class AlimentoPorComidaController extends Controller
                                 $detalle->AlimentoPorComidaCostoTotal = $cantidadNeto * ($costoTotal/$cantidadTotal);
                             break;
                             case 'Litro':
-                                $cantidadNeto = $cantidadNeto;  
-                                $cantidadNeto = $cantidadNeto/$alimento->AlimentoEquivalenteGramos;
+                                $cantidadNeto = $cantidadNeto/1000;
                                 $detalle->AlimentoPorComidaCostoTotal = $cantidadNeto * ($costoTotal/$cantidadTotal);
+                                // $cantidadNeto = $cantidadNeto;  
+                                // $cantidadNeto = $cantidadNeto/$alimento->AlimentoEquivalenteGramos;
+                                // $detalle->AlimentoPorComidaCostoTotal = $cantidadNeto * ($costoTotal/$cantidadTotal);
                             break;
                             case 'Unidad':  
                                 $detalle->AlimentoPorComidaCostoTotal = $cantidadNeto * ($costoTotal/$cantidadTotal);
                                 $detalle->UnidadMedidaId = $unidadMedidaAlimento->UnidadMedidaId;
                             break;
  
+                        }
+                    break;
+                    case "cm3":
+                        switch($unidadMedidaAlimento->UnidadMedidaNombre){
+                            
+                            case 'Litro':
+                                $cantidadNeto = $cantidadNeto/1000;
+                                $detalle->AlimentoPorComidaCostoTotal = $cantidadNeto * ($costoTotal/$cantidadTotal);
+                                // $cantidadNeto = $cantidadNeto;  
+                                // $cantidadNeto = $cantidadNeto/$alimento->AlimentoEquivalenteGramos;
+                                // $detalle->AlimentoPorComidaCostoTotal = $cantidadNeto * ($costoTotal/$cantidadTotal);
+                            break;
+
                         }
                     break;
                     case "Kilogramo":
@@ -137,18 +156,18 @@ class AlimentoPorComidaController extends Controller
         else{
             $detalle->AlimentoPorComidaCostoTotal = 0;
         }
-        $comidasPorTipoPaciente = ComidaPorTipoPaciente::where('ComidaId',$comida->ComidaId)->get();
-        foreach($comidasPorTipoPaciente as $comidaPorTipoPaciente){
-            $detallesMenuTipoPaciente = DetalleMenuTipoPaciente::where('DetalleMenuTipoPacienteId',$comidaPorTipoPaciente->DetalleMenuTipoPacienteId)->get();
-            foreach($detallesMenuTipoPaciente as $detalleMenuTipoPaciente){
-                $detalleMenuTipoPaciente->DetalleMenuTipoPacienteCostoTotal += $detalle->AlimentoPorComidaCostoTotal;
-                $menu = Menu::FindOrFail($detalleMenuTipoPaciente->MenuId);
-                $menu->MenuCostoTotal += $detalle->AlimentoPorComidaCostoTotal;
-                $detalleMenuTipoPaciente->update();
-                $menu->update();
-            }
+        // $comidasPorTipoPaciente = ComidaPorTipoPaciente::where('ComidaId',$comida->ComidaId)->get();
+        // foreach($comidasPorTipoPaciente as $comidaPorTipoPaciente){
+        //     $detallesMenuTipoPaciente = DetalleMenuTipoPaciente::where('DetalleMenuTipoPacienteId',$comidaPorTipoPaciente->DetalleMenuTipoPacienteId)->get();
+        //     foreach($detallesMenuTipoPaciente as $detalleMenuTipoPaciente){
+        //         // $detalleMenuTipoPaciente->DetalleMenuTipoPacienteCostoTotal += $detalle->AlimentoPorComidaCostoTotal;
+        //         $menu = Menu::FindOrFail($detalleMenuTipoPaciente->MenuId);
+        //         // $menu->MenuCostoTotal += $detalle->AlimentoPorComidaCostoTotal;
+        //         $detalleMenuTipoPaciente->update();
+        //         $menu->update();
+        //     }
 
-        }
+        // }
         $comida->ComidaCostoTotal += $detalle->AlimentoPorComidaCostoTotal;
         $comida->Update();
         $resultado = $detalle->save();
@@ -305,21 +324,21 @@ class AlimentoPorComidaController extends Controller
         $detalle = AlimentoPorComida::FindOrFail($id);
         $comida = Comida::FindOrFail($detalle->ComidaId);
         $comida->ComidaCostoTotal -= $detalle->AlimentoPorComidaCostoTotal;
-        $comidasPorTipoPaciente = ComidaPorTipoPaciente::where('ComidaId',$comida->ComidaId)->get();
+        // $comidasPorTipoPaciente = ComidaPorTipoPaciente::where('ComidaId',$comida->ComidaId)->get();
 
 
-        $costoViejo = $detalle->AlimentoPorComidaCostoTotal;
-        foreach($comidasPorTipoPaciente as $comidaPorTipoPaciente){
-            $detallesMenuTipoPaciente = DetalleMenuTipoPaciente::where('DetalleMenuTipoPacienteId',$comidaPorTipoPaciente->DetalleMenuTipoPacienteId)->get();
-            foreach($detallesMenuTipoPaciente as $detalleMenuTipoPaciente){
-                $detalleMenuTipoPaciente->DetalleMenuTipoPacienteCostoTotal -= $costoViejo;
-                $menu = Menu::FindOrFail($detalleMenuTipoPaciente->MenuId);
-                $menu->MenuCostoTotal -= $costoViejo;
-                $detalleMenuTipoPaciente->update();
-                $menu->update();
-            }
+        // $costoViejo = $detalle->AlimentoPorComidaCostoTotal;
+        // foreach($comidasPorTipoPaciente as $comidaPorTipoPaciente){
+        //     $detallesMenuTipoPaciente = DetalleMenuTipoPaciente::where('DetalleMenuTipoPacienteId',$comidaPorTipoPaciente->DetalleMenuTipoPacienteId)->get();
+        //     foreach($detallesMenuTipoPaciente as $detalleMenuTipoPaciente){
+        //         // $detalleMenuTipoPaciente->DetalleMenuTipoPacienteCostoTotal -= $costoViejo;
+        //         $menu = Menu::FindOrFail($detalleMenuTipoPaciente->MenuId);
+        //         // $menu->MenuCostoTotal -= $costoViejo;
+        //         $detalleMenuTipoPaciente->update();
+        //         $menu->update();
+        //     }
 
-        }
+        // }
         $comida->Update();
         $resultado = $detalle->delete();
         if ($resultado) {

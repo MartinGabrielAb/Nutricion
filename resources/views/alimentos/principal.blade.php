@@ -81,12 +81,12 @@
           <label for="unidad">Unidad de medida:</label>
           <select class="form-control" id="unidad" name="unidad" required>
             @foreach($unidadesMedida as $unidad)
-              @if ($unidad->UnidadMedidaNombre != 'U.I' and $unidad->UnidadMedidaNombre != 'Mililitro' and $unidad->UnidadMedidaNombre != 'Miligramo')
+              @if ($unidad->UnidadMedidaNombre != 'U.I' and $unidad->UnidadMedidaNombre != 'Mililitro' and $unidad->UnidadMedidaNombre != 'Miligramo' and $unidad->UnidadMedidaNombre != 'cm3')
                 <option value="{{$unidad->UnidadMedidaId}}">{{$unidad->UnidadMedidaNombre}}</option>  
               @endif
             @endforeach
           </select>
-          <div id="divEquivalencia">
+          <!-- <div id="divEquivalencia">
             <p><small>1 <span id="medida"></span> de <span id="alimento"> </span> es equivalente a:</small></p>
             <div class="input-group">
               <input type="number" class="form-control" id="equivalente" aria-label="">
@@ -94,7 +94,7 @@
                 <span class="input-group-text"><small>gramos</small></span>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
         <div class="modal-footer">
           <div class="container-fluid">

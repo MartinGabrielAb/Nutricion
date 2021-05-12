@@ -17,20 +17,20 @@ $(document).ready( function () {
 
   $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
 
-  $("#nombre").change(function(){
-      $("#alimento").text($("#nombre").val());
-  });
+  // $("#nombre").change(function(){
+  //     $("#alimento").text($("#nombre").val());
+  // });
 
-  $("#unidad").change(function(){
-    var unidadMedida = $("#unidad option:selected").text();
-    if(unidadMedida == 'Litro'){
-      $('#divEquivalencia').show();
-      $("#medida").text(unidadMedida);
-    }else{
-      $('#equivalente').val("");
-      $('#divEquivalencia').hide();
-    }
-  });
+  // $("#unidad").change(function(){
+  //   var unidadMedida = $("#unidad option:selected").text();
+  //   if(unidadMedida == 'Litro'){
+  //     $('#divEquivalencia').show();
+  //     $("#medida").text(unidadMedida);
+  //   }else{
+  //     $('#equivalente').val("");
+  //     $('#divEquivalencia').hide();
+  //   }
+  // });
 });
 
 function vaciarCampos(){
@@ -57,8 +57,6 @@ function guardar(e){
     data:{
       nombre: $('#nombre').val(),
       unidad : $('#unidad').val(),
-      equivalente: $('#equivalente').val(),
-
     },
     success: function(response){
       $('#modal').modal('hide');

@@ -47,9 +47,9 @@
                         <th>#</th>
                         <th>Proveedor</th>
                         <th>Cantidad</th>
-                        <th>Equivalente gramos</th>
                         <th>Costo Unitario</th>
                         <th>Costo Total</th>
+                        <th>Ingreso</th>
                         <th>Vencimiento</th>
                         <th width="10%">Acciones</th>
                     </tr>

@@ -83,10 +83,10 @@
             <label for="alimento">Alimentos</label>
             <select class="form-control" id="alimento" name="alimento" >
                 @foreach($alimentos as $alimento)
-                <option value="{{$alimento->AlimentoId}}">{{$alimento->AlimentoNombre}}</option>
+                <option value="{{$alimento->AlimentoId}}" >{{$alimento->AlimentoNombre}}</option>
                 @endforeach
             </select>
-            <label for="cantidad">Cantidad neto</label> <small>(en gramos)</small>
+            <label for="cantidad">Cantidad neto</label> <small>(en gramos o cm3)<small>
             <input type="number" id ="cantidad" name="cantidad" class="form-control" >
             <input type="hidden" value="Gramo" id="unidadMedida" name="unidadMedida">
         </div>

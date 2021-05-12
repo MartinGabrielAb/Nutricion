@@ -34,11 +34,11 @@ class AlimentoPorProveedorController extends Controller
         $alimentoPorProveedor->AlimentoPorProveedorCantidad = $datos['cantidad'];
         $alimentoPorProveedor->AlimentoPorProveedorCosto = $datos['costo'];
         $alimentoPorProveedor->AlimentoPorProveedorCostoTotal = 0;
-        if($alimento->AlimentoEquivalenteGramos != NULL){
-            $alimentoPorProveedor->AlimentoPorProveedorCantidadGramos = $alimentoPorProveedor->AlimentoPorProveedorCantidad * $alimento->AlimentoEquivalenteGramos;
-        }else{
-            $alimentoPorProveedor->AlimentoPorProveedorCantidadGramos = NULL;
-        }
+        // if($alimento->AlimentoEquivalenteGramos != NULL){
+        //     $alimentoPorProveedor->AlimentoPorProveedorCantidadGramos = $alimentoPorProveedor->AlimentoPorProveedorCantidad * $alimento->AlimentoEquivalenteGramos;
+        // }else{
+        //     $alimentoPorProveedor->AlimentoPorProveedorCantidadGramos = NULL;
+        // }
         $alimentoPorProveedor->AlimentoPorProveedorEstado = 1;
         $resultado = $alimentoPorProveedor->save();
         /*-------------------------Actualizar costos---------------------------------*/
@@ -90,9 +90,18 @@ class AlimentoPorProveedorController extends Controller
                                         $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida);
                                     break;
                                     case 'Litro':
-                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * $costoPorUnidadMedida / $alimento->AlimentoEquivalenteGramos;
+                                        // $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * $costoPorUnidadMedida / $alimento->AlimentoEquivalenteGramos;
+                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida/1000);
                                     break;
                                     case 'Kilogramo':
+                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida/1000);
+                                    break;
+                                }
+                            break;
+                            case "cm3":
+                                switch($nombreUnidadMedidaAlimento){
+                                    case 'Litro':
+                                        // $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * $costoPorUnidadMedida / $alimento->AlimentoEquivalenteGramos;
                                         $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida/1000);
                                     break;
                                 }
@@ -109,23 +118,23 @@ class AlimentoPorProveedorController extends Controller
                     $comida->ComidaCostoTotal += $alimentoPorComida->AlimentoPorComidaCostoTotal;
                     $comida->Update();
                     //Busco los detalles donde fue asignada esa comida
-                    $comidasPorTipoPaciente = ComidaPorTipoPaciente::where('ComidaId','=',$comida->ComidaId)->get();
-                    foreach($comidasPorTipoPaciente as $comidaPorTipoPaciente){
-                        //Actualizo el costo de los detalles donde estaba asignada esa comida
-                        $comidaPorTipoPaciente->ComidaPorTipoPacienteCostoTotal -= $costoViejo;
-                        $comidaPorTipoPaciente->ComidaPorTipoPacienteCostoTotal += $alimentoPorComida->AlimentoPorComidaCostoTotal;
-                        $comidaPorTipoPaciente->Update();
-                        //Busco el tipo de menu y actualizo el costo
-                        $detalleMenuTipoPaciente = DetalleMenuTipoPaciente::FindOrFail($comidaPorTipoPaciente->DetalleMenuTipoPacienteId);
-                        $detalleMenuTipoPaciente->DetalleMenuTipoPacienteCostoTotal -= $costoViejo;
-                        $detalleMenuTipoPaciente->DetalleMenuTipoPacienteCostoTotal += $alimentoPorComida->AlimentoPorComidaCostoTotal;
-                        $detalleMenuTipoPaciente->Update();
-                        //Busco el Menu para actualizar el costo
-                        $menu = Menu::FindOrFail($detalleMenuTipoPaciente->MenuId);
-                        $menu->MenuCostoTotal -= $costoViejo;
-                        $menu->MenuCostoTotal += $alimentoPorComida->AlimentoPorComidaCostoTotal;
-                        $resultado = $menu->update();
-                    }
+                    // $comidasPorTipoPaciente = ComidaPorTipoPaciente::where('ComidaId','=',$comida->ComidaId)->get();
+                    // foreach($comidasPorTipoPaciente as $comidaPorTipoPaciente){
+                    //     //Actualizo el costo de los detalles donde estaba asignada esa comida
+                    //     $comidaPorTipoPaciente->ComidaPorTipoPacienteCostoTotal -= $costoViejo;
+                    //     $comidaPorTipoPaciente->ComidaPorTipoPacienteCostoTotal += $alimentoPorComida->AlimentoPorComidaCostoTotal;
+                    //     $comidaPorTipoPaciente->Update();
+                    //     //Busco el tipo de menu y actualizo el costo
+                    //     $detalleMenuTipoPaciente = DetalleMenuTipoPaciente::FindOrFail($comidaPorTipoPaciente->DetalleMenuTipoPacienteId);
+                    //     $detalleMenuTipoPaciente->DetalleMenuTipoPacienteCostoTotal -= $costoViejo;
+                    //     $detalleMenuTipoPaciente->DetalleMenuTipoPacienteCostoTotal += $alimentoPorComida->AlimentoPorComidaCostoTotal;
+                    //     $detalleMenuTipoPaciente->Update();
+                    //     //Busco el Menu para actualizar el costo
+                    //     $menu = Menu::FindOrFail($detalleMenuTipoPaciente->MenuId);
+                    //     $menu->MenuCostoTotal -= $costoViejo;
+                    //     $menu->MenuCostoTotal += $alimentoPorComida->AlimentoPorComidaCostoTotal;
+                    //     $resultado = $menu->update();
+                    // }
                 }
             }
         }
@@ -343,47 +352,47 @@ class AlimentoPorProveedorController extends Controller
                     }else{
 
                         switch($nombreUnidadMedidaDetalle){
-                            case "Mililitro":
-                                switch($nombreUnidadMedidaAlimento){
-                                    case 'Litro':
-                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida/1000);
-                                    break;
-                                    case 'Kilolitro':
-                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida/1000000);
-                                    break;
-                                }
-                            break;
-                            case "Litro":
-                                switch($nombreUnidadMedidaAlimento){
-                                    case 'Mililitro':
-                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida*1000);
+                            // case "Mililitro":
+                            //     switch($nombreUnidadMedidaAlimento){
+                            //         case 'Litro':
+                            //             $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida/1000);
+                            //         break;
+                            //         case 'Kilolitro':
+                            //             $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida/1000000);
+                            //         break;
+                            //     }
+                            // break;
+                            // case "Litro":
+                            //     switch($nombreUnidadMedidaAlimento){
+                            //         case 'Mililitro':
+                            //             $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida*1000);
                                     
-                                    break;
-                                    case 'Kilolitro':
-                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida/1000);
-                                    break;
-                                }
-                            break;
-                            case "Kilolitro":
-                                switch($nombreUnidadMedidaAlimento){
-                                    case 'Mililitro':
-                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida*1000000);
-                                    break;
-                                    case 'Litro':
-                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida*1000);
-                                    break;
-                                }
-                            break;
-                            case "Miligramo":
-                                switch($nombreUnidadMedidaAlimento){
-                                    case 'Gramo':
-                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida/1000);
-                                    break;
-                                    case 'Kilogramo':
-                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida/1000000);
-                                    break;
-                                }
-                            break;
+                            //         break;
+                            //         case 'Kilolitro':
+                            //             $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida/1000);
+                            //         break;
+                            //     }
+                            // break;
+                            // case "Kilolitro":
+                            //     switch($nombreUnidadMedidaAlimento){
+                            //         case 'Mililitro':
+                            //             $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida*1000000);
+                            //         break;
+                            //         case 'Litro':
+                            //             $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida*1000);
+                            //         break;
+                            //     }
+                            // break;
+                            // case "Miligramo":
+                            //     switch($nombreUnidadMedidaAlimento){
+                            //         case 'Gramo':
+                            //             $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida/1000);
+                            //         break;
+                            //         case 'Kilogramo':
+                            //             $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida/1000000);
+                            //         break;
+                            //     }
+                            // break;
                             case "Gramo":
                                 switch($nombreUnidadMedidaAlimento){
                                     case 'Miligramo':
@@ -394,16 +403,23 @@ class AlimentoPorProveedorController extends Controller
                                     break;
                                 }
                             break;
-                            case "Kilogramo":
+                            case "cm3":
                                 switch($nombreUnidadMedidaAlimento){
-                                    case 'Miligramo':
-                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida*1000000);
-                                    break;
-                                    case 'Gramo':
-                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida*1000);
+                                    case 'Litro':
+                                        $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida/1000);
                                     break;
                                 }
-                            break;    
+                            break;
+                            // case "Kilogramo":
+                            //     switch($nombreUnidadMedidaAlimento){
+                            //         case 'Miligramo':
+                            //             $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida*1000000);
+                            //         break;
+                            //         case 'Gramo':
+                            //             $alimentoPorComida->AlimentoPorComidaCostoTotal = $alimentoPorComidaCantidadNeto * ($costoPorUnidadMedida*1000);
+                            //         break;
+                            //     }
+                            // break;    
                         }
 
                     }
@@ -415,23 +431,23 @@ class AlimentoPorProveedorController extends Controller
                     $comida->ComidaCostoTotal += $alimentoPorComida->AlimentoPorComidaCostoTotal;
                     $comida->Update();
                     //Busco los detalles donde fue asignada esa comida
-                    $comidasPorTipoPaciente = ComidaPorTipoPaciente::where('ComidaId','=',$comida->ComidaId)->get();
-                    foreach($comidasPorTipoPaciente as $comidaPorTipoPaciente){
-                        //Actualizo el costo de los detalles donde estaba asignada esa comida
-                        $comidaPorTipoPaciente->ComidaPorTipoPacienteCostoTotal -= $costoViejo;
-                        $comidaPorTipoPaciente->ComidaPorTipoPacienteCostoTotal += $alimentoPorComida->AlimentoPorComidaCostoTotal;
-                        $comidaPorTipoPaciente->Update();
-                        //Busco el tipo de menu y actualizo el costo
-                        $detalleMenuTipoPaciente = DetalleMenuTipoPaciente::FindOrFail($comidaPorTipoPaciente->DetalleMenuTipoPacienteId);
-                        $detalleMenuTipoPaciente->DetalleMenuTipoPacienteCostoTotal -= $costoViejo;
-                        $detalleMenuTipoPaciente->DetalleMenuTipoPacienteCostoTotal += $alimentoPorComida->AlimentoPorComidaCostoTotal;
-                        $detalleMenuTipoPaciente->Update();
-                        //Busco el Menu para actualizar el costo
-                        $menu = Menu::FindOrFail($detalleMenuTipoPaciente->MenuId);
-                        $menu->MenuCostoTotal -= $costoViejo;
-                        $menu->MenuCostoTotal += $alimentoPorComida->AlimentoPorComidaCostoTotal;
-                        $resultado = $menu->update();
-                    }
+                    // $comidasPorTipoPaciente = ComidaPorTipoPaciente::where('ComidaId','=',$comida->ComidaId)->get();
+                    // foreach($comidasPorTipoPaciente as $comidaPorTipoPaciente){
+                    //     //Actualizo el costo de los detalles donde estaba asignada esa comida
+                    //     $comidaPorTipoPaciente->ComidaPorTipoPacienteCostoTotal -= $costoViejo;
+                    //     $comidaPorTipoPaciente->ComidaPorTipoPacienteCostoTotal += $alimentoPorComida->AlimentoPorComidaCostoTotal;
+                    //     $comidaPorTipoPaciente->Update();
+                    //     //Busco el tipo de menu y actualizo el costo
+                    //     $detalleMenuTipoPaciente = DetalleMenuTipoPaciente::FindOrFail($comidaPorTipoPaciente->DetalleMenuTipoPacienteId);
+                    //     $detalleMenuTipoPaciente->DetalleMenuTipoPacienteCostoTotal -= $costoViejo;
+                    //     $detalleMenuTipoPaciente->DetalleMenuTipoPacienteCostoTotal += $alimentoPorComida->AlimentoPorComidaCostoTotal;
+                    //     $detalleMenuTipoPaciente->Update();
+                    //     //Busco el Menu para actualizar el costo
+                    //     $menu = Menu::FindOrFail($detalleMenuTipoPaciente->MenuId);
+                    //     $menu->MenuCostoTotal -= $costoViejo;
+                    //     $menu->MenuCostoTotal += $alimentoPorComida->AlimentoPorComidaCostoTotal;
+                    //     $resultado = $menu->update();
+                    // }
                 }
             }
         }

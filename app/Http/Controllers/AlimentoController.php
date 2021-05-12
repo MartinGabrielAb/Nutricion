@@ -63,18 +63,18 @@ class AlimentoController extends Controller
         $alimento =new Alimento();
         $alimento->AlimentoNombre = $datos['nombre'];
         $alimento->UnidadMedidaId = $unidadMedida->UnidadMedidaId;
-        if($unidadMedida->UnidadMedidaNombre == 'Litro'){
-            $alimento->AlimentoEquivalenteGramos = $datos['equivalente'];
-        }
-        if($unidadMedida->UnidadMedidaNombre == 'Kilogramo'){
-            $alimento->AlimentoEquivalenteGramos = 1000;
-        }
-        if($unidadMedida->UnidadMedidaNombre == 'Gramo'){
-            $alimento->AlimentoEquivalenteGramos = 1;
-        }
-        if($unidadMedida->UnidadMedidaNombre == 'Unidad'){
-            $alimento->AlimentoEquivalenteGramos = NULL;
-        }
+        // if($unidadMedida->UnidadMedidaNombre == 'Litro'){
+        //     $alimento->AlimentoEquivalenteGramos = $datos['equivalente'];
+        // }
+        // if($unidadMedida->UnidadMedidaNombre == 'Kilogramo'){
+        //     $alimento->AlimentoEquivalenteGramos = 1000;
+        // }
+        // if($unidadMedida->UnidadMedidaNombre == 'Gramo'){
+        //     $alimento->AlimentoEquivalenteGramos = 1;
+        // }
+        // if($unidadMedida->UnidadMedidaNombre == 'Unidad'){
+        //     $alimento->AlimentoEquivalenteGramos = NULL;
+        // }
         $alimento->AlimentoEstado = 1;
         $alimento->AlimentoCantidadTotal = 0;
         $alimento->AlimentoCostoTotal = 0;

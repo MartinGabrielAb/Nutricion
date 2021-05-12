@@ -22,13 +22,6 @@ class AlimentoRequest extends FormRequest
                 })
             ],
         'unidad' => ['required','exists:unidadmedida,UnidadMedidaId'], 
-        'equivalente' => ['bail',Rule::requiredIf(function () use ($request) {
-                $unidadMedida = DB::table('unidadmedida')
-                ->where('UnidadMedidaId',$request->unidad)                
-                ->first();
-            if($unidadMedida->UnidadMedidaNombre == "Litro") return true;
-            return false;
-        })],  
     ];
     }
 
@@ -41,7 +34,6 @@ class AlimentoRequest extends FormRequest
             'nombre.unique' => 'Ya existe un alimento con ese nombre.',
             'unidad.required' => 'Unidad de medida requerida.',
             'nombre.exists' => 'Unidad de medida inexistente.',
-            'equivalente.required' => 'Debe ingresar la equivalencia',
         ];
     }
 }
