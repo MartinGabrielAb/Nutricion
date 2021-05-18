@@ -34,9 +34,13 @@ class PiezaRequest extends FormRequest
                 'pseudonimo' => [
                     'required',
                     'max:64',
-                    Rule::unique('pieza','PiezaPseudonimo')->where(function ($query) { 
-                        return $query->where('PiezaEstado', 1);
-                    })
+                    Rule::unique('pieza','PiezaPseudonimo')
+                        ->where(function ($query) use ($request) { 
+                            return $query->where('SalaId',$request->salaId);
+                        }) 
+                        ->where(function ($query) {
+                            return $query->where('PiezaEstado', 1);
+                        })
                 ],
             ];
         //validacion para el update

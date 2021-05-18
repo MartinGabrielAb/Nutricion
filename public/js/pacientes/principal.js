@@ -98,7 +98,7 @@ $(document).ready( function () {
           if (data.DetalleRelevamientoEstado == 1) {
             return '<span class="text-success ml-1">Activo</span>';
           }else{
-              return '<span class="text-danger ml-1">Inactivo</span>';
+              return '<span class="text-warning ml-1">Inactivo</span>';
           }
       }},
       {data: 'Relevador'},
@@ -108,6 +108,7 @@ $(document).ready( function () {
       { responsivePriority: 1, targets: 0 },
       { responsivePriority: 2, targets: 13 },
     ],
+    "order": [[ 3, "desc" ]],
     "language": { "url": "../JSON/Spanish_dataTables.json"
   }});
 });

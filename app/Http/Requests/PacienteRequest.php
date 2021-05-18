@@ -36,17 +36,17 @@ class PacienteRequest extends FormRequest
                     })
                 ],
                 'direccion' => [
-                    'required',
+                    'nullable',
                     'min:4',
                     'max:128',
                 ],
                 'email' => [
-                    'required',
+                    'nullable',
                     'email',
                     'max:64',
                 ],
                 'telefono' => [
-                    'required',
+                    'nullable',
                     'min:4',
                     'max:64',
                 ],
@@ -82,17 +82,17 @@ class PacienteRequest extends FormRequest
                         })
                 ],
                 'direccion' => [
-                    'required',
+                    'nullable',
                     'min:4',
                     'max:128',
                 ],
                 'email' => [
-                    'required',
+                    'nullable',
                     'email',
                     'max:64',
                 ],
                 'telefono' => [
-                    'required',
+                    'nullable',
                     'min:4',
                     'max:64',
                 ],
@@ -116,7 +116,6 @@ class PacienteRequest extends FormRequest
             'nombre.min' => 'Nombre debe sobrepasar 2 caracteres.',
             'nombre.max' => 'Nombre no debe sobrepasar 64 caracteres.',
             //DNI
-            'cuil.required' => 'CUIL es requerido.',
             'cuil.numeric' => 'CUIL debe contener sólo números sin puntos.',
             'cuil.digits_between' => 'CUIL debe estar entre los 7 y 15 dígitos.',
             'cuil.unique' => 'Ya existe un paciente con ese CUIL',
@@ -125,11 +124,9 @@ class PacienteRequest extends FormRequest
             'direccion.min' => 'Direccion debe sobrepasar 4 caracteres.',
             'direccion.max' => 'Direccion no debe sobrepasar 64 caracteres.',
             //email
-            'email.required' => 'Email es requerido.',
             'email.email' => 'Email debe tener un formato de email válido (ejemplo@ejemplo).',
             'email.max' => 'Email no debe sobrepasar 64 caracteres.',
             //telefono
-            'telefono.required' => 'Teléfono es requerido.',
             'telefono.min' => 'Teléfono debe sobrepasar 2 caracteres.',
             'telefono.max' => 'Teléfono no debe sobrepasar 64 caracteres.',
             //estado

@@ -6,18 +6,21 @@
         <div class="card">
         <div class="card-body">
             <div class="row">
-                <div class="col border">
-                    <label class="m-0">Piezas: </label>
+                
+            </div>
+            <div class="row ">
+                <div class="col border d-flex justify-content-center">
+                    <label class="m-3">Piezas: </label>
                     @foreach ($piezas as $pieza)
-                        <button type="button" id="btnPiezaid{{$pieza->PiezaId}}" class="btn btn-sm btn-default clsPiezas" onclick="getcamas({{$pieza->PiezaId}})">
+                        <button type="button" id="btnPiezaid{{$pieza->PiezaId}}" class="btn btn-sm btn-default clsPiezas m-2 pl-3 pr-3" onclick="getcamas({{$pieza->PiezaId}})">
                             {{$pieza->PiezaPseudonimo}}
                         </button>
                     @endforeach
                 </div>
             </div>
             <div class="row">
-                <div id="divCamas" class="col border d-none">
-                    <label class="m-0">Camas: </label>
+                <div id="divCamas" class="col border d-none justify-content-center">
+                    <label class="m-3">Camas: </label>
                 </div>
             </div>
             <div class="row">
@@ -133,6 +136,12 @@
                         <input class="form-check-input" type="checkbox" value="1" id="vajilladescartable" name="vajilladescartable">
                         <label class="form-check-label" for="vajilladescartable">
                             Vajilla Descartable
+                        </label>
+                    </div>
+                    <div class="form-check mt-3">
+                        <input class="form-check-input" type="checkbox" value="1" id="agregado" name="agregado">
+                        <label class="form-check-label" for="agregado">
+                            Agregado
                         </label>
                     </div>
                 </div>

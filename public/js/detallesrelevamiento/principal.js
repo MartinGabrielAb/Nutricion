@@ -33,6 +33,7 @@ $(document).ready( function () {
   /*------Funcion para llenar los campos cuando selecciono una fila -----*/ 
   $('#divDetalleRelevamiento').on( 'click','button' , function () {
     if($(this).attr('id') == 'editrelevamiento'){
+      $('#btnGuardar').attr('disabled',true);
       $('#modal-body-comidas').addClass('d-none');
       $('#modal-footer-comidas').addClass('d-none');
       $('#modal-body').removeClass('d-none');
@@ -56,6 +57,11 @@ $(document).ready( function () {
         $( "#vajilladescartable" ).prop( "checked", true );
       }else{
         $( "#vajilladescartable" ).prop( "checked", false );
+      }
+      if(detallerelevamiento.DetalleRelevamientoAgregado == 1){
+        $( "#agregado" ).prop( "checked", true );
+      }else{
+        $( "#agregado" ).prop( "checked", false );
       }
       menuId = $("#menu").val();
       tipopacienteId = $("#tipoPacienteId").val();
@@ -113,7 +119,9 @@ function guardar(e){
         comidas: $('input[name="comidas[]"]:checked').map(function(){return $(this).val();}).get(),
         acompaniante: $('#acompanianteId').is(':checked'),
         vajilladescartable: $('#vajilladescartable').is(':checked'),
+        agregado: $('#agregado').is(':checked'),
         user: $('#usuarioId').val(),
+
       },
       success: function(response){
         camaid = response.success[0];
@@ -151,7 +159,9 @@ function editar(id){
       comidas: $('input[name="comidas[]"]:checked').map(function(){return $(this).val();}).get(),
       acompaniante: $('#acompanianteId').is(':checked'),
       vajilladescartable: $('#vajilladescartable').is(':checked'),
+      agregado: $('#agregado').is(':checked'),
       user: $('#usuarioId').val(),
+      agregado: $('#agregado').val(),
     },
     success: function(response){
       camaid = response.success[0];
@@ -206,6 +216,7 @@ function menuportipopaciente(menu,tipopaciente,detallerelevamientoId = null){
           success: function(response) {
             detalleRelevamientoComidas = response.success;
             llenarCheckboxComida(menuportipopacienteComidas,detalleRelevamientoComidas);
+            $('#btnGuardar').attr('disabled',false);
           },
           error:function(){
             mostrarCartel('Error al eliminar el registro.','alert-danger');
@@ -245,6 +256,7 @@ function vaciarCampos(){
   $("#tipoPacienteId").val(-1).trigger('change');
   $('#acompanianteId').prop( "checked", false );
   $('#vajilladescartable').prop( "checked", false );
+  $('#agregado').prop( "checked", false );
   $('#comidas').empty();
   $("#listaErrores").empty();
 }
@@ -312,7 +324,7 @@ function elegirvariantes(){
 function getcamas(piezaid){
   $('.clsPiezas').removeClass('bg-secondary');
   $('#btnPiezaid'+piezaid).addClass('bg-secondary');
-  $('#divCamas').addClass('d-none');
+  $('#divCamas').removeClass('d-flex').addClass('d-none');
   $('#divDetalleRelevamiento').addClass('d-none');
   $.ajax({
     url: '../camas',
@@ -322,18 +334,18 @@ function getcamas(piezaid){
     },
     success: function(response) {
       camas = response.success;
-      $('#divCamas').empty().append('<label class="m-0">Camas: </label>');
+      $('#divCamas').empty().append('<label class="m-3">Camas: </label>');
       camas.forEach(cama => {
         let html = `
-          <button type="button" id="btnCamaid${cama.CamaId}" class="btn btn-sm btn-default clsCamas" onclick="getDetallerelevamiento(${cama.CamaId})">
+          <button type="button" id="btnCamaid${cama.CamaId}" class="btn btn-sm btn-default clsCamas m-2 pl-3 pr-3" onclick="getDetallerelevamiento(${cama.CamaId})">
             ${cama.CamaNumero}
           </button>
         `;
-        $('#divCamas').removeClass('d-none').append(html);
+        $('#divCamas').removeClass('d-none').addClass('d-flex justify-content-center').append(html);
       });
     },
     error:function(){
-      mostrarCartel('Error al eliminar el registro.','alert-danger');
+      mostrarCartel('Error al obtener camas.','alert-danger');
     }
   });
 }
@@ -351,21 +363,21 @@ function getDetallerelevamiento(camaid){
       relevamientoId: relevamientoid,
     },
     success: function(response) {
-      detallerelevamiento = response.success[0];
       $('#divDetalleRelevamiento').empty().append('<ul class="list-group w-100"></ul');
       $('#camaId').val(camaid);
-      if(detallerelevamiento){
+      if(response.success){
+        detallerelevamiento = response.success;
+        relevamientoid = $('#relevamientoId').val();
         html = `
           <li class="list-group-item text-center">
-            <h6>Acciones</h6>
             <button id="showcomidas" type="button" class="btn btn-sm btn-default ml-1 mr-1 pl-3 pr-3" data-toggle="modal"  data-target="#modal" >
               <i title="comidas" class="fas fa-utensils"></i>
             </button>
             <button id="editrelevamiento" type="button" class="btn btn-sm btn-default ml-1 mr-1 pl-3 pr-3" data-toggle="modal"  data-target="#modal" >
               <i class="fas fa-edit"></i>
             </button>
-            <button id="deleterelevamiento" class="btn btn-sm btn-default ml-1 mr-1 pl-3 pr-3" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-trash"></i>
+            <button id="deleterelevamiento" class="btn btn-sm btn-default ml-1 mr-1 pl-3 pr-3" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ${(detallerelevamiento.RelevamientoId != relevamientoid) ? 'disabled' : ''}>
+              <i class="fas fa-trash"></i>
             </button>
             <a href="../pacientes/${detallerelevamiento.PacienteId}">
               <button id="historiaclinica" class="btn btn-sm btn-default" type="button">
@@ -376,42 +388,46 @@ function getDetallerelevamiento(camaid){
                 <button class="dropdown-item" onClick ="eliminar(${detallerelevamiento.DetalleRelevamientoId})" ><i class="fas fa-exclamation-circle"></i>Confirmar eliminación</button>
             </div>
           </li>
-          <li class="list-group-item">
-            <p class="m-0">${(detallerelevamiento.DetalleRelevamientoEstado == 1) ? '<h6 class="text-success">Revisado</h6>' : '<h6 class="text-warning">No revisado</h6>'}</p>
+          <li class="list-group-item text-center">
+            ${(detallerelevamiento.RelevamientoId == relevamientoid) ? '<h5 class="text-success m-0">Revisado</h5>' : '<h5 class="text-warning m-0">Info del último relevamiento</h5>'}
           </li>
-          <li class="list-group-item">
+          <li class="list-group-item text-center">
             <h6>Paciente</h6>
             <p class="m-0">${detallerelevamiento.PacienteApellido}, ${detallerelevamiento.PacienteNombre}</p>
           </li>
-          <li class="list-group-item">
+          <li class="list-group-item text-center">
             <h6>Menú</h6>
             <p class="m-0">${detallerelevamiento.MenuNombre}</p>
           </li>
-          <li class="list-group-item">
+          <li class="list-group-item text-center">
             <h6>Regímen</h6>
             <p class="m-0">${detallerelevamiento.TipoPacienteNombre}</p>
           </li>
-          <li class="list-group-item">
+          <li class="list-group-item text-center">
             <h6>Acompañante</h6>
             <p class="m-0">${(detallerelevamiento.DetalleRelevamientoAcompaniante == 1 ? 'Si' : 'No')}</p>
           </li>
-          <li class="list-group-item">
+          <li class="list-group-item text-center">
             <h6>Vajilla Descartable</h6>
             <p class="m-0">${(detallerelevamiento.DetalleRelevamientoVajillaDescartable == 1 ? 'Si' : 'No')}</p>
           </li>
-          <li class="list-group-item">
+          <li class="list-group-item text-center">
+            <h6>Agregado</h6>
+            <p class="m-0">${(detallerelevamiento.DetalleRelevamientoAgregado == 1 ? 'Si' : 'No')}</p>
+          </li>
+          <li class="list-group-item text-center">
             <h6>Diagnóstico</h6>
             <p class="m-0">${detallerelevamiento.DetalleRelevamientoDiagnostico}</p>
           </li>
-          <li class="list-group-item">
+          <li class="list-group-item text-center">
             <h6>Observaciones</h6>
             <p class="m-0">${detallerelevamiento.DetalleRelevamientoObservaciones}</p>
           </li>
-          <li class="list-group-item">
+          <li class="list-group-item text-center">
             <h6>Hora de registro</h6>
             <p class="m-0">${detallerelevamiento.DetalleRelevamientoHora}</p>
           </li>
-          <li class="list-group-item">
+          <li class="list-group-item text-center">
             <h6>Relevador</h6>
             <p class="m-0">${detallerelevamiento.Relevador}</p>
           </li>
@@ -419,7 +435,6 @@ function getDetallerelevamiento(camaid){
       }else{
         html =`
         <li class="list-group-item text-center">
-          <h6>Acciones</h6>
           <button type="button" class="btn btn-sm btn-default ml-1 mr-1 pl-3 pr-3" onclick="agregar()" data-toggle="modal"  data-target="#modal" >
             <i class="fas fa-user-plus"></i>
           </button>
@@ -430,7 +445,7 @@ function getDetallerelevamiento(camaid){
       $('#divDetalleRelevamiento ul').append(html);
     },
     error:function(){
-      mostrarCartel('Error al eliminar el registro.','alert-danger');
+      mostrarCartel('Error al seleccionar relevamiento.','alert-danger');
     }
   });
 }

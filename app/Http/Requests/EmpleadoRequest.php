@@ -36,17 +36,14 @@ class EmpleadoRequest extends FormRequest
                     })
                 ],
                 'direccion' => [
-                    'required',
                     'min:4',
                     'max:128',
                 ],
                 'email' => [
-                    'required',
                     'email',
                     'max:64',
                 ],
                 'telefono' => [
-                    'required',
                     'min:4',
                     'max:64',
                 ],
@@ -82,17 +79,14 @@ class EmpleadoRequest extends FormRequest
                         })
                 ],
                 'direccion' => [
-                    'required',
                     'min:4',
                     'max:128',
                 ],
                 'email' => [
-                    'required',
                     'email',
                     'max:64',
                 ],
                 'telefono' => [
-                    'required',
                     'min:4',
                     'max:64',
                 ],
@@ -121,15 +115,12 @@ class EmpleadoRequest extends FormRequest
             'cuil.digits_between' => 'CUIL debe estar entre los 7 y 15 dígitos.',
             'cuil.unique' => 'Ya existe un paciente con ese CUIL',
             //direccion
-            'direccion.required' => 'Direccion es requerido.',
             'direccion.min' => 'Direccion debe sobrepasar 4 caracteres.',
             'direccion.max' => 'Direccion no debe sobrepasar 64 caracteres.',
             //email
-            'email.required' => 'Email es requerido.',
             'email.email' => 'Email debe tener un formato de email válido (ejemplo@ejemplo).',
             'email.max' => 'Email no debe sobrepasar 64 caracteres.',
             //telefono
-            'telefono.required' => 'Teléfono es requerido.',
             'telefono.min' => 'Teléfono debe sobrepasar 2 caracteres.',
             'telefono.max' => 'Teléfono no debe sobrepasar 64 caracteres.',
             //estado

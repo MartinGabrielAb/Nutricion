@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Exception;
 use App\Paciente;
+use App\RelevamientoComida;
 use App\DetalleRelevamiento;
 use Illuminate\Http\Request;
 use App\DetRelevamientoPorComida;
@@ -17,49 +18,7 @@ class DetalleRelevamientoController extends Controller
         date_default_timezone_set('America/Argentina/Salta');
     }
     public function index(Request $request)//request: relevamientoId
-    { 
-        /*---Pregunto si es una peticion ajax----*/
-        if($request->ajax()){
-            try{
-                // $detallesRelevamiento = DetalleRelevamiento::where('RelevamientoId',36)->orderBy('RelevamientoId','desc')->get();
-                $detallesRelevamiento = 
-                    DB::table('detallerelevamiento as dr')
-                    // ->join('paciente as pa','pa.PacienteId','dr.PacienteId')
-                    // ->join('tipopaciente as tp','tp.TipoPacienteId','dr.TipoPacienteId')
-                    ->join('cama as c','c.CamaId','dr.CamaId')
-                    ->join('pieza as pi','pi.PiezaId','c.PiezaId')
-                    // ->join('users as u','u.id','dr.UserId')
-                    // ->join('menu as m','m.MenuId','dr.MenuId')
-                    ->where('dr.RelevamientoId',36)
-                    // ->whereIn('DetalleRelevamientoId', function ($sub) use ($request) {
-                    //     $sub->selectRaw('MAX(DetalleRelevamientoId)')->from('detallerelevamiento')->where('RelevamientoId',$request->relevamientoId)->groupBy('PacienteId')->orderBy('updated_at')->orderBy('DetalleRelevamientoEstado'); // <---- la clave
-                    // })
-                    ->select('dr.DetalleRelevamientoId',
-                            DB::raw('DATE_FORMAT(dr.updated_at, "%H:%i:%s") as DetalleRelevamientoHora'),
-                            'dr.DetalleRelevamientoDiagnostico',
-                            'dr.DetalleRelevamientoAcompaniante',
-                            'dr.DetalleRelevamientoVajillaDescartable',
-                            'dr.DetalleRelevamientoEstado','dr.DetalleRelevamientoObservaciones',
-                            // 'm.MenuNombre','m.MenuId',
-                            // 'pa.PacienteId','pa.PacienteNombre','pa.PacienteApellido','pa.PacienteCuil',
-                            // 'tp.TipoPacienteNombre','tp.TipoPacienteId',
-                            'c.CamaNumero','pi.PiezaPseudonimo','c.CamaId')
-                            // 'u.name as Relevador','u.id as UserId')
-                    ->orderby('dr.DetalleRelevamientoId','desc')
-                    ->get();
-                dd($detallesRelevamiento);
-                return DataTables::
-                    of($detallesRelevamiento)
-                    ->addColumn('btn','detallesrelevamiento/actions')
-                    ->rawColumns(['btn'])
-                    ->toJson();
-            }catch(Exception $ex){
-                return response()->json([
-                    'error' => $ex->getMessage()
-                ], 500);
-            }
-        }
-    }
+    { }
 
     public function create()
     { }
@@ -86,6 +45,11 @@ class DetalleRelevamientoController extends Controller
         }else{
             $detalleRelevamiento->DetalleRelevamientoVajillaDescartable = 0;
         }
+        if($request->get('agregado') == 'true'){
+            $detalleRelevamiento->DetalleRelevamientoAgregado = 1;
+        }else{
+            $detalleRelevamiento->DetalleRelevamientoAgregado = 0;
+        }
         $detalleRelevamiento->UserId = $request->get('user');
         $resultado = $detalleRelevamiento->save();
         foreach ($request->get('comidas') as $key => $comidaId) {
@@ -93,6 +57,21 @@ class DetalleRelevamientoController extends Controller
             $detRelevamientoPorComida->DetalleRelevamientoId = $detalleRelevamiento->DetalleRelevamientoId;
             $detRelevamientoPorComida->ComidaId = $comidaId;
             $detRelevamientoPorComida->save();
+
+            $relevamientoComida = RelevamientoComida::where('RelevamientoId',$detalleRelevamiento->RelevamientoId)
+                                                    ->where('ComidaId',$comidaId)
+                                                    ->first();
+            if($relevamientoComida){
+                $relevamientoComida = RelevamientoComida::findOrFail($relevamientoComida->RelevamientoComidaId);
+                $relevamientoComida->RelevamientoComidaCantidad = $relevamientoComida->RelevamientoComidaCantidad + 1;
+                $relevamientoComida->update();
+            }else{
+                $relevamientoComida = new RelevamientoComida;
+                $relevamientoComida->RelevamientoId = $detalleRelevamiento->RelevamientoId;
+                $relevamientoComida->ComidaId = $comidaId;
+                $relevamientoComida->RelevamientoComidaCantidad = 1;
+                $relevamientoComida->save();
+            }
         }
         if ($resultado) {
             return response()->json(['success'=>$request->get('cama')]);
@@ -103,7 +82,6 @@ class DetalleRelevamientoController extends Controller
 
     public function show($id,Request $request)
     { 
-        
         $detalleRelevamiento = 
                     DB::table('detallerelevamiento as dr')
                     ->join('paciente as pa','pa.PacienteId','dr.PacienteId')
@@ -112,24 +90,50 @@ class DetalleRelevamientoController extends Controller
                     ->join('pieza as pi','pi.PiezaId','c.PiezaId')
                     ->join('users as u','u.id','dr.UserId')
                     ->join('menu as m','m.MenuId','dr.MenuId')
-                    ->where('dr.RelevamientoId',$request->get('relevamientoId'))
                     ->where('dr.CamaId',$request->get('camaId'))
-                    // ->whereIn('DetalleRelevamientoId', function ($sub) use ($request) {
-                    //     $sub->selectRaw('MAX(DetalleRelevamientoId)')->from('detallerelevamiento')->where('RelevamientoId',$request->relevamientoId)->groupBy('PacienteId')->orderBy('updated_at')->orderBy('DetalleRelevamientoEstado'); // <---- la clave
-                    // })
+                    ->where('dr.RelevamientoId',$request->get('relevamientoId'))
+                    ->where('dr.DetalleRelevamientoEstado','!=',-1)
                     ->select('dr.DetalleRelevamientoId',
                             DB::raw('DATE_FORMAT(dr.updated_at, "%H:%i:%s") as DetalleRelevamientoHora'),'dr.RelevamientoId',
                             'dr.DetalleRelevamientoDiagnostico',
                             'dr.DetalleRelevamientoAcompaniante',
                             'dr.DetalleRelevamientoVajillaDescartable',
+                            'dr.DetalleRelevamientoAgregado',
                             'dr.DetalleRelevamientoEstado','dr.DetalleRelevamientoObservaciones',
                             'm.MenuNombre','m.MenuId',
                             'pa.PacienteId','pa.PacienteNombre','pa.PacienteApellido','pa.PacienteCuil',
                             'tp.TipoPacienteNombre','tp.TipoPacienteId',
                             'c.CamaNumero','pi.PiezaPseudonimo','c.CamaId',
                             'u.name as Relevador','u.id as UserId')
-                    ->orderby('dr.DetalleRelevamientoId','desc')
-                    ->get();
+                    ->orderby('dr.updated_at','desc')
+                    ->first();
+        if(!$detalleRelevamiento)
+        {
+            $detalleRelevamiento = 
+                    DB::table('detallerelevamiento as dr')
+                    ->join('paciente as pa','pa.PacienteId','dr.PacienteId')
+                    ->join('tipopaciente as tp','tp.TipoPacienteId','dr.TipoPacienteId')
+                    ->join('cama as c','c.CamaId','dr.CamaId')
+                    ->join('pieza as pi','pi.PiezaId','c.PiezaId')
+                    ->join('users as u','u.id','dr.UserId')
+                    ->join('menu as m','m.MenuId','dr.MenuId')
+                    ->where('dr.CamaId',$request->get('camaId'))
+                    ->where('dr.DetalleRelevamientoEstado','!=',-1)
+                    ->select('dr.DetalleRelevamientoId',
+                            DB::raw('DATE_FORMAT(dr.updated_at, "%H:%i:%s") as DetalleRelevamientoHora'),'dr.RelevamientoId',
+                            'dr.DetalleRelevamientoDiagnostico',
+                            'dr.DetalleRelevamientoAcompaniante',
+                            'dr.DetalleRelevamientoVajillaDescartable',
+                            'dr.DetalleRelevamientoAgregado',
+                            'dr.DetalleRelevamientoEstado','dr.DetalleRelevamientoObservaciones',
+                            'm.MenuNombre','m.MenuId',
+                            'pa.PacienteId','pa.PacienteNombre','pa.PacienteApellido','pa.PacienteCuil',
+                            'tp.TipoPacienteNombre','tp.TipoPacienteId',
+                            'c.CamaNumero','pi.PiezaPseudonimo','c.CamaId',
+                            'u.name as Relevador','u.id as UserId')
+                    ->orderby('dr.updated_at','desc')
+                    ->first();
+        }
         return response()->json(['success'=>$detalleRelevamiento]);
     }
 
@@ -141,9 +145,22 @@ class DetalleRelevamientoController extends Controller
         // dd($id);
         //actualizo estado del relevamiento que se está queriendo editar para guardarlo como historial del paciente
         
-        $detalleRelevamiento = DetalleRelevamiento::where('DetalleRelevamientoId', $id)->where('DetalleRelevamientoEstado', 1)->update(['DetalleRelevamientoEstado' => 0]);
-        // $detalleRelevamiento->DetalleRelevamientoEstado = 0;
-        // $detalleRelevamiento->update();
+        $detalleRelevamiento = DetalleRelevamiento::findOrFail($id);
+        $detalleRelevamiento->DetalleRelevamientoEstado = 0;
+        $detallesRelevamientoPorComida = DetRelevamientoPorComida::where('DetalleRelevamientoId',$detalleRelevamiento->DetalleRelevamientoId)->get();
+        if($detallesRelevamientoPorComida){
+            foreach ($detallesRelevamientoPorComida as $detalleRelevamientoPorComida) {
+                $relevamientoComida = RelevamientoComida::where('RelevamientoId',$detalleRelevamiento->RelevamientoId)
+                                                        ->where('ComidaId',$detalleRelevamientoPorComida->ComidaId)
+                                                        ->first();
+                if($relevamientoComida){
+                    $relevamientoComida = RelevamientoComida::findOrFail($relevamientoComida->RelevamientoComidaId);
+                    $relevamientoComida->RelevamientoComidaCantidad = $relevamientoComida->RelevamientoComidaCantidad - 1;
+                    $relevamientoComida->update();
+                }
+            }
+        }
+        $detalleRelevamiento->update();
         $paciente = Paciente::where('PacienteCuil',$request->get('paciente'))->where('PacienteEstado','!=',-1)->first();
         $detalleRelevamiento = new DetalleRelevamiento;
         $detalleRelevamiento->DetalleRelevamientoEstado = 1;
@@ -164,13 +181,35 @@ class DetalleRelevamientoController extends Controller
         }else{
             $detalleRelevamiento->DetalleRelevamientoVajillaDescartable = 0;
         }
+        if($request->get('agregado') == 'true'){
+            $detalleRelevamiento->DetalleRelevamientoAgregado = 1;
+        }else{
+            $detalleRelevamiento->DetalleRelevamientoAgregado = 0;
+        }
         $detalleRelevamiento->UserId = $request->get('user');
+        //seteo un segundo más la última acualización porque uso este campo para obtener el último registro editado. (conflicto con el detalle relevamiento antiguo)
+        $detalleRelevamiento->updated_at = date("m/d/Y h:i:s a", time() + 1);
         $resultado = $detalleRelevamiento->save();
         foreach ($request->get('comidas') as $key => $comidaId) {
             $detRelevamientoPorComida = new DetRelevamientoPorComida;
             $detRelevamientoPorComida->DetalleRelevamientoId = $detalleRelevamiento->DetalleRelevamientoId;
             $detRelevamientoPorComida->ComidaId = $comidaId;
             $detRelevamientoPorComida->save();
+
+            $relevamientoComida = RelevamientoComida::where('RelevamientoId',$detalleRelevamiento->RelevamientoId)
+                                                    ->where('ComidaId',$comidaId)
+                                                    ->first();
+            if($relevamientoComida){
+                $relevamientoComida = RelevamientoComida::findOrFail($relevamientoComida->RelevamientoComidaId);
+                $relevamientoComida->RelevamientoComidaCantidad = $relevamientoComida->RelevamientoComidaCantidad + 1;
+                $relevamientoComida->update();
+            }else{
+                $relevamientoComida = new RelevamientoComida;
+                $relevamientoComida->RelevamientoId = $detalleRelevamiento->RelevamientoId;
+                $relevamientoComida->ComidaId = $comidaId;
+                $relevamientoComida->RelevamientoComidaCantidad = 1;
+                $relevamientoComida->save();
+            }
         }
         if ($resultado) {
             return response()->json(['success'=>$request->get('cama')]);
@@ -182,6 +221,19 @@ class DetalleRelevamientoController extends Controller
     public function destroy($id)
     {
         $detalleRelevamiento = DetalleRelevamiento::findOrFail($id);
+        $detallesRelevamientoPorComida = DetRelevamientoPorComida::where('DetalleRelevamientoId',$detalleRelevamiento->DetalleRelevamientoId)->get();
+        if($detallesRelevamientoPorComida){
+            foreach ($detallesRelevamientoPorComida as $detalleRelevamientoPorComida) {
+                $relevamientoComida = RelevamientoComida::where('RelevamientoId',$detalleRelevamiento->RelevamientoId)
+                                                        ->where('ComidaId',$detalleRelevamientoPorComida->ComidaId)
+                                                        ->first();
+                if($relevamientoComida){
+                    $relevamientoComida = RelevamientoComida::findOrFail($relevamientoComida->RelevamientoComidaId);
+                    $relevamientoComida->RelevamientoComidaCantidad = $relevamientoComida->RelevamientoComidaCantidad - 1;
+                    $relevamientoComida->update();
+                }
+            }
+        }
         $camaid = $detalleRelevamiento->CamaId;
         $resultado = $detalleRelevamiento->delete();
         if ($resultado) {

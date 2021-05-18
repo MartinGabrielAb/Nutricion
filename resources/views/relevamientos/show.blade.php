@@ -24,10 +24,10 @@
         </div>
         <div class="row">
           <div class="col-lg-4 text-center">
-            <h5 class="m-0">{{$relevamiento->SalaPseudonimo}}</h5>
+            <h5 class="m-0">{{$relevamiento->RelevamientoFecha}}</h5>
           </div>
           <div class="col-lg-4 text-center">
-            <h5 class="m-0">{{$relevamiento->RelevamientoFecha}}</h5>
+            <h5 class="m-0">{{$relevamiento->SalaPseudonimo}}</h5>
           </div>
           <div class="col-lg-4 text-center">
             <h5 class="m-0">{{$relevamiento->RelevamientoTurno}}</h5>
