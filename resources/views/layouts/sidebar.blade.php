@@ -33,6 +33,14 @@
             </ul>
             <ul class="nav nav-treeview">
               <li class="nav-item">
+                <a href="{{URL::action('RoleController@index')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Roles y permisos</p>
+                </a>
+              </li>
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
                 <a href="{{URL::action('UsuarioController@index')}}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Usuarios</p>

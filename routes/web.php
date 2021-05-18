@@ -249,6 +249,16 @@ Route::middleware(['auth'])->group(function(){
 	Route::delete('roles/{id}','RoleController@destroy')->name('roles.destroy')->middleware('permission:roles.destroy');
 	Route::get('roles/{id}/edit','RoleController@edit')->name('roles.edit')->middleware('permission:roles.edit');
 });
+//permisos
+Route::middleware(['auth'])->group(function(){
+	Route::post('permisos','PermisoController@store')->name('permisos.store')->middleware('permission:permisos.store');
+	Route::get('permisos','PermisoController@index')->name('permisos.index')->middleware('permission:permisos.index');
+	Route::get('permisos/create','PermisoController@create')->name('permisos.create')->middleware('permission:permisos.create');
+	Route::put('permisos/{id}','PermisoController@update')->name('permisos.update')->middleware('permission:permisos.update');
+	Route::get('permisos/{id}','PermisoController@show')->name('permisos.show')->middleware('permission:permisos.show');
+	Route::delete('permisos/{id}','PermisoController@destroy')->name('permisos.destroy')->middleware('permission:permisos.destroy');
+	Route::get('permisos/{id}/edit','PermisoController@edit')->name('permisos.edit')->middleware('permission:permisos.edit');
+});
 Auth::routes();
 
 // Las rutas comentadas habría que borrarlas

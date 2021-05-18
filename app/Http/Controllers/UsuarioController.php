@@ -51,21 +51,27 @@ class UsuarioController extends Controller
 
     public function store(UsuarioRequest $data)
     {
-        
-        $usuario = new User();
-        $usuario->name = $data['nombre'];
-        $usuario->email =  $data['email'];
-        $usuario->password = bcrypt($data['password']);
-        $usuario->save();
-        foreach ($data['roles'] as $rol){
-            DB::table('model_has_roles')->insert(
-                [
-                    'role_id' => $rol,
-                    'model_type' => 'App\User',
-                    'model_id' =>$usuario->id,    
-                ]
-            );
-        }
+        User::create([
+            'name' => $data['nombre'],
+            'email' => $data['email'],
+            'password' => bcrypt($data['password']),
+         ])->assignRole($data['roles']);
+        // $usuario = new User();
+        // $usuario->name = $data['nombre'];
+        // $usuario->email =  $data['email'];
+        // $usuario->password = bcrypt($data['password']);
+        // $usuario->save();
+        // foreach ($data['roles'] as $rol){
+        //     DB::table('model_has_roles')->insert(
+        //         [
+        //             'role_id' => $rol,
+        //             'model_type' => 'App\User',
+        //             'model_id' =>$usuario->id,    
+        //         ]
+        //     );
+            
+
+        // }
         return response()->json(['success' => 'true']);
     }
 
@@ -77,22 +83,23 @@ class UsuarioController extends Controller
 
     public function update(UsuarioRequest $data, $id)
     {
-        $usuario = User::FindOrFail($id);
-        $usuario->name = $data['nombre'];
-        $usuario->email =  $data['email'];
+        // $usuario = User::FindOrFail($id);
+        // $usuario->name = $data['nombre'];
+        // $usuario->email =  $data['email'];
         try{
-            DB::table('model_has_roles')
-                ->where('model_id',$id)->delete();
-            foreach ($data['roles'] as $rol){
-                DB::table('model_has_roles')->insert(
-                    [
-                        'role_id' => $rol,
-                        'model_type' => 'App\User',
-                        'model_id' =>$id,    
-                    ]
-                );
-            }
-            $resultado = $usuario->update();
+            $roles = Rol::All();
+            $resultado = User::where('id',$id)
+            ->update([
+                'name' => $data['nombre'],
+                'email' => $data['email'],
+             ]);
+             foreach ($roles as $rol ) {
+                User::where('id',$id)->first()
+                ->removeRole($rol->id);
+             }
+             User::where('id',$id)->first()
+             ->assignRole($data['roles']);
+
             if ($resultado) {
                 return response()->json(['success'=>'true']);
             }else{
