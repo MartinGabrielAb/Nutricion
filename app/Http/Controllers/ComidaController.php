@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Comida;
 use App\Alimento;
+use App\Nutriente;
 use App\UnidadMedida;
 use App\AlimentoPorComida;
 use Illuminate\Http\Request;
@@ -33,6 +34,7 @@ class ComidaController extends Controller
         return view('comidas.principal',compact('tiposComida'));
     }
 
+    
     public function create()
     { }
     
@@ -60,16 +62,20 @@ class ComidaController extends Controller
 								->join('alimento as a','a.AlimentoId','apc.AlimentoId')
 								->join('unidadmedida as um','um.UnidadMedidaId','apc.UnidadMedidaId')
 								->where('apc.ComidaId',$id)
-								->where('apc.AlimentoPorComidaEstado',1);
+								->where('apc.AlimentoPorComidaEstado',1)
+                                ->get();
 	        return DataTables::of($alimentosPorComida)
 						->addColumn('btn','alimentosporcomida/actions')
 						->rawColumns(['AlimentoPorComidaEstado','btn'])
 	 					->toJson();
         }
-        $alimentos = Alimento::where('AlimentoEstado',1)->get();
+        $alimentos = Alimento::where('AlimentoEstado',1)
+                                ->orderBy('AlimentoNombre','asc')
+                                ->get();
         $unidadesMedida = UnidadMedida::all();
         $comida = Comida::findOrFail($id);
-        return view('alimentosporcomida.principal',compact('comida','alimentos','unidadesMedida'));
+        $nutrientes = Nutriente::all();
+        return view('alimentosporcomida.principal',compact('comida','alimentos','unidadesMedida','nutrientes'));
     }
 
     // Este lo uso para traer comidas por tipo 

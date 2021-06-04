@@ -40,17 +40,18 @@
               <!--------------TABLA PRINCIPAL-------------->
             <div class="row">
               <div class="col">
-                <table id="tableAlimentosPorProveedor" class="table table-sm table-striped table-bordered table-hover display nowrap" style="width:100%" cellspacing="0">
+                <table id="tableAlimentosPorProveedor" class="text-center table table-sm table-striped table-bordered table-hover display nowrap" style="width:100%" cellspacing="0">
                   <!------Cabecera de la tabla------>
                   <thead>
                     <tr >
-                        <th>#</th>
                         <th>Proveedor</th>
-                        <th>Cantidad</th>
+                        <th>Comprada</th>
+                        <th>Usado</th>
                         <th>Costo Unitario</th>
                         <th>Costo Total</th>
                         <th>Ingreso</th>
                         <th>Vencimiento</th>
+                        <th >Disponible</th>
                         <th width="10%">Acciones</th>
                     </tr>
                   </thead>

@@ -10,5 +10,5 @@ class Alimento extends Model
     protected $table = 'alimento';
 	protected $primaryKey = 'AlimentoId';
 	public $timestamps = false;
-	protected $filliable=['AlimentoId','AlimentoNombre','Despensa_DespensaId','AlimentoStock','AlimentoVencimiento','AlimentoEstado'];
+	protected $filliable=['AlimentoId','AlimentoNombre','AlimentoCantidadTotal','UnidadMedidaId','AlimentoCostoTotal','AlimentoEstado'];
 }

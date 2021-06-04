@@ -53,7 +53,8 @@ class NutrientePorAlimentoController extends Controller
                                     ->join('alimento as a','a.AlimentoId','npa.AlimentoId')
                                     ->join('unidadmedida as u','u.UnidadMedidaId','n.UnidadMedidaId')
                                     ->orderBy('n.NutrienteId','asc')
-                                    ->where('npa.AlimentoId',$id);
+                                    ->where('npa.AlimentoId',$id)
+                                    ->get();
         if($request->ajax()){
              return DataTables::of($nutrientesPorAlimento)
                                 ->toJson();
@@ -62,7 +63,10 @@ class NutrientePorAlimentoController extends Controller
                         ->join('unidadmedida as u','u.UnidadMedidaId','n.UnidadMedidaId')
                         ->orderBy('n.NutrienteId','asc')
                          ->get();
-        $alimento = Alimento::findOrFail($id);
+        $alimento = DB::table('alimento as a')
+                        ->join('unidadmedida as u','u.UnidadMedidaId','a.UnidadMedidaId')
+                        ->where('AlimentoId',$id)
+                        ->first();
         return view('nutrientesporalimento.principal',compact('alimento','nutrientesPorAlimento','nutrientes'));
     }
 

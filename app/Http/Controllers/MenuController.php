@@ -56,7 +56,7 @@ class MenuController extends Controller
         $tipospaciente = DB::table('tipopaciente')
                 ->where('TipoPacienteEstado',1)                    
                 ->get();
-        return view('detallemenutipopaciente.principal',compact('menu','tipospaciente'));
+        return view('detallemenutipopaciente.principal',compact('menu','tipospaciente','nutrientes'));
     }
 
     public function update(MenuRequest $request, $id)

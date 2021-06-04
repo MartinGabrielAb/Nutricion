@@ -30,6 +30,9 @@
               </div>
               <div class="col">
                   <p class="text-right">
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="btnAgregar" onClick="llenarComidas({{$menu->DetalleMenuTipoPacienteId}})" data-toggle="modal"  data-target="#modalElegir">
+                      Simular nutrientes
+                    </button>
                     <button type="button" class="btn btn-sm btn-outline-primary" id="btnAgregar" onClick="agregar()" data-toggle="modal"  data-target="#modal">
                       Agregar comida
                     </button>
@@ -54,6 +57,32 @@
                 </table>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Nutrientes del menu -->
+  <div class="container-fluid" >
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card" id = "divNutrientes">
+          <div class="card-body">
+            <table id="tableNutrientes" class="table table-sm table-striped table-bordered table-hover" style="width:100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th class="text-xs text-center"><small>Tipo</small></th>
+                  <th class="text-xs text-center"><small>Comida</small></th>
+                  <th class="text-xs text-center"><small>Alimento</small></th>
+                  <th class="text-xs text-center"><small>Cantidad</small></th>
+                  @foreach($nutrientes as $nutriente)
+                  <th class="text-xs text-center"><small>{{$nutriente->NutrienteNombre}}</small></th>
+                  @endforeach
+                </tr>
+              </thead>
+              <tbody id="bodyNutrientes">
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -127,8 +156,48 @@
   </div>
 </div>
 
+<!-- Modal para elegir las comidas para simular -->
+<div class="modal fade" id="modalElegir" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form onSubmit="simular(event)">
+      <div class="modal-content">
+        <div class="modal-header">
+          <span class="modal-title" id="tituloModal">Seleccione las comidas para simular</span>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>    
+        <div class="modal-body">
+        <div id="divChecks">
+        </div>
+        </div>
+        <div class="modal-footer">
+          <div class="container-fluid">
+            <div class="row mb-2">
+              <div class="col">
+                <button type="submit" id="btnSimular" class="btn btn-sm btn-primary w-100"  ><i class="fas fa-check"></i><span>Simular </span></button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+               <button type="button" id="btnCerrarModal" class="btn btn-sm btn-secondary w-100" data-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col text-danger" id="divComprobar2">
+                  <!-- Lista de errores -->
+                  <ul id = "listaErrores2"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
 @push('custom-scripts')
 <script type="text/javascript" src="{{asset('js/comidaportipopaciente/principal.js')}}"></script>
+<script type="text/javascript" src="{{asset('js/comidaportipopaciente/nutrientes.js')}}"></script>
 
 @endpush
 

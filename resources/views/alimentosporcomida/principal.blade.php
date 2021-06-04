@@ -24,7 +24,7 @@
         <div class="card">
           <div class="card-body">
             <div class="row">
-              <div class="col" >
+              <div class="col">
                   <div id="divMensaje" class="alert text-center p-0">
                     <!-- Mensaje de exito/error -->
                   </div> 
@@ -57,6 +57,33 @@
                 </table>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="container-fluid" >
+      <button type="button" class="btn btn-sm btn-default" id="btnNutrientes" onClick="llenarNutrientes({{$comida->ComidaId}})" >
+        Mostrar nutrientes
+      </button>
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card" id = "divNutrientes">
+          <div class="card-body">
+            <table id="tableNutrientes" class="table table-sm table-striped table-bordered table-hover" style="width:100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th class="text-xs text-center"><small>Alimento</small></th>
+                  <th class="text-xs text-center"><small>Cantidad</small></th>
+                  @foreach($nutrientes as $nutriente)
+                  <th class="text-xs text-center"><small>{{$nutriente->NutrienteNombre}}</small></th>
+                  @endforeach
+                </tr>
+              </thead>
+              <tbody id="bodyNutrientes">
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -114,9 +141,9 @@
     </form>
   </div>
 </div>
-
 @push('custom-scripts')
 <script type="text/javascript" src="{{asset('js/alimentosporcomida/principal.js')}}"></script>
+<script type="text/javascript" src="{{asset('js/alimentosporcomida/nutrientes.js')}}"></script>
 
 @endpush
 

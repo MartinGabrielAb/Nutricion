@@ -9,5 +9,5 @@ class AlimentoPorProveedor extends Model
     protected $table = 'alimentoporproveedor';
 	protected $primaryKey = 'AlimentoPorProveedorId';
 	public $timestamps = false;
-	protected $filliable=['AlimentoId','ProveedorId','AlimentoPorProveedorVencimiento','AlimentoPorProveedorPrecio','AlimentoPorProveedorEstado','AlimentoPorProveedorPeso','MarcaId'];
+	protected $filliable=['AlimentoId','ProveedorId','AlimentoPorProveedorCosto','AlimentoPorProveedorCantidad','AlimentoPorProveedorCantidadUsada','AlimentoPorProveedorVencimiento','AlimentoPorProveedorEstado','AlimentoPorProveedorFechaEntrada','AlimentoPorProveedorCostoTotal'];
 }
