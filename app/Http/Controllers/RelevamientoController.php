@@ -82,7 +82,19 @@ class RelevamientoController extends Controller
                                 ->get();
         $tiposPaciente = TipoPaciente::all();
         $menus = Menu::where('MenuEstado',1)->get();
-        return view('relevamientos.show',compact('relevamiento','pacientes','piezas','tiposPaciente','menus'));
+        $tiposcomida = DB::table('tipocomida')->where('TipoComidaEstado',1)->get();
+        
+        foreach ($tiposcomida as $index => $tipocomida) {
+            $comidas = DB::table('comida')->where('TipoComidaId',$tipocomida->TipoComidaId)->where('ComidaEstado',1)->get();
+            $tiposcomida[$index]->comidas = $comidas;
+        }
+
+        $colaciones = DB::table('comida as c')
+                        ->join('tipocomida as tc','tc.TipoComidaId','c.TipoComidaId')
+                        ->where('tc.TipoComidaNombre','Colación')
+                        ->get();
+
+        return view('relevamientos.show',compact('relevamiento','pacientes','piezas','tiposPaciente','menus','tiposcomida','colaciones'));
     }
 
     public function edit($id)

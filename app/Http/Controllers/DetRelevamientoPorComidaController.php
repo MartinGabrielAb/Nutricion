@@ -11,6 +11,7 @@ class DetRelevamientoPorComidaController extends Controller
         $comidasDelRelevamiento = 
             DB::table('detrelevamientoporcomida as drpc')
                 ->join('comida as c','c.ComidaId','drpc.ComidaId')
+                ->join('tipocomida as tc','tc.TipoComidaId','c.TipoComidaId')
                 ->where('drpc.DetalleRelevamientoId',$id)
                 ->get();
         if ($comidasDelRelevamiento) {

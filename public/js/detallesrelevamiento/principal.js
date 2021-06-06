@@ -1,5 +1,5 @@
 $(document).ready( function () {
-
+  // -------------------- Select 2 ---------------------
   $('#pacienteId').select2({
     width: 'resolve',
     theme: "classic",
@@ -17,7 +17,7 @@ $(document).ready( function () {
       text: 'Buscar por Menú',
     },
     allowClear: true,
-});
+  });
   $('#tipoPacienteId').select2({
       width: 'resolve',
       theme: "classic",
@@ -26,6 +26,42 @@ $(document).ready( function () {
         text: 'Buscar por Tipo de Paciente',
       },
       allowClear: true,
+  });
+  $('.clsComidas').select2({
+    width: 'resolve',
+    theme: "classic",
+    placeholder: {
+      id: '-1', 
+      text: 'Buscar',
+    },
+    allowClear: true,
+  });
+  $('#colacion').select2({
+    width: 'resolve',
+    theme: "classic",
+    placeholder: {
+      id: '-1', 
+      text: 'Buscar',
+    },
+    allowClear: true,
+  });
+  $('#precargarMenu').select2({
+    width: 'resolve',
+    theme: "classic",
+    placeholder: {
+      id: '-1', 
+      text: 'Buscar',
+    },
+    allowClear: true,
+  });
+  $('#precargarTipoPaciente').select2({
+    width: 'resolve',
+    theme: "classic",
+    placeholder: {
+      id: '-1', 
+      text: 'Buscar',
+    },
+    allowClear: true,
   });
 
   $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
@@ -63,6 +99,7 @@ $(document).ready( function () {
       }else{
         $( "#agregado" ).prop( "checked", false );
       }
+      $('#colacion').val(detallerelevamiento.DetalleRelevamientoColacion).trigger('change');
       menuId = $("#menu").val();
       tipopacienteId = $("#tipoPacienteId").val();
       menuportipopaciente(menuId,tipopacienteId,detallerelevamiento.DetalleRelevamientoId);
@@ -72,7 +109,7 @@ $(document).ready( function () {
       $('#modal-footer').addClass('d-none');
       $('#modal-body-comidas').empty().removeClass('d-none');
       $('#modal-footer-comidas').removeClass('d-none');
-      $('#modal-body-comidas').append('<ul class="list-group"></ul>');
+      $('#modal-body-comidas').append('<dl class="list-group"></dl>');
       menuId = $("#menu").val();
       tipopacienteId = $("#tipoPacienteId").val();
       menuportipopaciente(menuId,tipopacienteId,detallerelevamiento.DetalleRelevamientoId);
@@ -80,20 +117,28 @@ $(document).ready( function () {
   });
   //eventos para seleccionar las comidas del menú
   $('#menu').on("select2:select", function(e) { 
-    $("#tipoPacienteId").val(-1).trigger('change');
-    $('#comidas').empty();
+    $(".clsComidas").val(-1).trigger('change');
   });
   $('#tipoPacienteId').on("select2:select", function(e) { 
     $('#comidas').addClass('d-none');
     menuId = $("#menu").val();
-    tipopacienteId = $("#tipoPacienteId").val();
-    if($("#id").val() != 0){
-      detallerelevamientoId = $("#id").val();
+    tipopacienteId = $(this).val();
+    if(menuId != -1 && $("#tipoPacienteId option:selected").text() == 'Individual'){
+      elementoComidas = $('#comidas');
+      if(elementoComidas.hasClass('d-none')){
+        $('#comidas').removeClass('d-none');
+        $('.clsComidas').prop('required',true);
+      }
     }else{
-      detallerelevamientoId = null;
+      $('#comidas').addClass('d-none');
+      $('.clsComidas').prop('required',false);
     }
-    if(menuId != -1){
-      menuportipopaciente(menuId,tipopacienteId,detallerelevamientoId);
+  });
+  $('#btnPrecargarComidas').on("click", function(e) {
+    menuId = $("#precargarMenu").val();
+    tipopacienteId = $("#precargarTipoPaciente").val();
+    if(menuId != -1 && tipopacienteId != -1){
+      menuportipopaciente(menuId,tipopacienteId,null);
     }
   });
 });
@@ -103,6 +148,20 @@ function guardar(e){
   $("#listaErrores").empty();
   e.preventDefault();
   var id = $("#id").val();
+  clsComidas = $('.clsComidas');
+  comidas = [];
+  clsComidas.each(function(index, item) {
+    var $comidaid = $(item).val();
+    $comidaid = {
+      'ComidaId' : $comidaid,
+    }
+    if($comidaid != null){
+      comidas.push($comidaid);
+    }
+  });
+  if(comidas.length == 0){
+    comidas = null;
+  }
   if(id == 0){
     $.ajax({
       type:'POST',
@@ -116,15 +175,15 @@ function guardar(e){
         observaciones: $('#observacionesId').val(),
         menu: $('#menu').val(),
         tipopaciente: $('#tipoPacienteId').val(),
-        comidas: $('input[name="comidas[]"]:checked').map(function(){return $(this).val();}).get(),
+        comidas: comidas,
         acompaniante: $('#acompanianteId').is(':checked'),
         vajilladescartable: $('#vajilladescartable').is(':checked'),
         agregado: $('#agregado').is(':checked'),
         user: $('#usuarioId').val(),
-
+        colacion: $('#colacion').val(),
       },
       success: function(response){
-        camaid = response.success[0];
+        camaid = response.success;
         $('#modal').modal('hide');
         mostrarCartel('Registro agregado correctamente.','alert-success');
         getDetallerelevamiento(camaid);
@@ -137,12 +196,12 @@ function guardar(e){
       }
     });
   }else{
-    editar(id);
+    editar(id,comidas);
   } 
 }
 
 //PUT AJAX
-function editar(id){
+function editar(id,comidas){
   $("#listaErrores").empty();
   $.ajax({
     type:'PUT',
@@ -156,12 +215,13 @@ function editar(id){
       observaciones: $('#observacionesId').val(),
       menu: $('#menu').val(),
       tipopaciente: $('#tipoPacienteId').val(),
-      comidas: $('input[name="comidas[]"]:checked').map(function(){return $(this).val();}).get(),
+      comidas: comidas,
       acompaniante: $('#acompanianteId').is(':checked'),
       vajilladescartable: $('#vajilladescartable').is(':checked'),
       agregado: $('#agregado').is(':checked'),
       user: $('#usuarioId').val(),
       agregado: $('#agregado').val(),
+      colacion: $('#colacion').val(),
     },
     success: function(response){
       camaid = response.success[0];
@@ -215,7 +275,7 @@ function menuportipopaciente(menu,tipopaciente,detallerelevamientoId = null){
           url: "../detrelevamientoporcomida/"+detallerelevamientoId,
           success: function(response) {
             detalleRelevamientoComidas = response.success;
-            llenarCheckboxComida(menuportipopacienteComidas,detalleRelevamientoComidas);
+            llenarselectcomidas(menuportipopacienteComidas,detalleRelevamientoComidas);
             $('#btnGuardar').attr('disabled',false);
           },
           error:function(){
@@ -223,23 +283,8 @@ function menuportipopaciente(menu,tipopaciente,detallerelevamientoId = null){
           }
         });
       }else{
-        llenarCheckboxComida(menuportipopacienteComidas,null);
+        llenarselectcomidas(menuportipopacienteComidas,null);
       }
-    },
-    error:function(){
-      mostrarCartel('Error al eliminar el registro.','alert-danger');
-    }
-  });
-}
-
-//GET comidas del relevamiento
-function getComidasDelRelevamiento(detalleRelevamientoId){
-  $.ajax({
-    type:"GET",
-    url: "../detrelevamientoporcomida/"+detalleRelevamientoId,
-    success: function(response) {
-      comidas = response.success;
-      return comidas;
     },
     error:function(){
       mostrarCartel('Error al eliminar el registro.','alert-danger');
@@ -254,10 +299,13 @@ function vaciarCampos(){
   $('#observacionesId').val("");
   $("#menu").val(-1).trigger('change');
   $("#tipoPacienteId").val(-1).trigger('change');
+  $("#colacion").val(-1).trigger('change');
+  $("#precargarTipoPaciente").val(-1).trigger('change');
+  $("#precargarMenu").val(-1).trigger('change');
   $('#acompanianteId').prop( "checked", false );
   $('#vajilladescartable').prop( "checked", false );
   $('#agregado').prop( "checked", false );
-  $('#comidas').empty();
+  $(".clsComidas").val(-1).trigger('change');
   $("#listaErrores").empty();
 }
 function agregar(){
@@ -268,7 +316,10 @@ function agregar(){
   $('#modal-footer').removeClass('d-none');
   vaciarCampos();
   $("#tituloModal").text("Agregar paciente");
+  $('#comidas').addClass('d-none');
   $("#btnGuardar span").text("Guardar");
+  camaid = $('#camaId').val();
+  getUltimoDetRelevamiento(camaid);
 }
 function mostrarCartel(texto,clase){
     $('#divMensaje').removeClass('alert-success alert-danger');
@@ -278,47 +329,26 @@ function mostrarCartel(texto,clase){
     $('#divMensaje').fadeOut(4000);
 }
 
-function llenarCheckboxComida(comidasmenuportipopaciente,comidasDelRelevamiento){
-  $('#comidas').empty();
-  if(comidasmenuportipopaciente.length>0){
-    comidasmenuportipopaciente.forEach(comidamenuportipopaciente => {
-      if(comidamenuportipopaciente.ComidaPorTipoPacientePrincipal == 1){
-        html = `<p><input class="form-check-input" type="checkbox" id="comida${comidamenuportipopaciente.ComidaId}" name="comidas[]" value="${comidamenuportipopaciente.ComidaId}" checked>
-                  <label class="form-check-label" for="comida${comidamenuportipopaciente.ComidaId}">
-                      ${comidamenuportipopaciente.ComidaNombre}
-                  </label></p>`;
-      }else{
-        html = `<p><input class="form-check-input" type="checkbox" id="comida${comidamenuportipopaciente.ComidaId}" name="comidas[]" value="${comidamenuportipopaciente.ComidaId}">
-                  <label class="form-check-label" for="comida${comidamenuportipopaciente.ComidaId}">
-                      ${comidamenuportipopaciente.ComidaNombre}
-                  </label></p>`;
-      }
-        $('#comidas').append(html);
-      if(comidasDelRelevamiento != null && comidasDelRelevamiento.length>0){
-        comidasDelRelevamiento.forEach(comidadelrelevamiento => {
-          if(comidamenuportipopaciente.ComidaId == comidadelrelevamiento.ComidaId){
-            $('#comida'+comidadelrelevamiento.ComidaId).attr('checked',true);
-            htmlcomidas = `<li class="list-group-item">${comidadelrelevamiento.ComidaNombre}</li>`
-            $('#modal-body-comidas ul').append(htmlcomidas);
-          }
-        });
-      }
+function llenarselectcomidas(comidasmenuportipopaciente,comidasDelRelevamiento){
+  $(".clsComidas").val(-1).trigger('change');
+  if(comidasDelRelevamiento != null && comidasDelRelevamiento.length>0){
+    comidasDelRelevamiento.forEach(comidadelrelevamiento => {
+      $("#comidaid"+comidadelrelevamiento.TipoComidaId).val(comidadelrelevamiento.ComidaId).trigger('change');
+      $('#modal-body-comidas dl').append('<dt class="list-group-item">'+comidadelrelevamiento.TipoComidaNombre+'</dt>');
+      $('#modal-body-comidas dl').append('<dd class="list-group-item">'+comidadelrelevamiento.ComidaNombre+'</dd>');
     });
-    if(comidasDelRelevamiento != null && comidasDelRelevamiento.length<1){
-      $('#modal-body-comidas ul').append('<li class="list-group-item">No existen Comidas.</li>');
-    }
-  }else{
-    $('#comidas').empty().append("<p>No existen comidas</p>");
-  } 
-}
-
-function elegirvariantes(){
-  elementoComidas = $('#comidas');
-  if(elementoComidas.hasClass('d-none')){
-    $('#comidas').removeClass('d-none');
-  }else{
-    $('#comidas').addClass('d-none');
   }
+  else{
+    if(comidasmenuportipopaciente != null && comidasmenuportipopaciente.length>0){
+      comidasmenuportipopaciente.forEach(comidamenuportipopaciente => {
+        if(comidamenuportipopaciente.ComidaPorTipoPacientePrincipal == 1){
+          $("#comidaid"+comidamenuportipopaciente.TipoComidaId).val(comidamenuportipopaciente.ComidaId).trigger('change');
+        }else{
+          $("#comidaid"+comidamenuportipopaciente.TipoComidaId).val(-1).trigger('change');
+        }
+      });
+    }
+  }  
 }
 
 function getcamas(piezaid){
@@ -351,6 +381,7 @@ function getcamas(piezaid){
 }
 
 function getDetallerelevamiento(camaid){
+  $('#camaId').val(camaid);
   $('.clsCamas').removeClass('bg-secondary');
   $('#divDetalleRelevamiento').addClass('d-none');
   $('#btnCamaid'+camaid).addClass('bg-secondary');
@@ -361,6 +392,7 @@ function getDetallerelevamiento(camaid){
     data: {
       camaId: camaid,
       relevamientoId: relevamientoid,
+      tipoconsulta: 1,
     },
     success: function(response) {
       $('#divDetalleRelevamiento').empty().append('<ul class="list-group w-100"></ul');
@@ -448,4 +480,58 @@ function getDetallerelevamiento(camaid){
       mostrarCartel('Error al seleccionar relevamiento.','alert-danger');
     }
   });
+}
+
+function getUltimoDetRelevamiento(camaid, paciente = null){
+  $.ajax({
+    url: '../detallesrelevamiento/'+relevamientoId,
+    type: 'GET',
+    data: {
+      camaId: camaid,
+      paciente : paciente,
+      relevamientoId: relevamientoid,
+      tipoconsulta: 2,
+    },
+    success: function(response) {
+      if(response.success){
+        detallerelevamiento = response.success;
+        vaciarCampos();
+        $('#id').val(detallerelevamiento.DetalleRelevamientoId);
+        $('#pacienteId').val(detallerelevamiento.PacienteCuil).trigger('change');
+        $('#diagnosticoId').val(detallerelevamiento.DetalleRelevamientoDiagnostico);
+        $('#observacionesId').val(detallerelevamiento.DetalleRelevamientoObservaciones);
+        $('#menu').val(detallerelevamiento.MenuId).trigger('change');
+        $('#tipoPacienteId').val(detallerelevamiento.TipoPacienteId).trigger('change');
+        $('#comidas').addClass('d-none');
+        if(detallerelevamiento.DetalleRelevamientoAcompaniante == 1){
+          $( "#acompanianteId" ).prop( "checked", true );
+        }else{
+          $( "#acompanianteId" ).prop( "checked", false );
+        }
+        if(detallerelevamiento.DetalleRelevamientoVajillaDescartable == 1){
+          $( "#vajilladescartable" ).prop( "checked", true );
+        }else{
+          $( "#vajilladescartable" ).prop( "checked", false );
+        }
+        if(detallerelevamiento.DetalleRelevamientoAgregado == 1){
+          $( "#agregado" ).prop( "checked", true );
+        }else{
+          $( "#agregado" ).prop( "checked", false );
+        }
+        $('#colacion').val(detallerelevamiento.DetalleRelevamientoColacion).trigger('change'); 
+      }else{
+        if(paciente != null){
+          $('#respuestaUltimoRelevamiento').fadeIn().text('No existe relevamiento anterior.').fadeOut(4000);
+        }
+      }
+    },
+    error:function(){
+      mostrarCartel('Error al seleccionar relevamiento.','alert-danger');
+    }
+  }); 
+}
+
+function getUltimoDetRelevamientoPaciente(){
+  paciente = $('#pacienteId option:selected').val();
+  getUltimoDetRelevamiento(null,paciente);
 }
