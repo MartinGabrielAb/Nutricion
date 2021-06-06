@@ -6,14 +6,18 @@ $(document).ready( function () {
     "ajax": "/alimentos/"+alimentoId,
       rowId: "AlimentoPorProveedorId",
     "columns": [
-          {data: 'AlimentoPorProveedorId'},
           {data: 'ProveedorNombre'},
           {data: 'AlimentoPorProveedorCantidad'},
+          {data: 'AlimentoPorProveedorCantidadUsada'},
           {data: 'AlimentoPorProveedorCosto'},
           {data: 'AlimentoPorProveedorCostoTotal'},
           {data: 'AlimentoPorProveedorFechaEntrada'},
           {data: 'AlimentoPorProveedorVencimiento'},
-          {data: 'btn',orderable:false,sercheable:false},
+          {data: null, name: 'AlimentoPorProveedorEstado',
+            render: function ( data) {
+              return '<span class="text-success">'+(data.AlimentoPorProveedorCantidad - data.AlimentoPorProveedorCantidadUsada)+'</span>';
+          }},
+         {data: 'btn',orderable:false,sercheable:false},
     ],
     "language": { "url": "../JSON/Spanish_dataTables.json"},
   });

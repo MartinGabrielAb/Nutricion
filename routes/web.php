@@ -259,6 +259,16 @@ Route::middleware(['auth'])->group(function(){
 	Route::delete('permisos/{id}','PermisoController@destroy')->name('permisos.destroy')->middleware('permission:permisos.destroy');
 	Route::get('permisos/{id}/edit','PermisoController@edit')->name('permisos.edit')->middleware('permission:permisos.edit');
 });
+
+Route::middleware(['auth'])->group(function(){
+	Route::post('seleccionarMenu','SeleccionarMenuController@store')->name('seleccionarMenu.store')->middleware('permission:seleccionarMenu.store');
+	Route::get('seleccionarMenu','SeleccionarMenuController@index')->name('seleccionarMenu.index')->middleware('permission:seleccionarMenu.index');
+	Route::get('seleccionarMenu/create','SeleccionarMenuController@create')->name('seleccionarMenu.create')->middleware('permission:seleccionarMenu.create');
+	Route::put('seleccionarMenu/{id}','SeleccionarMenuController@update')->name('seleccionarMenu.update')->middleware('permission:seleccionarMenu.update');
+	Route::get('seleccionarMenu/{id}','SeleccionarMenuController@show')->name('seleccionarMenu.show')->middleware('permission:seleccionarMenu.show');
+	Route::delete('seleccionarMenu/{id}','SeleccionarMenuController@destroy')->name('seleccionarMenu.destroy')->middleware('permission:seleccionarMenu.destroy');
+	Route::get('seleccionarMenu/{id}/edit','SeleccionarMenuController@edit')->name('seleccionarMenu.edit')->middleware('permission:seleccionarMenu.edit');
+});
 Auth::routes();
 
 // Las rutas comentadas habría que borrarlas

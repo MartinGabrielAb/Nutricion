@@ -63,18 +63,7 @@ class AlimentoController extends Controller
         $alimento =new Alimento();
         $alimento->AlimentoNombre = $datos['nombre'];
         $alimento->UnidadMedidaId = $unidadMedida->UnidadMedidaId;
-        // if($unidadMedida->UnidadMedidaNombre == 'Litro'){
-        //     $alimento->AlimentoEquivalenteGramos = $datos['equivalente'];
-        // }
-        // if($unidadMedida->UnidadMedidaNombre == 'Kilogramo'){
-        //     $alimento->AlimentoEquivalenteGramos = 1000;
-        // }
-        // if($unidadMedida->UnidadMedidaNombre == 'Gramo'){
-        //     $alimento->AlimentoEquivalenteGramos = 1;
-        // }
-        // if($unidadMedida->UnidadMedidaNombre == 'Unidad'){
-        //     $alimento->AlimentoEquivalenteGramos = NULL;
-        // }
+     
         $alimento->AlimentoEstado = 1;
         $alimento->AlimentoCantidadTotal = 0;
         $alimento->AlimentoCostoTotal = 0;
@@ -95,6 +84,7 @@ class AlimentoController extends Controller
 								->join('alimento as a','a.AlimentoId','app.AlimentoId')
 								->join('proveedor as p','p.ProveedorId','app.ProveedorId')
 								->where('app.AlimentoId',$id)
+                                ->where('app.AlimentoPorProveedorEstado',1)
 								->get();
                 foreach ($alimentosPorProveedor as $alimentoPorProveedor) {
                     $alimentoPorProveedor->AlimentoPorProveedorCostoTotal = $alimentoPorProveedor->AlimentoPorProveedorCosto * $alimentoPorProveedor->AlimentoPorProveedorCantidad;

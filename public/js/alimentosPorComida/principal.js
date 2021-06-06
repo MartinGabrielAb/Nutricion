@@ -51,6 +51,7 @@ $(document).ready( function () {
           mostrarCartel('Registro agregado correctamente.','alert-success');
           var table = $('#tableAlimentosPorComida').DataTable();
           table.draw();
+          llenarNutrientes($("#comidaId").val());
           },
         error:function(response){
           var errors =  response.responseJSON.errors;
@@ -72,6 +73,7 @@ $(document).ready( function () {
         mostrarCartel('Registro eliminado correctamente.','alert-success');
         var table = $('#tableAlimentosPorComida').DataTable();
         table.row('#'+id).remove().draw();
+        llenarNutrientes($("#comidaId").val());
       },
       error:function(){
         mostrarCartel('Error al eliminar el registro.','alert-danger');

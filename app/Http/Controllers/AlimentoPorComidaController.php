@@ -156,18 +156,6 @@ class AlimentoPorComidaController extends Controller
         else{
             $detalle->AlimentoPorComidaCostoTotal = 0;
         }
-        // $comidasPorTipoPaciente = ComidaPorTipoPaciente::where('ComidaId',$comida->ComidaId)->get();
-        // foreach($comidasPorTipoPaciente as $comidaPorTipoPaciente){
-        //     $detallesMenuTipoPaciente = DetalleMenuTipoPaciente::where('DetalleMenuTipoPacienteId',$comidaPorTipoPaciente->DetalleMenuTipoPacienteId)->get();
-        //     foreach($detallesMenuTipoPaciente as $detalleMenuTipoPaciente){
-        //         // $detalleMenuTipoPaciente->DetalleMenuTipoPacienteCostoTotal += $detalle->AlimentoPorComidaCostoTotal;
-        //         $menu = Menu::FindOrFail($detalleMenuTipoPaciente->MenuId);
-        //         // $menu->MenuCostoTotal += $detalle->AlimentoPorComidaCostoTotal;
-        //         $detalleMenuTipoPaciente->update();
-        //         $menu->update();
-        //     }
-
-        // }
         $comida->ComidaCostoTotal += $detalle->AlimentoPorComidaCostoTotal;
         $comida->Update();
         $resultado = $detalle->save();
@@ -179,10 +167,39 @@ class AlimentoPorComidaController extends Controller
 
     }
 
-
+    //Utilizo el show para mostrar los nutrientes de los alimentos
     public function show($id)
-    {    }
-
+    {
+        $alimentosPorComida = DB::table('alimentoporcomida as a')
+						->join('alimento as alim','alim.AlimentoId','a.AlimentoId')
+                        ->join('unidadmedida as u','u.UnidadMedidaId','a.UnidadMedidaId')
+						->where('ComidaId',$id)
+                        ->orderBy('AlimentoNombre','asc')
+						->get();
+		$alimentos=array();
+		foreach ($alimentosPorComida as $alimentoPorComida) {
+			$nutrientesPorAlimento = DB::table('nutrienteporalimento as npa')
+						->where('AlimentoId',$alimentoPorComida->AlimentoId)
+                        ->join('nutriente as n','n.NutrienteId','npa.NutrienteId')
+						->get();
+			$nutrientes = array();
+			if($alimentoPorComida->UnidadMedidaNombre == 'Unidad' ) {
+				foreach ($nutrientesPorAlimento as $nutrientePorAlimento) {
+					array_push($nutrientes,round($nutrientePorAlimento->NutrientePorAlimentoValor * $alimentoPorComida->AlimentoPorComidaCantidadNeto,2));
+				}
+			}else{
+				foreach ($nutrientesPorAlimento as $nutrientePorAlimento) {
+					array_push($nutrientes, round($nutrientePorAlimento->NutrientePorAlimentoValor/100 * $alimentoPorComida->AlimentoPorComidaCantidadNeto,2));
+				}
+			}
+			$alimento = array(  'cantidadAlimento'=> $alimentoPorComida->AlimentoPorComidaCantidadNeto,
+								'nombreAlimento'  => $alimentoPorComida->AlimentoNombre,
+							    'nutrientes'      =>$nutrientes);
+			array_push($alimentos, $alimento);
+            
+        }
+        return $alimentos;
+    }
    
     public function edit($id)
     {    }
@@ -324,21 +341,6 @@ class AlimentoPorComidaController extends Controller
         $detalle = AlimentoPorComida::FindOrFail($id);
         $comida = Comida::FindOrFail($detalle->ComidaId);
         $comida->ComidaCostoTotal -= $detalle->AlimentoPorComidaCostoTotal;
-        // $comidasPorTipoPaciente = ComidaPorTipoPaciente::where('ComidaId',$comida->ComidaId)->get();
-
-
-        // $costoViejo = $detalle->AlimentoPorComidaCostoTotal;
-        // foreach($comidasPorTipoPaciente as $comidaPorTipoPaciente){
-        //     $detallesMenuTipoPaciente = DetalleMenuTipoPaciente::where('DetalleMenuTipoPacienteId',$comidaPorTipoPaciente->DetalleMenuTipoPacienteId)->get();
-        //     foreach($detallesMenuTipoPaciente as $detalleMenuTipoPaciente){
-        //         // $detalleMenuTipoPaciente->DetalleMenuTipoPacienteCostoTotal -= $costoViejo;
-        //         $menu = Menu::FindOrFail($detalleMenuTipoPaciente->MenuId);
-        //         // $menu->MenuCostoTotal -= $costoViejo;
-        //         $detalleMenuTipoPaciente->update();
-        //         $menu->update();
-        //     }
-
-        // }
         $comida->Update();
         $resultado = $detalle->delete();
         if ($resultado) {

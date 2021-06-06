@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Menu;
+use App\Nutriente;
 use Exception;
 use Illuminate\Http\Request;
 use App\ComidaPorTipoPaciente;
@@ -78,7 +79,9 @@ class MenuPorTipoPacienteController extends Controller
         $tiposcomida = DB::table('tipocomida')
                         ->where('TipoComidaEstado',1)
                         ->get();
-        return view('comidaportipopaciente.principal',compact('menu','tiposcomida'));
+        $nutrientes = Nutriente::All();
+
+        return view('comidaportipopaciente.principal',compact('menu','tiposcomida','nutrientes'));
     }
 
     public function destroy($id)

@@ -60,6 +60,33 @@
       </div>
     </div>
   </div>
+  <!-- Contenedor de nutrientes -->
+  <div class="container-fluid" >
+      <button type="button" class="btn btn-sm btn-default" id="btnNutrientes" onClick="llenarNutrientes({{$comida->ComidaId}})" >
+        Mostrar nutrientes
+      </button>
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card" id = "divNutrientes">
+          <div class="card-body">
+            <table id="tableNutrientes" class="table table-sm table-striped table-bordered table-hover" style="width:100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th class="text-xs text-center"><small>Alimento</small></th>
+                  <th class="text-xs text-center"><small>Cantidad</small></th>
+                  @foreach($nutrientes as $nutriente)
+                  <th class="text-xs text-center"><small>{{$nutriente->NutrienteNombre}}</small></th>
+                  @endforeach
+                </tr>
+              </thead>
+              <tbody id="bodyNutrientes">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Modal para agregar y editar  -->
@@ -75,7 +102,11 @@
           </button>
         </div>    
         <div class="modal-body">
-          <small>Los nutrientes son valores por cada 100g de {{$alimento->AlimentoNombre}}<small>
+          @if($alimento->UnidadMedidaNombre == 'Litro' )
+            <small>Los nutrientes son valores por cada 100 cm3 de {{$alimento->AlimentoNombre}}<small>
+          @else
+            <small>Los nutrientes son valores por cada 100g de {{$alimento->AlimentoNombre}}<small>
+          @endif
           @if(count($nutrientesPorAlimento) ==0)
             @foreach($nutrientes as $nutriente)
             <div class="input-group input-group-sm mb-2">

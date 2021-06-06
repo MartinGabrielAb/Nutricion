@@ -19,26 +19,28 @@ class PermisoController extends Controller
 
     public function store(Request $request)
     {
-        $idRol = $request['rol'];
-        $permisos = $request['permisos'];
-        foreach ($permisos as $permiso ) {
-            $existe = DB::table('role_has_permissions')
-            ->where('role_id',$idRol)
-            ->where('permission_id',$permiso)                
-            ->first();
-            if(!$existe){
-                $resultado = DB::table('role_has_permissions')->insert(
-                    [
-                        'role_id' => $idRol,
-                        'permission_id' => $permiso,
-                    ]
-                );
+        try{
+            $idRol = $request['rol'];
+            $permisos = $request['permisos'];
+            foreach ($permisos as $permiso ) {
+                $existe = DB::table('role_has_permissions')
+                    ->where('role_id',$idRol)
+                    ->where('permission_id',$permiso)                
+                    ->first();
+                if(!$existe){
+                    $resultado = DB::table('role_has_permissions')->insert(
+                        [
+                            'role_id' => $idRol,
+                            'permission_id' => $permiso,
+                        ]
+                    );
+                }
             }
-        }
-        if ($resultado) {
             return response()->json(['success' => 'true']);
-        }else{
+
+        }catch(Exception $ex){
             return response()->json(['success'=>'false']);
+
         }
     }
 
