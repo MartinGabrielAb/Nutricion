@@ -259,7 +259,7 @@ Route::middleware(['auth'])->group(function(){
 	Route::delete('permisos/{id}','PermisoController@destroy')->name('permisos.destroy')->middleware('permission:permisos.destroy');
 	Route::get('permisos/{id}/edit','PermisoController@edit')->name('permisos.edit')->middleware('permission:permisos.edit');
 });
-
+//seleccionar menu
 Route::middleware(['auth'])->group(function(){
 	Route::post('seleccionarMenu','SeleccionarMenuController@store')->name('seleccionarMenu.store')->middleware('permission:seleccionarMenu.store');
 	Route::get('seleccionarMenu','SeleccionarMenuController@index')->name('seleccionarMenu.index')->middleware('permission:seleccionarMenu.index');
@@ -269,6 +269,11 @@ Route::middleware(['auth'])->group(function(){
 	Route::delete('seleccionarMenu/{id}','SeleccionarMenuController@destroy')->name('seleccionarMenu.destroy')->middleware('permission:seleccionarMenu.destroy');
 	Route::get('seleccionarMenu/{id}/edit','SeleccionarMenuController@edit')->name('seleccionarMenu.edit')->middleware('permission:seleccionarMenu.edit');
 });
+//reportes
+// Route::middleware(['auth'])->group(function(){
+	Route::get('reporte/relevamientos','ReporteController@exportRelevamientosExcel')->name('reportes.pacientes');
+	Route::get('reporte/produccionRaciones','ReporteController@exportProduccionRacionesExcel')->name('reportes.produccionraciones');
+// });
 Auth::routes();
 
 // Las rutas comentadas habría que borrarlas

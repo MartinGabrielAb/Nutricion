@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2dd305972c91b86db80e13330d2318b1",
+    "content-hash": "c70f53dd588e463ecc3b391ef7b970d6",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1566,6 +1566,10 @@
                 "php",
                 "phpspreadsheet"
             ],
+            "support": {
+                "issues": "https://github.com/Maatwebsite/Laravel-Excel/issues",
+                "source": "https://github.com/Maatwebsite/Laravel-Excel/tree/3.1.30"
+            },
             "funding": [
                 {
                     "url": "https://laravel-excel.com/commercial-support",

@@ -31,7 +31,7 @@
 
                                     <div class="row mt-2">
                                         <div class="col">
-                                            Comida: {{$comida['comida']}}
+                                            {{$comida['comida']}}
                                         </div>
                                         <div class="col">
                                             Relevados: {{$comida['cantidad']}}
@@ -48,7 +48,7 @@
                                         </select>
                                         </div>
                                         <div class="col">
-                                            <input class="formControl" type="number"  id="inputRequerida{{$comida['detalleRelevamientoId']}}" placeholder="Porciones requeridas" required/>
+                                            <input class="formControl" type="number"  id="inputRequerida{{$comida['detalleRelevamientoId']}}" placeholder="Raciones requeridas" required/>
                                         </div>
                                         <div class="col">
                                             ¿Stock? <span class="divStock text-danger" id="divStock{{$comida['detalleRelevamientoId']}}"></span>

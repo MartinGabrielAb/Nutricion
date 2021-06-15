@@ -532,6 +532,7 @@ function getUltimoDetRelevamiento(camaid, paciente = null){
 }
 
 function getUltimoDetRelevamientoPaciente(){
+  $('#respuestaUltimoRelevamiento').stop().empty();
   paciente = $('#pacienteId option:selected').val();
   getUltimoDetRelevamiento(null,paciente);
 }
