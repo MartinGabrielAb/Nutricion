@@ -8,7 +8,6 @@ $(document).ready( function () {
       {data: 'ComidaId'},
       {data: 'ComidaNombre'},
       {data: 'TipoComidaNombre'},
-      {data: 'ComidaCostoTotal'},
       {data: 'btn',orderable:false,sercheable:false},
     ],
     "language": { "url": "../JSON/Spanish_dataTables.json"},

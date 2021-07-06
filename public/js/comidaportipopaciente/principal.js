@@ -1,4 +1,4 @@
-$(document).ready( function () {
+jQuery( function () {
     var detalleMenuTipoPacienteId = $("#detalleMenuTipoPacienteId").val();
     var table = $('#tableComidas').DataTable({
       responsive: true,
@@ -23,17 +23,53 @@ $(document).ready( function () {
     });
   
     $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
+ 
+   
     
     /*------Funcion para llenar los campos cuando selecciono una fila -----*/ 
-
+  $("#tipoComida").on('change',function(){
+      console.log("cahngeeg");
+      $("#comida").empty();
+      $.ajax({
+          type:'GET',
+          url:"../comidas/"+$('#tipoComida').val()+"/edit",
+          dataType:"json",
+          beforeSend:function(){
+              $("#mensaje").show().text("Cargando..");
+          },
+          success: function(response){
+              if(response[0]==undefined){
+                  $("#mensaje").text("No hay comidas de este tipo cargadas.");
+                  $("#comida").val("");
+                  $("#divComida").hide();
+                  return;
+              }
+              $("#mensaje").hide();
+              for (var campo in response) {
+                  $("#comida").append("<option value='"+response[campo]['ComidaId']+"'>"+response[campo]['ComidaNombre']+ "</option>");
+                } 
+              $("#divComida").show();
+  
+              
+          },
+          error:function(response){
+            var errors =  response.responseJSON.errors;
+            for (var campo in errors) {
+              $("#listaErrores").append('<li type="square">'+errors[campo]+'</li>');
+            }       
+          }
+        });
+      });      
   });
+  
   
   function vaciarCampos(){
     $("#tipoPaciente").val("");
     $("#listaErrores").empty();
-  }
+  };
   
   function agregar(){
+    
     $("#tipoComida").val("");
     $("#divComida").hide();
     $("#divMensaje").hide();
@@ -43,40 +79,16 @@ $(document).ready( function () {
     $("#tituloModal").text("Agregar comida");
     $("#btnGuardar span").text("Guardar");
   }
+ 
+  function mostrarCartel(texto,clase){
+    $('#divMensaje').removeClass('alert-success alert-danger');
+    $('#divMensaje').fadeIn();
+    $('#divMensaje').text(texto);
+    $('#divMensaje').addClass(clase);  
+    $('#divMensaje').fadeOut(4000);
+  }
   
-  $("#tipoComida").change(function(){
-    $("#comida").empty();
-    $.ajax({
-        type:'GET',
-        url:"../comidas/"+$('#tipoComida').val()+"/edit",
-        dataType:"json",
-        beforeSend:function(){
-            $("#mensaje").show().text("Cargando..");
-        },
-        success: function(response){
-            if(response[0]==undefined){
-                $("#mensaje").text("No hay comidas de este tipo cargadas.");
-                $("#comida").val("");
-                $("#divComida").hide();
-                return;
-            }
-            $("#mensaje").hide();
-            for (var campo in response) {
-                $("#comida").append("<option value='"+response[campo]['ComidaId']+"'>"+response[campo]['ComidaNombre']+ "</option>");
-              } 
-            $("#divComida").show();
-
-            
-        },
-        error:function(response){
-          var errors =  response.responseJSON.errors;
-          for (var campo in errors) {
-            $("#listaErrores").append('<li type="square">'+errors[campo]+'</li>');
-          }       
-        }
-      });
-    });
-  
+ 
   function guardar(e){
     $("#listaErrores").empty();
     e.preventDefault();
@@ -107,6 +119,7 @@ $(document).ready( function () {
 
   }
  
+       
   function eliminar(id){
     $.ajax({
       type:"DELETE",
@@ -125,14 +138,5 @@ $(document).ready( function () {
       }
     });
   }
-  function mostrarCartel(texto,clase){
-      $('#divMensaje').removeClass('alert-success alert-danger');
-      $('#divMensaje').fadeIn();
-      $('#divMensaje').text(texto);
-      $('#divMensaje').addClass(clase);  
-      $('#divMensaje').fadeOut(4000);
-  }
-  
-  
-  
+
   

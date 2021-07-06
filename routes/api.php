@@ -4,22 +4,61 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\UnidadMedida;
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
+/* -----------------NUEVAS RUTAS : NO BORRAR------------------------ */
+Route::get('/getComidas', function (Request $request) {
+    $comidas = DB::table('comida as c')
+					->join('tipocomida as tc','tc.TipoComidaId','c.TipoComidaId')
+					->orderBy('ComidaNombre','asc')
+					->where('ComidaEstado',1)
+					->get();
+	return response($comidas);
+});
+Route::get('/getHistorial', function (Request $request) {
+    $historial = DB::table('historial')
+					->where('HistorialEstado',1)
+					->get();
+	return Response::json($historial);
+});
+Route::get('/getRelevamiento/{id}', function ($id) {
+    $relevamiento = DB::table('relevamientocomida as rc')
+					->where('RelevamientoId',$id)
+					->join('comida as c','c.ComidaId','rc.ComidaId')
+					->get();
+	$acompaniantes = 0 ;
+	$relevamientosPorSala = DB::table('relevamientoporsala')
+							->where('RelevamientoId',$id)
+							->get();
+	foreach ($relevamientosPorSala as $relevamientoPorSala) {
+		$acompaniantes += $relevamientoPorSala->RelevamientoPorSalaAcompaniantes;
+	}
+	 
+	$res = array(
+		'comidas' =>$relevamiento,
+		'acompaniantes'=> $acompaniantes
+	);
+	return response($res);
+});
+Route::get('/getMenuesPorTipo/{id}', function ($id) {
+    $menuesPorTipo = DB::table('detallemenutipopaciente as dm')
+					->where('MenuId',$id)
+					->join('tipopaciente as tp','tp.TipoPacienteId','dm.TipoPacienteId')
+					->get();
+	return response($menuesPorTipo);
+});
+Route::get('/getComidasDeMenu/{id}', function ($id) {
+    $comidas = DB::table('comidaportipopaciente as ctp')
+					->where('DetalleMenuTipoPacienteId',$id)
+					->join('comida as c','c.ComidaId','ctp.ComidaId')
+					->orderBy('c.ComidaNombre','asc')
+					->get();
+	return response($comidas);
+});
 
 
 /* -----------------Obtengo los nutrienes---------------------- -*/

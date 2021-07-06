@@ -27,17 +27,7 @@ class AlimentoController extends Controller
 							->addColumn('AlimentoCantidadTotal',function($alimento){
 								$unidadMedida = DB::table('unidadmedida')->where('UnidadMedidaId',$alimento->UnidadMedidaId)->first();
 								return $alimento->AlimentoCantidadTotal.' '.$unidadMedida->UnidadMedidaNombre.'(s)';					
-							})
-						->addColumn('AlimentoCostoUnitario',function($alimento){
-								if($alimento->AlimentoCantidadTotal != 0){
-									return '$'.($alimento->AlimentoCostoTotal/$alimento->AlimentoCantidadTotal);
-								}else{
-									return '$0';
-								}							
-						})
-						->addColumn('AlimentoCostoTotal',function($alimento){
-							return '$'.$alimento->AlimentoCostoTotal;							
-					})
+							})								
 						->addColumn('btn','alimentos/actions')
 	 					->rawColumns(['btn'])
 	 					->toJson();
@@ -66,7 +56,6 @@ class AlimentoController extends Controller
      
         $alimento->AlimentoEstado = 1;
         $alimento->AlimentoCantidadTotal = 0;
-        $alimento->AlimentoCostoTotal = 0;
         $resultado = $alimento->save();
         if ($resultado) {
             return response()->json(['success' => 'true']);

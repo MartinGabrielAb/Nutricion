@@ -44,7 +44,6 @@ class ComidaController extends Controller
         $comida = new Comida();
         $comida->ComidaNombre = $datos['nombre'];;
         $comida->TipoComidaId = $datos['tipo'];
-        $comida->ComidaCostoTotal = 0;
         $comida->ComidaEstado = 1;
         $resultado = $comida->save();
         if ($resultado) {
