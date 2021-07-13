@@ -1,6 +1,6 @@
 <!-- Main content -->
 <div class="container-fluid">
-    <input type="hidden" id="relevamientoId" value="{{$relevamiento->RelevamientoId}}">
+    <input type="hidden" id="relevamientoPorSalaId" value="{{$relevamiento_por_salas->RelevamientoPorSalaId}}">
     <div class="row">
     <div class="col-lg-12">
         <div class="card">
@@ -83,11 +83,11 @@
                     <input type="hidden" id="id" name="id">
                     <input type="hidden" id="camaId" name="camaId">
                     <div class="row">
-                        <div class="col-6">
-                            <label for="pacienteId">Paciente</label>
+                        <div class="col-7">
+                            <label for="pacienteId" class="m-0">Paciente</label>
                         </div>
-                        <div class="col-6">
-                            <label id="respuestaUltimoRelevamiento"></label>
+                        <div class="col-5">
+                            <small id="respuestaUltimoRelevamiento" class="m-0 text-warning"></small>
                         </div>
                     </div>
                     <div class="form-inline pb-2 border-bottom">
@@ -155,7 +155,7 @@
                            
                         </div>
                         
-                        @if ($relevamiento->RelevamientoTurno == 'Mañana')
+                        @if ($relevamiento_por_salas->RelevamientoTurno == 'Mañana')
                             @foreach ($tiposcomida as $tipocomida)
                                 @if ($tipocomida->TipoComidaNombre == 'Merienda' || $tipocomida->TipoComidaNombre == 'Cena' || $tipocomida->TipoComidaNombre == 'Sopa Cena' || $tipocomida->TipoComidaNombre == 'Postre Cena')
                                     <div class="form-inline">
@@ -168,7 +168,7 @@
                                     </div>
                                 @endif
                             @endforeach    
-                        @elseif(($relevamiento->RelevamientoTurno == 'Tarde'))
+                        @elseif(($relevamiento_por_salas->RelevamientoTurno == 'Tarde'))
                             @foreach ($tiposcomida as $tipocomida)
                                 @if ($tipocomida->TipoComidaNombre == 'Desayuno' || $tipocomida->TipoComidaNombre == 'Almuerzo' || $tipocomida->TipoComidaNombre == 'Sopa Almuerzo' || $tipocomida->TipoComidaNombre == 'Postre Almuerzo')
                                     <div class="form-inline">

@@ -17,18 +17,20 @@ class RelevamientoRequest extends FormRequest
         $metodo = $this->getMethod();
         if ( $metodo == 'POST') {
             return [
-                'salaId' => [
-                    'required'
-                ],
+                // 'salaId' => [
+                //     'required'
+                // ],
                 'fecha' => [
                     'required',
                     'date',
                     Rule::unique('relevamiento','RelevamientoFecha')
                         ->where(function ($query) use($request) {
-                            return $query->where('SalaId', $request->get('salaId'))
+                        //     return $query->where('SalaId', $request->get('salaId'))
+                        //                  ->where('RelevamientoFecha', $request->get('fecha'))
+                        //                  ->where('RelevamientoTurno', $request->get('turno'))
+                            return $query->where('RelevamientoEstado', 1)
                                          ->where('RelevamientoFecha', $request->get('fecha'))
-                                         ->where('RelevamientoTurno', $request->get('turno'))
-                                         ->where('RelevamientoEstado', 1);
+                                         ->where('RelevamientoTurno', $request->get('turno'));
                         }),
                 ],
                 'turno' => [
@@ -39,16 +41,16 @@ class RelevamientoRequest extends FormRequest
         //validacion para el update
         if ($metodo == "PUT" || $metodo == "PATCH") {
             return  [
-                'salaId' => [
-                    'required'
-                ],
+                // 'salaId' => [
+                //     'required'
+                // ],
                 'fecha' => [
                     'required',
                     'date',
                     Rule::unique('relevamiento','RelevamientoFecha')
                         ->where(function ($query) use($request) {
                             return $query->where('RelevamientoId','!=',$request->id)
-                                         ->where('SalaId', $request->get('salaId'))
+                                        //  ->where('SalaId', $request->get('salaId'))
                                          ->where('RelevamientoFecha', $request->get('fecha'))
                                          ->where('RelevamientoTurno', $request->get('turno'))
                                          ->where('RelevamientoEstado', 1);
@@ -70,8 +72,6 @@ class RelevamientoRequest extends FormRequest
             'fecha.unique' => 'Ya existe relevamiento.',
             //turno
             'turno.required' => 'Turno es requerido.',
-            //sala
-            'sala.required' => 'Sala es requerido.',
         ];
     }
 }

@@ -8,7 +8,22 @@ class DetalleRelevamiento extends Model
 {
   protected $table = 'detallerelevamiento';
   protected $primaryKey = 'DetalleRelevamientoId';
-  protected $filliable=['PacienteId','RelevamientoId','DetalleRelevamientoFechora',
-  'TipoPacienteId','DetalleRelevamientoEstado','CamaId','DetalleRelevamientoObservaciones','DetalleRelevamientoDiagnostico','MenuId','DetalleRelevamientoAcompaniante','EmpleadoId'];
+  protected $filliable=[
+    'PacienteId',
+    'RelevamientoPorSalaId',
+    'created_at',
+    'updated_at',
+    'UserId',
+    'TipoPacienteId',
+    'DetalleRelevamientoEstado',
+    'CamaId',
+    'DetalleRelevamientoObservaciones',
+    'DetalleRelevamientoDiagnostico',
+    'MenuId',
+    'DetalleRelevamientoAcompaniante',
+    'DetalleRelevamientoVajillaDescartable',
+    'DetalleRelevamientoAgregado',
+    'DetalleRelevamientoColacion',
+  ];
 
 }

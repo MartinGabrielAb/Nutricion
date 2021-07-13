@@ -8,6 +8,7 @@ use App\RelevamientoComida;
 use App\DetalleRelevamiento;
 use Illuminate\Http\Request;
 use App\DetRelevamientoPorComida;
+use App\RelevamientoPorSala;
 use Illuminate\Support\Facades\DB;
 
 class DetalleRelevamientoController extends Controller
@@ -22,24 +23,19 @@ class DetalleRelevamientoController extends Controller
     public function create()
     { }
 
-    public function store(Request $request)//request: relevamiento, paciente, cama, diagnostico, observaciones, menu, tipopaciente, acompaniante, vajilladescartable, user, comidas[], colacion
+    public function store(Request $request)//request: relevamientoPorSalaId, paciente, cama, diagnostico, observaciones, menu, tipopaciente, acompaniante, vajilladescartable, user, comidas[], colacion
     {
-        $relevamiento = Relevamiento::findOrFail($request->get('relevamiento'));
+        $relevamientoPorSala = RelevamientoPorSala::findOrFail($request->get('relevamientoPorSalaId'));
+        if($relevamientoPorSala){
+            $relevamiento = Relevamiento::findOrFail($relevamientoPorSala->RelevamientoId);
+        }
         //seteo el detalle de relevamiento.
         $detalleRelevamiento = $this->setDetalleRelevamiento($request->all());
         
         //obtengo las comidas de el menu y el regímen de este paciente.
         $tipoPaciente = DB::table('tipopaciente')->where('TipoPacienteId',$request->get('tipopaciente'))->first();
         if($tipoPaciente->TipoPacienteNombre != 'Individual'){
-            $menuPorTipoPaciente = DB::table('detallemenutipopaciente')
-                                     ->where('MenuId',$detalleRelevamiento->MenuId)
-                                     ->where('TipoPacienteId',$detalleRelevamiento->TipoPacienteId)
-                                     ->first();
-            if($relevamiento->RelevamientoTurno == 'Mañana'){
-                $comidas = $this->getComidasPorTurno($menuPorTipoPaciente->DetalleMenuTipoPacienteId,['Merienda','Cena','Postre Cena','Sopa Cena']);
-            }else{
-                $comidas = $this->getComidasPorTurno($menuPorTipoPaciente->DetalleMenuTipoPacienteId,['Desayuno','Almuerzo','Postre Almuerzo','Sopa Almuerzo']);
-            }
+            $comidas = $this->get_comidas_por_menu_paciente($detalleRelevamiento->MenuId,$tipoPaciente->TipoPacienteId,$relevamiento->RelevamientoTurno);
         }else{
             //si es Individual uso las comidas seleccionadas en el crud.
             $comidas = $request->get('comidas');
@@ -47,25 +43,16 @@ class DetalleRelevamientoController extends Controller
 
         //sumo y seteo cantidad de comidas en el relevamiento actual.
         foreach ($comidas as $comida) {
-            $this->sumCantidadComidasPorRelevamiento($comida,$detalleRelevamiento->DetalleRelevamientoId,$detalleRelevamiento->RelevamientoId);
+            $this->sumCantidadComidasPorRelevamiento($comida,$detalleRelevamiento->DetalleRelevamientoId,$relevamientoPorSala->RelevamientoId);
         }
         
         //acompañante
         if($detalleRelevamiento->DetalleRelevamientoAcompaniante == 1){
             $tipoPacienteNormal = DB::table('tipopaciente')->where('TipoPacienteNombre','Normal')->first();
-            $menuPorTipoPaciente = DB::table('detallemenutipopaciente')
-                                         ->where('MenuId',$detalleRelevamiento->MenuId)
-                                         ->where('TipoPacienteId',$tipoPacienteNormal->TipoPacienteId)
-                                         ->first();
-            if($relevamiento->RelevamientoTurno == 'Mañana'){
-                $comidas = $this->getComidasPorTurno($menuPorTipoPaciente->DetalleMenuTipoPacienteId,['Merienda','Cena','Postre Cena','Sopa Cena']);
-            }else{
-                $comidas = $this->getComidasPorTurno($menuPorTipoPaciente->DetalleMenuTipoPacienteId,['Desayuno','Almuerzo','Postre Almuerzo','Sopa Almuerzo']);
-            }
-
+            $comidas = $this->get_comidas_por_menu_paciente($detalleRelevamiento->MenuId,$tipoPacienteNormal->TipoPacienteId,$relevamiento->RelevamientoTurno);
             //sumo y seteo cantidad de comidas del acompañante en el relevamiento actual.
             foreach ($comidas as $comida) {
-                $this->sumCantidadComidasPorRelevamiento($comida,$detalleRelevamiento->DetalleRelevamientoId,$detalleRelevamiento->RelevamientoId);
+                $this->sumCantidadComidasPorRelevamiento($comida,$detalleRelevamiento->DetalleRelevamientoId,$relevamientoPorSala->RelevamientoId);
             }
         }
 
@@ -73,7 +60,7 @@ class DetalleRelevamientoController extends Controller
         if($request->get('colacion') != null){
             $comida = ['ComidaId' => $request->get('colacion')];
             //sumo y seteo la colacion en el relevamiento actual.
-            $this->sumCantidadComidasPorRelevamiento($comida,$detalleRelevamiento->DetalleRelevamientoId,$detalleRelevamiento->RelevamientoId);
+            $this->sumCantidadComidasPorRelevamiento($comida,$detalleRelevamiento->DetalleRelevamientoId,$relevamientoPorSala->RelevamientoId);
         }
         if ($detalleRelevamiento) {
             return response()->json(['success'=>$request->get('cama')]);
@@ -93,11 +80,12 @@ class DetalleRelevamientoController extends Controller
             ->join('pieza as pi','pi.PiezaId','c.PiezaId')
             ->join('users as u','u.id','dr.UserId')
             ->join('menu as m','m.MenuId','dr.MenuId')
+            ->join('relevamientoporsala as rps','rps.RelevamientoPorSalaId','dr.RelevamientoPorSalaId')
             ->where('dr.CamaId',$request->get('camaId'))
-            ->where('dr.RelevamientoId',$request->get('relevamientoId'))
+            ->where('dr.RelevamientoPorSalaId',$request->get('relevamientoPorSalaId'))
             ->where('dr.DetalleRelevamientoEstado','=',1)
             ->select('dr.DetalleRelevamientoId',
-                    DB::raw('DATE_FORMAT(dr.updated_at, "%H:%i:%s") as DetalleRelevamientoHora'),'dr.RelevamientoId',
+                    DB::raw('DATE_FORMAT(dr.updated_at, "%H:%i:%s") as DetalleRelevamientoHora'),'dr.RelevamientoPorSalaId',
                     'dr.DetalleRelevamientoDiagnostico',
                     'dr.DetalleRelevamientoAcompaniante',
                     'dr.DetalleRelevamientoVajillaDescartable',
@@ -108,9 +96,39 @@ class DetalleRelevamientoController extends Controller
                     'pa.PacienteId','pa.PacienteNombre','pa.PacienteApellido','pa.PacienteCuil',
                     'tp.TipoPacienteNombre','tp.TipoPacienteId',
                     'c.CamaNumero','pi.PiezaPseudonimo','c.CamaId',
-                    'u.name as Relevador','u.id as UserId')
+                    'u.name as Relevador','u.id as UserId',
+                    'rps.RelevamientoId')
             ->orderby('dr.updated_at','desc')
             ->first();
+            if(!$detalleRelevamiento){
+                $detalleRelevamiento = 
+                DB::table('detallerelevamiento as dr')
+                ->join('paciente as pa','pa.PacienteId','dr.PacienteId')
+                ->join('tipopaciente as tp','tp.TipoPacienteId','dr.TipoPacienteId')
+                ->join('cama as c','c.CamaId','dr.CamaId')
+                ->join('pieza as pi','pi.PiezaId','c.PiezaId')
+                ->join('users as u','u.id','dr.UserId')
+                ->join('menu as m','m.MenuId','dr.MenuId')
+                ->join('relevamientoporsala as rps','rps.RelevamientoPorSalaId','dr.RelevamientoPorSalaId')
+                ->where('dr.CamaId',$request->get('camaId'))
+                ->where('dr.DetalleRelevamientoEstado','=',1)
+                ->select('dr.DetalleRelevamientoId',
+                        DB::raw('DATE_FORMAT(dr.updated_at, "%H:%i:%s") as DetalleRelevamientoHora'),'dr.RelevamientoPorSalaId',
+                        'dr.DetalleRelevamientoDiagnostico',
+                        'dr.DetalleRelevamientoAcompaniante',
+                        'dr.DetalleRelevamientoVajillaDescartable',
+                        'dr.DetalleRelevamientoAgregado',
+                        'dr.DetalleRelevamientoEstado','dr.DetalleRelevamientoObservaciones',
+                        'dr.DetalleRelevamientoColacion',
+                        'm.MenuNombre','m.MenuId',
+                        'pa.PacienteId','pa.PacienteNombre','pa.PacienteApellido','pa.PacienteCuil',
+                        'tp.TipoPacienteNombre','tp.TipoPacienteId',
+                        'c.CamaNumero','pi.PiezaPseudonimo','c.CamaId',
+                        'u.name as Relevador','u.id as UserId',
+                        'rps.RelevamientoId')
+                ->orderby('dr.updated_at','desc')
+                ->first();
+            }
             if($detalleRelevamiento){
                 return response()->json(['success'=>$detalleRelevamiento]);
             }else{
@@ -130,7 +148,7 @@ class DetalleRelevamientoController extends Controller
                     ->where('dr.PacienteId',$paciente->PacienteId)
                     ->where('dr.DetalleRelevamientoEstado','=',1)
                     ->select('dr.DetalleRelevamientoId',
-                            DB::raw('DATE_FORMAT(dr.updated_at, "%H:%i:%s") as DetalleRelevamientoHora'),'dr.RelevamientoId',
+                            DB::raw('DATE_FORMAT(dr.updated_at, "%H:%i:%s") as DetalleRelevamientoHora'),'dr.RelevamientoPorSalaId',
                             'dr.DetalleRelevamientoDiagnostico',
                             'dr.DetalleRelevamientoAcompaniante',
                             'dr.DetalleRelevamientoVajillaDescartable',
@@ -156,7 +174,7 @@ class DetalleRelevamientoController extends Controller
                 ->where('dr.CamaId',$request->get('camaId'))
                 ->where('dr.DetalleRelevamientoEstado','=',1)
                 ->select('dr.DetalleRelevamientoId',
-                        DB::raw('DATE_FORMAT(dr.updated_at, "%H:%i:%s") as DetalleRelevamientoHora'),'dr.RelevamientoId',
+                        DB::raw('DATE_FORMAT(dr.updated_at, "%H:%i:%s") as DetalleRelevamientoHora'),'dr.RelevamientoPorSalaId',
                         'dr.DetalleRelevamientoDiagnostico',
                         'dr.DetalleRelevamientoAcompaniante',
                         'dr.DetalleRelevamientoVajillaDescartable',
@@ -185,7 +203,10 @@ class DetalleRelevamientoController extends Controller
     public function update(Request $request, $id)//request: relevamiento, paciente, cama, diagnostico, observaciones, menu, tipopaciente, acompaniante, vajilladescartable, user, comidas[], colacion
     {
         // dd($id);
-        $relevamiento = Relevamiento::findOrFail($request->get('relevamiento'));
+        $relevamientoPorSala = RelevamientoPorSala::findOrFail($request->get('relevamientoPorSalaId'));
+        if($relevamientoPorSala){
+            $relevamiento = Relevamiento::findOrFail($relevamientoPorSala->RelevamientoId);
+        }
         //actualizo estado del relevamiento que se está queriendo editar para guardarlo como historial del paciente
         $detalleRelevamiento = DetalleRelevamiento::findOrFail($id);
         if($detalleRelevamiento->DetalleRelevamientoEstado == 1){
@@ -193,7 +214,7 @@ class DetalleRelevamientoController extends Controller
             $detallesRelevamientoPorComida = DetRelevamientoPorComida::where('DetalleRelevamientoId',$detalleRelevamiento->DetalleRelevamientoId)->get();
             if($detallesRelevamientoPorComida){
                 foreach ($detallesRelevamientoPorComida as $detalleRelevamientoPorComida) {
-                    $this->restarCantidadComidasPorRelevamiento($detalleRelevamientoPorComida,$detalleRelevamiento->RelevamientoId);
+                    $this->restarCantidadComidasPorRelevamiento($detalleRelevamientoPorComida,$relevamientoPorSala->RelevamientoId);
                 }
             }
             $detalleRelevamiento->update();
@@ -209,15 +230,7 @@ class DetalleRelevamientoController extends Controller
         //obtengo las comidas de el menu y el regímen de este paciente.
         $tipoPaciente = DB::table('tipopaciente')->where('TipoPacienteId',$request->get('tipopaciente'))->first();
         if($tipoPaciente->TipoPacienteNombre != 'Individual'){
-            $menuPorTipoPaciente = DB::table('detallemenutipopaciente')
-                                     ->where('MenuId',$detalleRelevamiento->MenuId)
-                                     ->where('TipoPacienteId',$detalleRelevamiento->TipoPacienteId)
-                                     ->first();
-            if($relevamiento->RelevamientoTurno == 'Mañana'){
-                $comidas = $this->getComidasPorTurno($menuPorTipoPaciente->DetalleMenuTipoPacienteId,['Merienda','Cena','Postre Cena','Sopa Cena']);
-            }else{
-                $comidas = $this->getComidasPorTurno($menuPorTipoPaciente->DetalleMenuTipoPacienteId,['Desayuno','Almuerzo','Postre Almuerzo','Sopa Almuerzo']);
-            }
+            $comidas = $this->get_comidas_por_menu_paciente($detalleRelevamiento->MenuId,$tipoPaciente->TipoPacienteId,$relevamiento->RelevamientoTurno);
         }else{
             //si es Individual uso las comidas seleccionadas en el crud.
             $comidas = $request->get('comidas');
@@ -225,25 +238,16 @@ class DetalleRelevamientoController extends Controller
 
         //sumo y seteo cantidad de comidas en el relevamiento actual.
         foreach ($comidas as $comida) {
-            $this->sumCantidadComidasPorRelevamiento($comida,$detalleRelevamiento->DetalleRelevamientoId,$detalleRelevamiento->RelevamientoId);
+            $this->sumCantidadComidasPorRelevamiento($comida,$detalleRelevamiento->DetalleRelevamientoId,$relevamientoPorSala->RelevamientoId);
         }
 
         //acompañante
         if($detalleRelevamiento->DetalleRelevamientoAcompaniante == 1){
             $tipoPacienteNormal = DB::table('tipopaciente')->where('TipoPacienteNombre','Normal')->first();
-            $menuPorTipoPaciente = DB::table('detallemenutipopaciente')
-                                         ->where('MenuId',$detalleRelevamiento->MenuId)
-                                         ->where('TipoPacienteId',$tipoPacienteNormal->TipoPacienteId)
-                                         ->first();
-            if($relevamiento->RelevamientoTurno == 'Mañana'){
-                $comidas = $this->getComidasPorTurno($menuPorTipoPaciente->DetalleMenuTipoPacienteId,['Merienda','Cena','Postre Cena','Sopa Cena']);
-            }else{
-                $comidas = $this->getComidasPorTurno($menuPorTipoPaciente->DetalleMenuTipoPacienteId,['Desayuno','Almuerzo','Postre Almuerzo','Sopa Almuerzo']);
-            }
-
+            $comidas = $this->get_comidas_por_menu_paciente($detalleRelevamiento->MenuId,$tipoPacienteNormal->TipoPacienteId,$relevamiento->RelevamientoTurno);
             //sumo y seteo cantidad de comidas del acompañante en el relevamiento actual.
             foreach ($comidas as $comida) {
-                $this->sumCantidadComidasPorRelevamiento($comida,$detalleRelevamiento->DetalleRelevamientoId,$detalleRelevamiento->RelevamientoId);
+                $this->sumCantidadComidasPorRelevamiento($comida,$detalleRelevamiento->DetalleRelevamientoId,$relevamientoPorSala->RelevamientoId);
             }
         }
 
@@ -251,7 +255,7 @@ class DetalleRelevamientoController extends Controller
         if($request->get('colacion') != null){
             $comida = ['ComidaId' => $request->get('colacion')];
             //sumo y seteo la colacion en el relevamiento actual.
-            $this->sumCantidadComidasPorRelevamiento($comida,$detalleRelevamiento->DetalleRelevamientoId,$detalleRelevamiento->RelevamientoId);
+            $this->sumCantidadComidasPorRelevamiento($comida,$detalleRelevamiento->DetalleRelevamientoId,$relevamientoPorSala->RelevamientoId);
         }
 
         if ($detalleRelevamiento) {
@@ -265,10 +269,14 @@ class DetalleRelevamientoController extends Controller
     {
         $detalleRelevamiento = DetalleRelevamiento::findOrFail($id);
         if($detalleRelevamiento->DetalleRelevamientoEstado == 1){
+            $relevamientoPorSala = RelevamientoPorSala::findOrFail($detalleRelevamiento->RelevamientoPorSalaId);
+            if($relevamientoPorSala){
+                $relevamiento = Relevamiento::findOrFail($relevamientoPorSala->RelevamientoId);
+            }
             $detallesRelevamientoPorComida = DetRelevamientoPorComida::where('DetalleRelevamientoId',$detalleRelevamiento->DetalleRelevamientoId)->get();
             if($detallesRelevamientoPorComida){
                 foreach ($detallesRelevamientoPorComida as $detalleRelevamientoPorComida) {
-                    $this->restarCantidadComidasPorRelevamiento($detalleRelevamientoPorComida,$detalleRelevamiento->RelevamientoId);
+                    $this->restarCantidadComidasPorRelevamiento($detalleRelevamientoPorComida,$relevamiento->RelevamientoId);
                 }
             }
         }
@@ -335,7 +343,7 @@ class DetalleRelevamientoController extends Controller
     private function setDetalleRelevamiento($request){
         $detalleRelevamiento = new DetalleRelevamiento;
         $detalleRelevamiento->DetalleRelevamientoEstado = 1;
-        $detalleRelevamiento->RelevamientoId = $request['relevamiento'];
+        $detalleRelevamiento->RelevamientoPorSalaId = $request['relevamientoPorSalaId'];
         $paciente = Paciente::where('PacienteCuil',$request['paciente'])->where('PacienteEstado','!=',-1)->first();
         $detalleRelevamiento->PacienteId = $paciente->PacienteId;
         $detalleRelevamiento->CamaId = $request['cama'];
@@ -363,5 +371,21 @@ class DetalleRelevamientoController extends Controller
         $detalleRelevamiento->save();
 
         return $detalleRelevamiento;
+    }
+
+    private function get_comidas_por_menu_paciente($menu_id,$tipo_paciente_id,$turno){
+
+        $menuPorTipoPaciente = 
+            DB::table('detallemenutipopaciente')
+            ->where('MenuId',$menu_id)
+            ->where('TipoPacienteId',$tipo_paciente_id)
+            ->first();
+        if($turno == 'Mañana'){
+            $comidas = $this->getComidasPorTurno($menuPorTipoPaciente->DetalleMenuTipoPacienteId,['Merienda','Cena','Postre Cena','Sopa Cena']);
+        }else{
+            $comidas = $this->getComidasPorTurno($menuPorTipoPaciente->DetalleMenuTipoPacienteId,['Desayuno','Almuerzo','Postre Almuerzo','Sopa Almuerzo']);
+        }
+        
+        return $comidas;
     }
 }

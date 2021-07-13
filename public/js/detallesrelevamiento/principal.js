@@ -168,7 +168,7 @@ function guardar(e){
       url:"../detallesrelevamiento",
       dataType:"json",
       data:{
-        relevamiento: $('#relevamientoId').val(),
+        relevamientoPorSalaId: $('#relevamientoPorSalaId').val(),
         paciente: $('#pacienteId').val(),
         cama: $('#camaId').val(),
         diagnostico: $('#diagnosticoId').val(),
@@ -208,7 +208,7 @@ function editar(id,comidas){
     url:"../detallesrelevamiento/"+id,
     dataType:"json",
     data:{
-      relevamiento: $('#relevamientoId').val(),
+      relevamientoPorSalaId: $('#relevamientoPorSalaId').val(),
       paciente: $('#pacienteId').val(),
       cama: $('#camaId').val(),
       diagnostico: $('#diagnosticoId').val(),
@@ -385,13 +385,13 @@ function getDetallerelevamiento(camaid){
   $('.clsCamas').removeClass('bg-secondary');
   $('#divDetalleRelevamiento').addClass('d-none');
   $('#btnCamaid'+camaid).addClass('bg-secondary');
-  relevamientoid = $('#relevamientoId').val();
+  relevamientoPorSalaId = $('#relevamientoPorSalaId').val();
   $.ajax({
-    url: '../detallesrelevamiento/'+relevamientoId,
+    url: '../detallesrelevamiento/'+relevamientoPorSalaId,
     type: 'GET',
     data: {
       camaId: camaid,
-      relevamientoId: relevamientoid,
+      relevamientoPorSalaId: relevamientoPorSalaId,
       tipoconsulta: 1,
     },
     success: function(response) {
@@ -399,7 +399,7 @@ function getDetallerelevamiento(camaid){
       $('#camaId').val(camaid);
       if(response.success){
         detallerelevamiento = response.success;
-        relevamientoid = $('#relevamientoId').val();
+        relevamientoPorSalaId = $('#relevamientoPorSalaId').val();
         html = `
           <li class="list-group-item text-center">
             <button id="showcomidas" type="button" class="btn btn-sm btn-default ml-1 mr-1 pl-3 pr-3" data-toggle="modal"  data-target="#modal" >
@@ -408,7 +408,7 @@ function getDetallerelevamiento(camaid){
             <button id="editrelevamiento" type="button" class="btn btn-sm btn-default ml-1 mr-1 pl-3 pr-3" data-toggle="modal"  data-target="#modal" >
               <i class="fas fa-edit"></i>
             </button>
-            <button id="deleterelevamiento" class="btn btn-sm btn-default ml-1 mr-1 pl-3 pr-3" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ${(detallerelevamiento.RelevamientoId != relevamientoid) ? 'disabled' : ''}>
+            <button id="deleterelevamiento" class="btn btn-sm btn-default ml-1 mr-1 pl-3 pr-3" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ${(detallerelevamiento.RelevamientoPorSalaId != relevamientoPorSalaId) ? 'disabled' : ''}>
               <i class="fas fa-trash"></i>
             </button>
             <a href="../pacientes/${detallerelevamiento.PacienteId}">
@@ -421,7 +421,7 @@ function getDetallerelevamiento(camaid){
             </div>
           </li>
           <li class="list-group-item text-center">
-            ${(detallerelevamiento.RelevamientoId == relevamientoid) ? '<h5 class="text-success m-0">Revisado</h5>' : '<h5 class="text-warning m-0">Info del último relevamiento</h5>'}
+            ${(detallerelevamiento.RelevamientoPorSalaId == relevamientoPorSalaId) ? '<h5 class="text-success m-0">Revisado</h5>' : '<h5 class="text-warning m-0">Info del último relevamiento</h5>'}
           </li>
           <li class="list-group-item text-center">
             <h6>Paciente</h6>
@@ -484,12 +484,12 @@ function getDetallerelevamiento(camaid){
 
 function getUltimoDetRelevamiento(camaid, paciente = null){
   $.ajax({
-    url: '../detallesrelevamiento/'+relevamientoId,
+    url: '../detallesrelevamiento/'+relevamientoPorSalaId,
     type: 'GET',
     data: {
       camaId: camaid,
       paciente : paciente,
-      relevamientoId: relevamientoid,
+      relevamientoId: relevamientoPorSalaId,
       tipoconsulta: 2,
     },
     success: function(response) {

@@ -46,7 +46,6 @@
                   <thead>
                     <tr>
                       <th scope="col" width="5%">#</th>
-                      <th scope="col">Sala</th>
                       <th scope="col">Fecha</th>
                       <th scope="col">Turno</th>
                       <th scope="col" width="5%">Acciones</th>
@@ -78,14 +77,6 @@
         </div>    
         <div class="modal-body">
           <input type="hidden" id="id" name="id">
-          <label for="salaId">Sala</label>
-          <div class="form-inline">
-            <select class="form-control" name="salaId" id="salaId" style="width: 100%" required>
-              @foreach ($salas as $sala)
-                  <option value="{{$sala->SalaId}}">{{$sala->SalaNombre}}</option>
-              @endforeach
-            </select>
-          </div>
           <label for='fecha' id="labelFecha">Fecha</label>
           <input class="form-control" type="date" id="fecha" name="fecha" required>
           <label for="turno">Turno</label>

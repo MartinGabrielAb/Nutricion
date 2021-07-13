@@ -229,16 +229,6 @@ Route::middleware(['auth'])->group(function(){
 	Route::delete('proveedores/{id}','ProveedorController@destroy')->name('proveedores.destroy')->middleware('permission:proveedores.destroy');
 	Route::get('proveedores/{id}/edit','ProveedorController@edit')->name('proveedores.edit')->middleware('permission:proveedores.edit');
 });
-//personas
-Route::middleware(['auth'])->group(function(){
-	Route::post('personas','PersonaController@store')->name('personas.store')->middleware('permission:personas.store');
-	// Route::get('personas','PersonaController@index')->name('personas.index')->middleware('permission:personas.index');
-	// Route::get('personas/create','PersonaController@create')->name('personas.create')->middleware('permission:personas.create');
-	Route::put('personas/{id}','PersonaController@update')->name('personas.update')->middleware('permission:personas.update');
-	// Route::get('personas/{id}','PersonaController@show')->name('personas.show')->middleware('permission:personas.show');
-	// Route::delete('personas/{id}','PersonaController@destroy')->name('personas.destroy')->middleware('permission:personas.destroy');
-	// Route::get('personas/{id}/edit','PersonaController@edit')->name('personas.edit')->middleware('permission:personas.edit');
-});
 //roles
 Route::middleware(['auth'])->group(function(){
 	Route::post('roles','RoleController@store')->name('roles.store')->middleware('permission:roles.store');
@@ -268,6 +258,16 @@ Route::middleware(['auth'])->group(function(){
 	Route::get('seleccionarMenu/{id}','SeleccionarMenuController@show')->name('seleccionarMenu.show')->middleware('permission:seleccionarMenu.show');
 	Route::delete('seleccionarMenu/{id}','SeleccionarMenuController@destroy')->name('seleccionarMenu.destroy')->middleware('permission:seleccionarMenu.destroy');
 	Route::get('seleccionarMenu/{id}/edit','SeleccionarMenuController@edit')->name('seleccionarMenu.edit')->middleware('permission:seleccionarMenu.edit');
+});
+//relevamiento por salas
+Route::middleware(['auth'])->group(function(){
+	Route::post('relevamientoPorSalas','RelevamientoPorSalaController@store')->name('relevamientoPorSalas.store')->middleware('permission:relevamientoPorSalas.store');
+	Route::get('relevamientoPorSalas','RelevamientoPorSalaController@index')->name('relevamientoPorSalas.index')->middleware('permission:relevamientoPorSalas.index');
+	Route::get('relevamientoPorSalas/create','RelevamientoPorSalaController@create')->name('relevamientoPorSalas.create')->middleware('permission:relevamientoPorSalas.RelevamientoPorSalas');
+	Route::put('relevamientoPorSalas/{id}','RelevamientoPorSalaController@update')->name('relevamientoPorSalas.update')->middleware('permission:relevamientoPorSalas.update');
+	Route::get('relevamientoPorSalas/{id}','RelevamientoPorSalaController@show')->name('relevamientoPorSalas.show')->middleware('permission:relevamientoPorSalas.show');
+	Route::delete('relevamientoPorSalas/{id}','RelevamientoPorSalaController@destroy')->name('relevamientoPorSalas.destroy')->middleware('permission:relevamientoPorSalas.destroy');
+	Route::get('relevamientoPorSalas/{id}/edit','RelevamientoPorSalaController@edit')->name('relevamientoPorSalas.edit')->middleware('permission:relevamientoPorSalas.edit');
 });
 //reportes
 // Route::middleware(['auth'])->group(function(){

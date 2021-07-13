@@ -6,7 +6,6 @@ $(document).ready( function () {
     rowId: "RelevamientoId",
     "columns": [
       {data: "RelevamientoId", name:"r.RelevamientoId"},
-      {data: "SalaNombre", name:"s.SalaNombre"},
       {data: "RelevamientoFecha", name:"r.RelevamientoFecha"},
       {data: "RelevamientoTurno", name:"r.RelevamientoTurno"},
       {data:'btn',orderable:false,sercheable:false},
@@ -24,7 +23,7 @@ $(document).ready( function () {
     vaciarCampos();
     var data = table.row( $(this).parents('tr') ).data();
     $("#id").val(data['RelevamientoId']);
-    $("#salaId").val(data['SalaId']).trigger('change');
+    // $("#salaId").val(data['SalaId']).trigger('change');
     fecha = data['RelevamientoFecha']; //dd/mm/YYYY
     fechaseparada = fecha.split("/");
     fecha = fechaseparada[2] + '-' + fechaseparada[1] + '-' + fechaseparada[0]; //YYYY/mm/dd
@@ -42,15 +41,15 @@ $(document).ready( function () {
         },
     allowClear: true
   });
-  $('#salaId').select2({
-    width: 'resolve',
-    theme: "classic",
-    placeholder: {
-          id: '-1', 
-          text: "Sala",
-        },
-    allowClear: true
-  });
+  // $('#salaId').select2({
+  //   width: 'resolve',
+  //   theme: "classic",
+  //   placeholder: {
+  //         id: '-1', 
+  //         text: "Sala",
+  //       },
+  //   allowClear: true
+  // });
 });
 //POST AJAX
 function guardar(e){
@@ -63,7 +62,7 @@ function guardar(e){
       url:"relevamientos",
       dataType:"json",
       data:{
-        salaId: $('#salaId').val(),
+        // salaId: $('#salaId').val(),
         fecha: $('#fecha').val(),
         turno: $('#turno').val(),
       },
@@ -93,7 +92,7 @@ function editar(id){
     dataType:"json",
     data:{
       id: id,
-      salaId: $('#salaId').val(),
+      // salaId: $('#salaId').val(),
       fecha: $('#fecha').val(),
       turno: $('#turno').val(),
     },
@@ -134,7 +133,7 @@ function eliminar(id){
 }
 //funciones auxiliares
 function vaciarCampos(){
-  $("#salaId").val(-1).trigger('change');
+  // $("#salaId").val(-1).trigger('change');
   $("#fecha").val("");
   $("#turno").val(-1).trigger('change');
   $("#listaErrores").empty();
@@ -142,7 +141,7 @@ function vaciarCampos(){
 function agregar(){
   $("#id").val(0);
   vaciarCampos();
-  $("#tituloModal").text("Agregar sala");
+  $("#tituloModal").text("Agregar Relevamiento");
   $("#btnGuardar span").text("Guardar");
 }
 function mostrarCartel(texto,clase){
