@@ -6,10 +6,11 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">{{ __('Login') }}</div>
-
                 <div class="card-body">
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
+                        <seleccionMenu-component></seleccionMenu-component>
+                        <script src="{{ asset('js/app.js') }}"></script> 
 
                         <div class="form-group row">
                             <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail') }}</label>
@@ -57,4 +58,5 @@
         </div>
     </div>
 </div>
+
 @endsection

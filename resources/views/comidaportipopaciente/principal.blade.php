@@ -30,9 +30,6 @@
               </div>
               <div class="col">
                   <p class="text-right">
-                    <button type="button" class="btn btn-sm btn-outline-primary" id="btnAgregar" onClick="llenarComidas({{$menu->DetalleMenuTipoPacienteId}})" data-toggle="modal"  data-target="#modalElegir">
-                      Simular nutrientes
-                    </button>
                     <button type="button" class="btn btn-sm btn-outline-primary" id="btnAgregar" onClick="agregar()" data-toggle="modal"  data-target="#modal">
                       Agregar comida
                     </button>
@@ -62,32 +59,7 @@
       </div>
     </div>
   </div>
-  <!-- Nutrientes del menu -->
-  <div class="container-fluid" >
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="card" id = "divNutrientes">
-          <div class="card-body">
-            <table id="tableNutrientes" class="table table-sm table-striped table-bordered table-hover" style="width:100%" cellspacing="0">
-              <thead>
-                <tr>
-                  <th class="text-xs text-center"><small>Tipo</small></th>
-                  <th class="text-xs text-center"><small>Comida</small></th>
-                  <th class="text-xs text-center"><small>Alimento</small></th>
-                  <th class="text-xs text-center"><small>Cantidad</small></th>
-                  @foreach($nutrientes as $nutriente)
-                  <th class="text-xs text-center"><small>{{$nutriente->NutrienteNombre}}</small></th>
-                  @endforeach
-                </tr>
-              </thead>
-              <tbody id="bodyNutrientes">
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <simular-component :id="{{$menu->DetalleMenuTipoPacienteId}}"></simular-component>
 </div>
 
 <!-- Modal para agregar y editar  -->

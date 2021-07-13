@@ -251,13 +251,23 @@ Route::middleware(['auth'])->group(function(){
 });
 //seleccionar menu
 Route::middleware(['auth'])->group(function(){
-	Route::post('seleccionarMenu','SeleccionarMenuController@store')->name('seleccionarMenu.store')->middleware('permission:seleccionarMenu.store');
-	Route::get('seleccionarMenu','SeleccionarMenuController@index')->name('seleccionarMenu.index')->middleware('permission:seleccionarMenu.index');
-	Route::get('seleccionarMenu/create','SeleccionarMenuController@create')->name('seleccionarMenu.create')->middleware('permission:seleccionarMenu.create');
-	Route::put('seleccionarMenu/{id}','SeleccionarMenuController@update')->name('seleccionarMenu.update')->middleware('permission:seleccionarMenu.update');
-	Route::get('seleccionarMenu/{id}','SeleccionarMenuController@show')->name('seleccionarMenu.show')->middleware('permission:seleccionarMenu.show');
-	Route::delete('seleccionarMenu/{id}','SeleccionarMenuController@destroy')->name('seleccionarMenu.destroy')->middleware('permission:seleccionarMenu.destroy');
-	Route::get('seleccionarMenu/{id}/edit','SeleccionarMenuController@edit')->name('seleccionarMenu.edit')->middleware('permission:seleccionarMenu.edit');
+	Route::post('seleccionarMenu','SeleccionarMenuController@store')->name('seleccionarMenu.store')/*->middleware('permission:seleccionarMenu.store')*/;
+	Route::get('seleccionarMenu','SeleccionarMenuController@index')->name('seleccionarMenu.index')/*->middleware('permission:seleccionarMenu.index')*/;
+	Route::get('seleccionarMenu/create','SeleccionarMenuController@create')->name('seleccionarMenu.create')/*->middleware('permission:seleccionarMenu.create')*/;
+	Route::put('seleccionarMenu/{id}','SeleccionarMenuController@update')->name('seleccionarMenu.update')/*->middleware('permission:seleccionarMenu.update')*/;
+	Route::get('seleccionarMenu/{id}','SeleccionarMenuController@show')->name('seleccionarMenu.show')/*->middleware('permission:seleccionarMenu.show')*/;
+	Route::delete('seleccionarMenu/{id}','SeleccionarMenuController@destroy')->name('seleccionarMenu.destroy')/*->middleware('permission:seleccionarMenu.destroy')*/;
+	Route::get('seleccionarMenu/{id}/edit','SeleccionarMenuController@edit')->name('seleccionarMenu.edit')/*->middleware('permission:seleccionarMenu.edit')*/;
+});
+
+Route::middleware(['auth'])->group(function(){
+	Route::post('nutrientes','NutrienteController@store')->name('nutrientes.store')->middleware('permission:nutrientes.store');
+	Route::get('nutrientes','NutrienteController@index')->name('nutrientes.index')->middleware('permission:nutrientes.index');
+	Route::get('nutrientes/create','NutrienteController@create')->name('nutrientes.create')->middleware('permission:nutrientes.create');
+	Route::put('nutrientes/{id}','NutrienteController@update')->name('nutrientes.update')->middleware('permission:nutrientes.update');
+	Route::get('nutrientes/{id}','NutrienteController@show')->name('nutrientes.show')->middleware('permission:nutrientes.show');
+	Route::delete('nutrientes/{id}','NutrienteController@destroy')->name('nutrientes.destroy')->middleware('permission:nutrientes.destroy');
+	Route::get('nutrientes/{id}/edit','NutrienteController@edit')->name('nutrientes.edit')->middleware('permission:nutrientes.edit');
 });
 //relevamiento por salas
 Route::middleware(['auth'])->group(function(){

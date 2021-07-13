@@ -15,17 +15,17 @@
     <link href="{{asset('css/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
     <link href="{{asset('css/responsive.dataTables.min.css')}}" rel="stylesheet">
     <link href="{{asset('css/select2.min.css')}}" rel="stylesheet">
-    {{-- custom styles --}}
-    <link href="{{asset('css/custom.css')}}" rel="stylesheet">
+
   </head>
   <body class="hold-transition sidebar-mini">
-    <!-- <div class="wrapper"> -->
-      <?php $user = Auth::user() ?>
-    @include('layouts.navbar')
-    @yield('contenido')
-    @include('layouts.footer')
-    <!-- </div> -->
+  <div id="app">
+    
+        <?php $user = Auth::user() ?>
+      @include('layouts.navbar')
+      @yield('contenido')
+      @include('layouts.footer') 
     <!-- REQUIRED SCRIPTS -->
+  </div>
     <script src="{{asset('plugins/jquery/jquery.min.js')}}"></script>
     <script src="{{asset('plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
     <script src="{{asset('dist/js/adminlte.min.js')}}"></script>
@@ -33,5 +33,6 @@
     <script  src="{{asset('js/dataTables.responsive.min.js')}}"></script>
     <script  src="{{asset('js/select2.min.js')}}"></script>
     @stack('custom-scripts')
+    <script src="{{asset('js/app.js')}}"></script> 
   </body>
 </html>

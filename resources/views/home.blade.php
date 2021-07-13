@@ -1,5 +1,6 @@
 @extends('layouts.plantilla')
 @section('contenido')
+
 <div class="content-wrapper">
 <div class="container">
     <div class="row justify-content-center ">
@@ -11,16 +12,16 @@
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
                         </div>
-                    @endif
-                     
+                    @endif   
                     <p>Nombre: {{$user->name}}</p>
                     <p>Mail: {{$user->email}}</p>
                 </div>
             </div>
         </div>
     </div>
+  </div>
 </div>
-</div>
-@push('custom-scripts')
-@endpush
+
 @endsection
+
+

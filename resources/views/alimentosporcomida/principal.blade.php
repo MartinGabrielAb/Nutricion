@@ -48,7 +48,6 @@
                         <th>Alimento</th>
                         <th>Cantidad</th>
                         <th>Unidad de Medida</th>
-                        <th>Costo Total</th>
                         <th width="10%">Acciones</th>
                     </tr>
                   </thead>

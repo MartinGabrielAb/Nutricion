@@ -9,7 +9,6 @@ $(document).ready( function () {
       {data: 'AlimentoNombre'},
       {data: 'AlimentoPorComidaCantidadNeto'},
       {data: 'UnidadMedidaNombre'},
-      {data: 'AlimentoPorComidaCostoTotal'},
       {data: 'btn',orderable:false,sercheable:false},
     ],
     "language": { "url": "../JSON/Spanish_dataTables.json"},

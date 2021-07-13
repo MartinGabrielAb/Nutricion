@@ -46,7 +46,7 @@ class ComidaPorTipoPacienteController extends Controller
         ->join('tipocomida as tc','c.TipoComidaId','tc.TipoComidaId')
         ->orderBy('tc.TipoComidaId','asc')
         ->get();
-        return $comidas;
+        return response($comidas);
 
         // $detalles = ComidaPorTipoPaciente::where('DetalleMenuTipoPacienteId',$id)->get();
         // //Para armar la tabla de nutrientes obtengo las comidas indexadas
@@ -86,6 +86,7 @@ class ComidaPorTipoPacienteController extends Controller
     // un array de comidas desde comidaportipopaciente/nutrientes.js
     public function edit(Request $request,$id)
     {   
+        
         $listaComidas = $request['comidas'];
         $respuesta = array();
         $valoresTotales=array();
@@ -152,7 +153,7 @@ class ComidaPorTipoPacienteController extends Controller
             "comidas" => $comidasArray,
             "totales" => $valoresTotales,
         ];
-        return $respuesta;
+        return response($respuesta);
     }
 
     public function update(Request $request, $id)

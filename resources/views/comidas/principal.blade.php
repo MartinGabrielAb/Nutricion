@@ -46,7 +46,6 @@
                         <th>#</th>
                         <th>Comida</th>
                         <th>Tipo</th>
-                        <th>Costo Total</th>
                         <th width="10%">Acciones</th>
                     </tr>
                   </thead>

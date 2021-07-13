@@ -46,8 +46,6 @@
                         <th>#</th>
                         <th>Nombre</th>
                         <th>Cantidad Total</th>
-                        <th>Costo Unitario</th>
-			                  <th>Costo Total</th>
                         <th width="5%">Acciones</th>
                     </tr>
                   </thead>
@@ -86,15 +84,6 @@
               @endif
             @endforeach
           </select>
-          <!-- <div id="divEquivalencia">
-            <p><small>1 <span id="medida"></span> de <span id="alimento"> </span> es equivalente a:</small></p>
-            <div class="input-group">
-              <input type="number" class="form-control" id="equivalente" aria-label="">
-              <div class="input-group-append">
-                <span class="input-group-text"><small>gramos</small></span>
-              </div>
-            </div>
-          </div> -->
         </div>
         <div class="modal-footer">
           <div class="container-fluid">

@@ -91,10 +91,10 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text">$</span>
                 </div>
-                <input type="number" class="form-control" id="costo" required>
+                <input type="number" class="form-control" id="costo" required step="0.01">
             </div>
             <label for='cantidad'>Cantidad</label>
-            <input class="form-control" type="number" id="cantidad" name="cantidad" required>
+            <input class="form-control" type="number" id="cantidad" name="cantidad" required step="0.01">
             <label for='vencimiento' >Vencimiento</label>
             <input class="form-control" type="date" id="vencimiento" name="vencimiento" required>
 

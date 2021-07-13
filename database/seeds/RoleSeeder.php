@@ -196,6 +196,14 @@ class RoleSeeder extends Seeder
         // $permission = Permission::create(['name' => 'seleccionarMenu.destroy'])->syncRoles(['Admin']);
         // $permission = Permission::create(['name' => 'seleccionarMenu.edit'])->syncRoles(['Admin']);
         
+        $permission = Permission::create(['name' => 'nutrientes.store'])->syncRoles(['Admin']);
+        $permission = Permission::create(['name' => 'nutrientes.index'])->syncRoles(['Admin']);
+        $permission = Permission::create(['name' => 'nutrientes.create'])->syncRoles(['Admin']);
+        $permission = Permission::create(['name' => 'nutrientes.update'])->syncRoles(['Admin']);
+        $permission = Permission::create(['name' => 'nutrientes.show'])->syncRoles(['Admin']);
+        $permission = Permission::create(['name' => 'nutrientes.destroy'])->syncRoles(['Admin']);
+        $permission = Permission::create(['name' => 'nutrientes.edit'])->syncRoles(['Admin']);
+
         $permission = Permission::create(['name' => 'relevamientoPorSalas.store'])->syncRoles(['Admin']);
         $permission = Permission::create(['name' => 'relevamientoPorSalas.index'])->syncRoles(['Admin']);
         $permission = Permission::create(['name' => 'relevamientoPorSalas.create'])->syncRoles(['Admin']);
