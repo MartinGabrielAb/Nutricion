@@ -31,6 +31,12 @@
                 </div>
             </div>
             <div class="row form-group">
+              <label for="dni" class="col-xl-2 col-lg-2 col-sm-12 col-md-12 col-form-label text-center">DNI</label>
+              <div class="col-auto">
+                  <input type="number" class="form-control" id="dni" placeholder="DNI del paciente">
+              </div>
+            </div>
+            <div class="row form-group">
                 <label for="fecha_desde" class="col-xl-2 col-lg-2 col-sm-12 col-md-12 col-form-label text-center">Desde</label>
                 <div class="col-auto">
                     <input type="date" class="form-control" id="fecha_desde">
@@ -39,6 +45,17 @@
                 <div class="col-auto">
                     <input type="date" class="form-control" id="fecha_hasta">
                 </div>
+            </div>
+            <div class="row form-group">
+              <label for="sala" class="col-xl-2 col-lg-2 col-sm-12 col-md-12 col-form-label text-center">Sala</label>
+              <div class="col-auto">
+                  <select class="form-control" id="sala">
+                      <option value="-1"></option>
+                      @foreach ($salas as $sala)
+                          <option value="{{$sala->SalaId}}">{{$sala->SalaNombre}}</option>
+                      @endforeach
+                  </select>
+              </div>
             </div>
             <div class="form-group row justify-content-md-center mb-0">
                 <div class="col-auto mr-auto ml-auto">
