@@ -14,6 +14,11 @@ $(document).ready( function () {
 //POST AJAX
 function getReporteProduccionRaciones(e){
     $("#listaErrores").empty();
+    if($('#sala').val() == -1){
+        sala = null;
+    }else{
+        sala = $('#sala').val(); 
+    }
     e.preventDefault();
     $.ajax({
         xhrFields: {
@@ -23,8 +28,10 @@ function getReporteProduccionRaciones(e){
         url:"../reporte/produccionRaciones",
         // responseType: 'blob',
         data:{
+            PacienteCuil: $('#dni').val(),
             RelevamientoFechaIni: $('#fecha_desde').val(),
             RelevamientoFechaFin: $('#fecha_hasta').val(),
+            SalaId: sala,
         },
         success: function(result, status, xhr){
             // mostrarCartel('Registro agregado correctamente.','alert-success');

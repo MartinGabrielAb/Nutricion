@@ -34,16 +34,19 @@ class ReporteController extends Controller
         /*---Pregunto si es una peticion ajax----*/
         if($request->ajax()){//RelevamientoFechaIni, RelevamientoFechaFin
             try{
+                $pacienteCuil = $request->get('PacienteCuil');
                 $relevamientoFechaIni = $request->get('RelevamientoFechaIni');
                 $relevamientoFechaFin = $request->get('RelevamientoFechaFin');
-                return Excel::download(new ProduccionRacionesExport($relevamientoFechaIni,$relevamientoFechaFin),'produccionraciones.xlsx');
+                $salaId = $request->get('SalaId');
+                return Excel::download(new ProduccionRacionesExport($pacienteCuil,$relevamientoFechaIni,$relevamientoFechaFin,$salaId),'produccionraciones.xlsx');
             }catch(Exception $ex){
                 return response()->json([
                     'error' => $ex->getMessage()
                 ], 500);
             }
         }
-        return view('reportes.produccionraciones');
+        $salas = DB::table('sala')->where('SalaEstado',1)->get();
+        return view('reportes.produccionraciones',compact('salas'));
     }
 
 }

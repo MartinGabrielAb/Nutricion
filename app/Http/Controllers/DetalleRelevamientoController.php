@@ -214,7 +214,7 @@ class DetalleRelevamientoController extends Controller
             $detallesRelevamientoPorComida = DetRelevamientoPorComida::where('DetalleRelevamientoId',$detalleRelevamiento->DetalleRelevamientoId)->get();
             if($detallesRelevamientoPorComida){
                 foreach ($detallesRelevamientoPorComida as $detalleRelevamientoPorComida) {
-                    $this->restarCantidadComidasPorRelevamiento($detalleRelevamientoPorComida,$relevamientoPorSala->RelevamientoId);
+                    $this->restarCantidadComidasPorRelevamiento($detalleRelevamientoPorComida,$relevamientoPorSala->RelevamientoPorSalaId);
                 }
             }
             $detalleRelevamiento->update();
@@ -238,7 +238,7 @@ class DetalleRelevamientoController extends Controller
 
         //sumo y seteo cantidad de comidas en el relevamiento actual.
         foreach ($comidas as $comida) {
-            $this->sumCantidadComidasPorRelevamiento($comida,$detalleRelevamiento->DetalleRelevamientoId,$relevamientoPorSala->RelevamientoId);
+            $this->sumCantidadComidasPorRelevamiento($comida,$detalleRelevamiento->DetalleRelevamientoId,$relevamientoPorSala->RelevamientoPorSalaId);
         }
 
         //acompañante
@@ -247,7 +247,7 @@ class DetalleRelevamientoController extends Controller
             $comidas = $this->get_comidas_por_menu_paciente($detalleRelevamiento->MenuId,$tipoPacienteNormal->TipoPacienteId,$relevamiento->RelevamientoTurno);
             //sumo y seteo cantidad de comidas del acompañante en el relevamiento actual.
             foreach ($comidas as $comida) {
-                $this->sumCantidadComidasPorRelevamiento($comida,$detalleRelevamiento->DetalleRelevamientoId,$relevamientoPorSala->RelevamientoId);
+                $this->sumCantidadComidasPorRelevamiento($comida,$detalleRelevamiento->DetalleRelevamientoId,$relevamientoPorSala->RelevamientoPorSalaId);
             }
         }
 
@@ -255,7 +255,7 @@ class DetalleRelevamientoController extends Controller
         if($request->get('colacion') != null){
             $comida = ['ComidaId' => $request->get('colacion')];
             //sumo y seteo la colacion en el relevamiento actual.
-            $this->sumCantidadComidasPorRelevamiento($comida,$detalleRelevamiento->DetalleRelevamientoId,$relevamientoPorSala->RelevamientoId);
+            $this->sumCantidadComidasPorRelevamiento($comida,$detalleRelevamiento->DetalleRelevamientoId,$relevamientoPorSala->RelevamientoPorSalaId);
         }
 
         if ($detalleRelevamiento) {
@@ -276,7 +276,7 @@ class DetalleRelevamientoController extends Controller
             $detallesRelevamientoPorComida = DetRelevamientoPorComida::where('DetalleRelevamientoId',$detalleRelevamiento->DetalleRelevamientoId)->get();
             if($detallesRelevamientoPorComida){
                 foreach ($detallesRelevamientoPorComida as $detalleRelevamientoPorComida) {
-                    $this->restarCantidadComidasPorRelevamiento($detalleRelevamientoPorComida,$relevamiento->RelevamientoId);
+                    $this->restarCantidadComidasPorRelevamiento($detalleRelevamientoPorComida,$relevamientoPorSala->RelevamientoPorSalaId);
                 }
             }
         }
@@ -311,7 +311,7 @@ class DetalleRelevamientoController extends Controller
             $detRelevamientoPorComida->ComidaId = $comida['ComidaId'];
             $detRelevamientoPorComida->save();
 
-            $relevamientoComida = RelevamientoComida::where('RelevamientoId',$relevamientoId)
+            $relevamientoComida = RelevamientoComida::where('RelevamientoPorSalaId',$relevamientoId)
                                                     ->where('ComidaId',$comida['ComidaId'])
                                                     ->first();
             if($relevamientoComida){
@@ -321,7 +321,7 @@ class DetalleRelevamientoController extends Controller
             }else{
                 
                 $relevamientoComida = new RelevamientoComida;
-                $relevamientoComida->RelevamientoId = $relevamientoId;
+                $relevamientoComida->RelevamientoPorSalaId = $relevamientoId;
                 $relevamientoComida->ComidaId = $comida['ComidaId'];
                 $relevamientoComida->RelevamientoComidaCantidad = 1;
                 $relevamientoComida->save();
@@ -330,7 +330,7 @@ class DetalleRelevamientoController extends Controller
     }
 
     private function restarCantidadComidasPorRelevamiento($comida,$relevamientoId){
-        $relevamientoComida = RelevamientoComida::where('RelevamientoId',$relevamientoId)
+        $relevamientoComida = RelevamientoComida::where('RelevamientoPorSalaId',$relevamientoId)
                                                 ->where('ComidaId',$comida->ComidaId)
                                                 ->first();
         if($relevamientoComida){

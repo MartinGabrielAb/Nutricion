@@ -86,7 +86,7 @@ class RelevamientoPorSalaController extends Controller
         $relevamiento_por_salas = DB::table('relevamientoporsala as rps')  
                         ->join('relevamiento as r','r.RelevamientoId','rps.RelevamientoId')
                         ->join('sala as s','s.SalaId','rps.SalaId')
-                        ->where('rps.RelevamientoId',$id)
+                        ->where('rps.RelevamientoPorSalaId',$id)
                         ->select('rps.RelevamientoPorSalaId','r.RelevamientoId',DB::raw('DATE_FORMAT(r.RelevamientoFecha, "%d/%m/%Y") as RelevamientoFecha'),'rps.SalaId','s.SalaPseudonimo','r.RelevamientoTurno')
                         ->first();
         //datos necesarios para agregar y editar un detalle de relevamiento
