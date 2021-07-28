@@ -2015,8 +2015,11 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       relevamientoSelected: null,
-      relevamientosPendientes: [],
+      relevamientos: [],
       relevamiento: null,
+      relevamientosSinMenu: [],
+      menues: [],
+      menuSelected: null,
       acompaniantes: null,
       listAcompaniantes: [],
       //Fijarse bien los acompañantes:CAMBIAR EL METODO
@@ -2037,14 +2040,19 @@ __webpack_require__.r(__webpack_exports__);
         "X-Requested-With": "XMLHttpRequest"
       }
     }).then(function (response) {
-      _this.relevamientosPendientes = response.data;
+      _this.relevamientos = response.data;
     })["catch"](function (error) {
       console.log("Error relevamientos pendientes");
     });
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/getComidas').then(function (response) {
-      _this.comidas = response.data;
+    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/getRelevamientosSinMenuAsignado').then(function (response) {
+      _this.relevamientosSinMenu = response.data;
     })["catch"](function (error) {
-      console.log("Error comidas");
+      console.log("Error menues sin asignar");
+    });
+    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/getMenues').then(function (response) {
+      _this.menues = response.data;
+    })["catch"](function (error) {
+      console.log("Error menues");
     });
   },
   methods: {
@@ -2052,41 +2060,26 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/getRelevamiento/' + this.relevamientoSelected).then(function (response) {
-        _this2.relevamiento = response.data.comidas;
-        _this2.acompaniantes = response.data.acompaniantes;
+        _this2.relevamiento = response.data;
       })["catch"](function (error) {
         console.log("Error getRelevamiento");
       });
-    },
-    addComida: function addComida() {
-      for (var index = 0; index < this.listComidas.length; index++) {
-        var comida = this.listComidas[index][0];
-
-        if (comida.ComidaId == this.comidaSelected.ComidaId) {
-          alert("La comida ya se encuentra en la lista");
-          return;
-        }
-      }
-
-      this.listComidas.push([this.comidaSelected, this.cantidad]);
-    },
-    removeComida: function removeComida(comida) {
-      this.listComidas.splice(this.listComidas.indexOf(comida), 1);
     },
     finalizar: function finalizar() {
       var _this3 = this;
 
       if (window.confirm("Una vez terminado no podra hacer cambios. ¿Desea finalizar?")) {
-        axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/seleccionarMenu', {
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/seleccionarMenu', {
           params: {
-            data: this.listComidas,
-            relevamiento: this.relevamientoSelected
+            relevamientoAnt: this.relevamiento,
+            relevamientoNuevo: this.relevamientoSelected,
+            menu: this.menuSelected
           }
         }).then(function (response) {
           if (response.data.error) {
             _this3.listErrores = response.data.error;
           } else {
-            window.location.href = '/historial/' + response.data.response;
+            window.location.href = '/seleccionarMenu/' + _this3.relevamientoSelected;
           }
         })["catch"](function (error) {
           console.log("Error finalizar");
@@ -2165,6 +2158,43 @@ __webpack_require__.r(__webpack_exports__);
         console.log(_this3.listNutrientes);
       })["catch"](function (error) {
         console.log("errorr");
+      });
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./resources/js/components/tandas/TandasComponent.ts?vue&type=script&lang=js&":
+/*!******************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./resources/js/components/tandas/TandasComponent.ts?vue&type=script&lang=js& ***!
+  \******************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ["id"],
+  data: function data() {
+    return {
+      relevamiento: null
+    };
+  },
+  mounted: function mounted() {
+    this.getRelevamiento();
+  },
+  methods: {
+    getRelevamiento: function getRelevamiento() {
+      var _this = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/getRelevamientoComidas/' + this.id).then(function (response) {
+        _this.relevamiento = response.data;
+      })["catch"](function (error) {
+        console.log("Error getRelevamiento");
       });
     }
   }
@@ -2874,8 +2904,10 @@ var render = function() {
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "col" }, [
-          _vm._v("\r\n                Relevamiento:\r\n                "),
-          _vm.relevamientosPendientes.length > 0
+          _vm._v(
+            "\r\n                Seleccione el relevamiento anterior:\r\n                "
+          ),
+          _vm.relevamientos.length > 0
             ? _c(
                 "select",
                 {
@@ -2909,7 +2941,7 @@ var render = function() {
                     ]
                   }
                 },
-                _vm._l(_vm.relevamientosPendientes, function(relevamiento) {
+                _vm._l(_vm.relevamientos, function(relevamiento) {
                   return _c(
                     "option",
                     {
@@ -2938,7 +2970,7 @@ var render = function() {
       "div",
       { staticClass: "card-body" },
       [
-        _vm.relevamientosPendientes.length == 0
+        _vm.relevamientos.length == 0
           ? [
               _c("span", { staticClass: "text-center" }, [
                 _vm._v("No hay relevamientos pendientes.")
@@ -2958,15 +2990,15 @@ var render = function() {
                   [
                     _vm._m(0),
                     _vm._v(" "),
-                    _vm._l(_vm.relevamiento, function(comida) {
+                    _vm._l(_vm.relevamiento, function(detalle) {
                       return _c(
                         "div",
-                        { key: comida.ComidaId, staticClass: "row border" },
+                        { key: detalle.id, staticClass: "row border" },
                         [
                           _c("div", { staticClass: "col" }, [
                             _vm._v(
                               "\r\n                            " +
-                                _vm._s(comida.ComidaNombre) +
+                                _vm._s(detalle.nombre) +
                                 "\r\n                        "
                             )
                           ]),
@@ -2974,183 +3006,179 @@ var render = function() {
                           _c("div", { staticClass: "col text-center" }, [
                             _vm._v(
                               "\r\n                            " +
-                                _vm._s(comida.RelevamientoComidaCantidad) +
+                                _vm._s(detalle.cantidad) +
                                 "\r\n                        "
                             )
                           ])
                         ]
                       )
-                    }),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "row border" }, [
-                      _c("div", { staticClass: "col" }, [
-                        _vm._v("Total de acompañantes:")
-                      ]),
-                      _c("div", { staticClass: "col text-center" }, [
-                        _vm._v(" " + _vm._s(_vm.acompaniantes))
-                      ])
-                    ])
+                    })
                   ],
                   2
                 )
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "card" }, [
-                _c("div", { staticClass: "card-body" }, [
-                  _vm._m(1),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "row" }, [
-                    _c("div", { staticClass: "col" }, [
-                      _c("div", { staticClass: "card-body" }, [
-                        _c("div", { staticClass: "row" }, [
-                          _c("div", { staticClass: "col" }, [
-                            _c(
-                              "select",
+                _c(
+                  "div",
+                  { staticClass: "card-body" },
+                  [
+                    _vm._m(1),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "row" }, [
+                      _c("div", { staticClass: "col" }, [
+                        _vm._v(
+                          "Seleccione el nuevo relevamiento para asignar el menú  "
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col" }, [
+                        _c(
+                          "select",
+                          {
+                            directives: [
                               {
-                                directives: [
-                                  {
-                                    name: "model",
-                                    rawName: "v-model",
-                                    value: _vm.comidaSelected,
-                                    expression: "comidaSelected"
-                                  }
-                                ],
-                                staticClass: "w-100",
-                                on: {
-                                  change: function($event) {
-                                    var $$selectedVal = Array.prototype.filter
-                                      .call($event.target.options, function(o) {
-                                        return o.selected
-                                      })
-                                      .map(function(o) {
-                                        var val =
-                                          "_value" in o ? o._value : o.value
-                                        return val
-                                      })
-                                    _vm.comidaSelected = $event.target.multiple
-                                      ? $$selectedVal
-                                      : $$selectedVal[0]
-                                  }
-                                }
-                              },
-                              _vm._l(_vm.comidas, function(comida) {
-                                return _c(
-                                  "option",
-                                  {
-                                    key: comida.ComidaId,
-                                    domProps: { value: comida }
-                                  },
-                                  [
-                                    _vm._v(
-                                      "\r\n                                                " +
-                                        _vm._s(comida.ComidaNombre) +
-                                        "\r\n                                            "
-                                    )
-                                  ]
-                                )
-                              }),
-                              0
-                            )
-                          ])
-                        ]),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "row mt-2" }, [
-                          _c("div", { staticClass: "col" }, [
-                            _vm._v("Cantidad")
-                          ]),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "col" }, [
-                            _c("input", {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.cantidad,
-                                  expression: "cantidad"
-                                }
-                              ],
-                              attrs: { type: "number" },
-                              domProps: { value: _vm.cantidad },
-                              on: {
-                                input: function($event) {
-                                  if ($event.target.composing) {
-                                    return
-                                  }
-                                  _vm.cantidad = $event.target.value
-                                }
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.relevamientoSelected,
+                                expression: "relevamientoSelected"
                               }
-                            })
-                          ])
-                        ]),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "row text-center mt-2" }, [
-                          _c(
-                            "div",
-                            { staticClass: "col" },
-                            [
-                              _vm.cantidad > 0 && _vm.comidaSelected != null
-                                ? _c(
-                                    "Button",
-                                    {
-                                      on: {
-                                        click: function($event) {
-                                          return _vm.addComida()
-                                        }
-                                      }
-                                    },
-                                    [_vm._v("Agregar")]
-                                  )
-                                : _vm._e()
                             ],
-                            1
-                          )
-                        ])
+                            staticClass: "w-100",
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.relevamientoSelected = $event.target
+                                  .multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
+                            }
+                          },
+                          _vm._l(_vm.relevamientosSinMenu, function(rel) {
+                            return _c(
+                              "option",
+                              {
+                                key: rel.RelevamientoId,
+                                domProps: { value: rel.RelevamientoId }
+                              },
+                              [
+                                _vm._v(
+                                  "\r\n                                    " +
+                                    _vm._s(rel.RelevamientoFecha) +
+                                    " - " +
+                                    _vm._s(rel.RelevamientoTurno) +
+                                    "\r\n                                "
+                                )
+                              ]
+                            )
+                          }),
+                          0
+                        )
                       ])
                     ]),
                     _vm._v(" "),
-                    _c("div", { staticClass: "col " }, [
-                      _c(
-                        "div",
-                        { staticClass: "card-body" },
-                        _vm._l(_vm.listComidas, function(comida) {
-                          return _c(
-                            "div",
-                            { key: comida.ComidaId, staticClass: "row w-100" },
-                            [
-                              _c("div", { staticClass: "col" }, [
-                                _vm._v(
-                                  "\r\n                                        " +
-                                    _vm._s(comida[0].ComidaNombre) +
-                                    "\r\n                                    "
-                                )
-                              ]),
-                              _vm._v(" "),
-                              _c("div", { staticClass: "col" }, [
-                                _vm._v(
-                                  "\r\n                                        " +
-                                    _vm._s(comida[1]) +
-                                    "\r\n                                        "
-                                ),
-                                _c(
-                                  "button",
-                                  {
-                                    on: {
-                                      click: function($event) {
-                                        return _vm.removeComida(comida)
-                                      }
+                    _vm.relevamientoSelected > 0
+                      ? [
+                          _c("div", { staticClass: "row mt-4" }, [
+                            _c("div", { staticClass: "col" }, [
+                              _vm._v(
+                                "\r\n                                Seleccione el menú\r\n                            "
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "col" }, [
+                              _c(
+                                "select",
+                                {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.menuSelected,
+                                      expression: "menuSelected"
                                     }
-                                  },
-                                  [_vm._v(" x ")]
-                                )
-                              ])
-                            ]
-                          )
-                        }),
-                        0
-                      )
-                    ])
-                  ])
-                ])
+                                  ],
+                                  staticClass: "w-100",
+                                  on: {
+                                    change: function($event) {
+                                      var $$selectedVal = Array.prototype.filter
+                                        .call($event.target.options, function(
+                                          o
+                                        ) {
+                                          return o.selected
+                                        })
+                                        .map(function(o) {
+                                          var val =
+                                            "_value" in o ? o._value : o.value
+                                          return val
+                                        })
+                                      _vm.menuSelected = $event.target.multiple
+                                        ? $$selectedVal
+                                        : $$selectedVal[0]
+                                    }
+                                  }
+                                },
+                                _vm._l(_vm.menues, function(menu) {
+                                  return _c(
+                                    "option",
+                                    {
+                                      key: menu.MenuId,
+                                      domProps: { value: menu.MenuId }
+                                    },
+                                    [
+                                      _vm._v(
+                                        "\r\n                                        " +
+                                          _vm._s(menu.MenuNombre) +
+                                          "\r\n                                    "
+                                      )
+                                    ]
+                                  )
+                                }),
+                                0
+                              )
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _vm.menuSelected > 0
+                            ? [
+                                _c("div", { staticClass: "row" }),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "row text-center" }, [
+                                  _c("div", { staticClass: "col" }, [
+                                    _c(
+                                      "button",
+                                      {
+                                        staticClass: "btn btn-primary mt-3",
+                                        attrs: { type: "button" },
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.finalizar()
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _vm._v(
+                                          "Finalizar selección (Falta controlar stock)"
+                                        )
+                                      ]
+                                    )
+                                  ])
+                                ])
+                              ]
+                            : _vm._e()
+                        ]
+                      : _vm._e()
+                  ],
+                  2
+                )
               ]),
               _vm._v(" "),
               _vm.listErrores
@@ -3181,17 +3209,7 @@ var render = function() {
               _vm._v(" "),
               _vm.listComidas.length > 0
                 ? _c("div", { staticClass: "card tex-center" }, [
-                    _c(
-                      "button",
-                      {
-                        on: {
-                          click: function($event) {
-                            return _vm.finalizar()
-                          }
-                        }
-                      },
-                      [_vm._v("Finalizar")]
-                    )
+                    _c("button", [_vm._v("Finalizar")])
                   ])
                 : _vm._e()
             ]
@@ -3207,7 +3225,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col font-weight-bold" }, [
-        _vm._v("Comidas relevadas:")
+        _vm._v("Tipo de paciente:")
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "col text-center" }, [_vm._v("Cantidad")])
@@ -3218,9 +3236,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "row font-weight-bold" }, [
-      _c("div", { staticClass: "col" }, [_vm._v("Selección de comidas")]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col" }, [_vm._v("Comidas agregadas")])
+      _c("div", { staticClass: "col" }, [_vm._v("Selección de menú")])
     ])
   }
 ]
@@ -3611,6 +3627,45 @@ var staticRenderFns = [
         },
         [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
       )
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/tandas/TandasComponent.vue?vue&type=template&id=bbeba94e&":
+/*!*************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/tandas/TandasComponent.vue?vue&type=template&id=bbeba94e& ***!
+  \*************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _vm._m(0)
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "container-fluid" }, [
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-lg-12" }, [
+          _c("div", { staticClass: "card", attrs: { id: "divNutrientes" } }, [
+            _c("div", { staticClass: "card-body" })
+          ])
+        ])
+      ])
     ])
   }
 ]
@@ -15842,6 +15897,7 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
 Vue.component('simular-component', __webpack_require__(/*! ./components/simularNutrientes/SimularComponent.vue */ "./resources/js/components/simularNutrientes/SimularComponent.vue")["default"]);
 Vue.component('seleccion-component', __webpack_require__(/*! ./components/seleccionarMenu/SeleccionComponent.vue */ "./resources/js/components/seleccionarMenu/SeleccionComponent.vue")["default"]);
 Vue.component('historial-component', __webpack_require__(/*! ./components/historial/HistorialComponent.vue */ "./resources/js/components/historial/HistorialComponent.vue")["default"]);
+Vue.component('tandas-component', __webpack_require__(/*! ./components/tandas/TandasComponent.vue */ "./resources/js/components/tandas/TandasComponent.vue")["default"]);
 var app = new Vue({
   el: '#app'
 });
@@ -17861,6 +17917,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SimularComponent_vue_vue_type_template_id_350e72b8___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SimularComponent_vue_vue_type_template_id_350e72b8___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/tandas/TandasComponent.ts?vue&type=script&lang=js&":
+/*!************************************************************************************!*\
+  !*** ./resources/js/components/tandas/TandasComponent.ts?vue&type=script&lang=js& ***!
+  \************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_TandasComponent_ts_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!./TandasComponent.ts?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./resources/js/components/tandas/TandasComponent.ts?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_TandasComponent_ts_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/tandas/TandasComponent.vue":
+/*!************************************************************!*\
+  !*** ./resources/js/components/tandas/TandasComponent.vue ***!
+  \************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _TandasComponent_vue_vue_type_template_id_bbeba94e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TandasComponent.vue?vue&type=template&id=bbeba94e& */ "./resources/js/components/tandas/TandasComponent.vue?vue&type=template&id=bbeba94e&");
+/* harmony import */ var _TandasComponent_ts_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TandasComponent.ts?vue&type=script&lang=js& */ "./resources/js/components/tandas/TandasComponent.ts?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _TandasComponent_ts_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _TandasComponent_vue_vue_type_template_id_bbeba94e___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _TandasComponent_vue_vue_type_template_id_bbeba94e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/tandas/TandasComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/tandas/TandasComponent.vue?vue&type=template&id=bbeba94e&":
+/*!*******************************************************************************************!*\
+  !*** ./resources/js/components/tandas/TandasComponent.vue?vue&type=template&id=bbeba94e& ***!
+  \*******************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TandasComponent_vue_vue_type_template_id_bbeba94e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./TandasComponent.vue?vue&type=template&id=bbeba94e& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/tandas/TandasComponent.vue?vue&type=template&id=bbeba94e&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TandasComponent_vue_vue_type_template_id_bbeba94e___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TandasComponent_vue_vue_type_template_id_bbeba94e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

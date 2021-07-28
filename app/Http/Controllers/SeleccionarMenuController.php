@@ -29,13 +29,17 @@ class SeleccionarMenuController extends Controller
     }
 
     public function create()
-    { }
+    { 
+        
+        
+
+    }
+
 
 
 
     public function store(Request $request)
     {
- 
         $comidas = $request['params']['data'];
         $relevamientoId = $request['params']['relevamiento'];
         DB::beginTransaction();
@@ -143,7 +147,8 @@ class SeleccionarMenuController extends Controller
     }
     public function show(Request $request ,$id)
     {
-           
+        return view('seleccionarmenu.show',compact('id'));
+
     }
 
     public function edit()
