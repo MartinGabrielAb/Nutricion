@@ -11,6 +11,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 /* -----------------NUEVAS RUTAS : NO BORRAR------------------------ */
+//Obtiene las comidas
 Route::get('/getComidas', function (Request $request) {
     $comidas = DB::table('comida as c')
 					->join('tipocomida as tc','tc.TipoComidaId','c.TipoComidaId')
@@ -19,37 +20,97 @@ Route::get('/getComidas', function (Request $request) {
 					->get();
 	return response($comidas);
 });
+//Obtiene el historial
 Route::get('/getHistorial', function (Request $request) {
     $historial = DB::table('historial')
 					->where('HistorialEstado',1)
 					->get();
 	return Response::json($historial);
 });
+
+//Retorna la cantidad relevada por tipo de paciente, en 0 esta la cantidad acompañantes
 Route::get('/getRelevamiento/{id}', function ($id) {
-    $relevamiento = DB::table('relevamientocomida as rc')
-					->where('RelevamientoId',$id)
-					->join('comida as c','c.ComidaId','rc.ComidaId')
-					->get();
-	$acompaniantes = 0 ;
+	$relevamiento = array();
+	$tiposPaciente = DB::table('tipopaciente as tp')
+						->where('TipoPacienteEstado',1)
+						->get();
+	$relevamiento[0] = ['id' => 0,'nombre' => "Acompañantes",'cantidad' => 0];
+	foreach ($tiposPaciente as $tipoPaciente){
+		$relevamiento[$tipoPaciente->TipoPacienteId] = [
+			'id' => $tipoPaciente->TipoPacienteId,
+			'nombre' => $tipoPaciente->TipoPacienteNombre,
+			'cantidad' => 0
+		];
+	}
 	$relevamientosPorSala = DB::table('relevamientoporsala')
 							->where('RelevamientoId',$id)
+							->where('RelevamientoPorSalaEstado',1)
 							->get();
-	foreach ($relevamientosPorSala as $relevamientoPorSala) {
-		$acompaniantes += $relevamientoPorSala->RelevamientoPorSalaAcompaniantes;
+	foreach ($relevamientosPorSala as $relevamientoPorSala){
+		$detallesRelevamiento = DB::table('detallerelevamiento')
+								->where('RelevamientoPorSalaId',$relevamientoPorSala->RelevamientoPorSalaId)
+								->where('DetalleRelevamientoEstado',1)
+								->get();
+		foreach($detallesRelevamiento as $detalle){
+			//agrego si tiene acompañante y sumo el tipo de paciente
+			$relevamiento[0]['cantidad'] += $detalle->DetalleRelevamientoAcompaniante;
+			$relevamiento[$detalle->TipoPacienteId]['cantidad'] += 1 ;
+		}
 	}
-	 
-	$res = array(
-		'comidas' =>$relevamiento,
-		'acompaniantes'=> $acompaniantes
-	);
-	return response($res);
+	return response($relevamiento);
 });
-Route::get('/getMenuesPorTipo/{id}', function ($id) {
-    $menuesPorTipo = DB::table('detallemenutipopaciente as dm')
+Route::get('/getComidasDeRelevamiento/{id}', function () {
+	/*	{
+			
+			 id_comida : 
+			 cantidad: 
+		}
+	*/
+});
+
+
+Route::get('/getRelevamientosSinMenuAsignado', function () {
+	$relevamientos = DB::table('relevamiento as r')
+						->where('RelevamientoMenu',NULL)
+						->where('RelevamientoEstado',1)
+						->get();
+	return response($relevamientos);
+});
+
+
+Route::get('/getMenues', function () {
+	$menues = DB::table('menu as m')
+						->where('MenuEstado',1)
+						->get();
+	return response($menues);
+});
+
+//Retorno el menu y sus detalles por tipo y cada uno con sus comidas
+Route::get('/getMenu/{id}', function ($id) {
+    $menu = DB::table('menu as m')
 					->where('MenuId',$id)
+					->first();
+	$detalles = DB::table('detallemenutipopaciente as dm')
 					->join('tipopaciente as tp','tp.TipoPacienteId','dm.TipoPacienteId')
 					->get();
-	return response($menuesPorTipo);
+	$det = array();
+	foreach ($detalles as $detalle){
+		$comidas = DB::table('comidaportipopaciente as ct')
+					->where('DetalleMenuTipoPacienteId',$detalle->DetalleMenuTipoPacienteId)
+					->join('comida as com','com.ComidaId','ct.ComidaId')	
+					->get();
+		array_push($det,array(
+			'id' => $detalle->DetalleMenuTipoPacienteId,
+			'tipo' => $detalle->TipoPacienteNombre,
+			'comidas' =>$comidas,
+		));	
+	}
+	$respuesta = array (
+		'id' => $menu->MenuId,
+		'nombre' => $menu->MenuNombre,
+		'detalles' => $det,
+	);
+	return response($respuesta);
 });
 Route::get('/getComidasDeMenu/{id}', function ($id) {
     $comidas = DB::table('comidaportipopaciente as ctp')
@@ -124,31 +185,6 @@ Route::get('nutrientesPorAlimento/{id}',function($id){
 
 /* -----------------DETALLES DE RELEVAMIENTO ---------------------- -*/
 Route::get('relevamientos/{id}',function($id){
-	
-	// $relevamiento = DB::table('relevamiento')->where('RelevamientoId',$id)->first();
-	// $detallesRelevamiento = DB::table('detallerelevamiento as dr')
-	// 							->join('paciente as p','p.PacienteId','dr.PacienteId')
-	// 							->join('persona as pe','pe.PersonaId','p.PersonaId')
-	// 							->join('tipopaciente as tp','tp.TipoPacienteId','dr.TipoPacienteId')
-	// 							->join('cama as c','c.CamaId','dr.CamaId')
-	// 							->join('pieza as pi','pi.PiezaId','c.PiezaId')
-	// 							->join('sala as s','s.SalaId','pi.SalaId')
-	// 							->join('empleado as e','e.EmpleadoId','dr.EmpleadoId')
-	// 							->where('dr.RelevamientoId',$relevamiento->RelevamientoId)
-	// 							->whereIn('DetalleRelevamientoId', function ($sub) use ($id) {
-	// 								$sub->selectRaw('MAX(DetalleRelevamientoId)')->from('detallerelevamiento')->where('RelevamientoId',$id)->groupBy('PacienteId')->orderBy('updated_at')->orderBy('DetalleRelevamientoEstado'); // <---- la clave
-	// 							})
-	// 							->orderby('dr.DetalleRelevamientoId','desc')
-	// 							->get();
-	// foreach ($detallesRelevamiento as $detalleRelevamientoIndice => $detalleRelevamiento) {
-	// 	$detalleRelevamiento->PacienteNombre = $detalleRelevamiento->PersonaApellido.', '.$detalleRelevamiento->PersonaNombre;
-	// 	$detalleRelevamiento->SalaPiezaCamaNombre = $detalleRelevamiento->SalaNombre.'/'.$detalleRelevamiento->PiezaNombre.'/'.$detalleRelevamiento->CamaNumero;
-	// 	$empleado= DB::table('empleado')->where('EmpleadoId',$detalleRelevamiento->EmpleadoId)->first();
-	// 	$persona = DB::table('persona')->where('PersonaId',$empleado->PersonaId)->first();
-	// 	$detalleRelevamiento->EmpleadoNombre = $persona->PersonaApellido.', '.$persona->PersonaNombre;
-		// if($detalleRelevamiento->max != $detalleRelevamiento->DetalleRelevamientoId){
-		// 	unset($detallesRelevamiento[$detalleRelevamientoIndice]);
-		// }
 	$detallesRelevamiento = DB::table('detallerelevamiento')
 								->where('RelevamientoId',$id)
 								->whereIn('DetalleRelevamientoId', function ($sub) use ($id) {
@@ -234,4 +270,62 @@ Route::get('historial',function(){
 	 					->toJson();
 });
 
+
+Route::post('seleccionarMenu',function(Request $request){
+	try {
+		$relevamientoAnt = ($request['params']['relevamientoAnt']);
+		$relevamientoNuevo = $request['params']['relevamientoNuevo'];
+		$menuId = $request['params']['menu'];
+		//Creo la tabla temporal para la primera vez con los datos del relevamiento anterior
+		$tempRelevamientoId = DB::table('temp_relevamiento')->insertGetId(
+			['RelevamientoId' => $relevamientoNuevo, 'MenuId' => $menuId]
+		);
+		$tempTandaId = DB::table('temp_tanda')->insertGetId(
+			['TempRelevamientoId' => $tempRelevamientoId, 'TandaNumero' => 1]
+		);
+		foreach ($relevamientoAnt as $tipoPaciente){
+			if($tipoPaciente['cantidad']>0){
+				if($tipoPaciente['id'] == 0){
+					$tipoNormal = DB::table('tipopaciente')
+											->where('TipoPacienteNombre','Normal')
+											->first();
+					$tipoPaciente['id'] = $tipoNormal->TipoPacienteId;
+				}
+				$detalle = DB::table('detallemenutipopaciente')
+								->where('MenuId',$menuId)
+								->where('TipoPacienteId',$tipoPaciente['id'])
+								->first();
+				if($detalle != null){
+					$comidas = DB::table('comidaportipopaciente')
+								->where('DetalleMenuTipoPacienteId',$detalle->DetalleMenuTipoPacienteId)
+								->where('ComidaPorTipoPacientePrincipal',1)
+								->get();
+	
+					foreach($comidas as $comida){
+						$tempComida = DB::table('temp_comida')
+										->where('TempTandaId',$tempTandaId)
+										->where('ComidaId',$comida->ComidaId)
+										->first();
+						if($tempComida==null){
+							DB::table('temp_comida')->insert(
+								['TempTandaId' => $tempTandaId,
+								'ComidaId' => $comida->ComidaId,
+								'CantidadNormal'=>$tipoPaciente['cantidad']
+								]
+							);
+						}else{
+							DB::table('temp_comida')
+									->where('TempTandaId', $tempTandaId)
+									->where('ComidaId',$comida->ComidaId)
+									->increment('CantidadNormal', $tipoPaciente['cantidad']);
+						}
+					}
+				}
+			}
+		}
+		return true;
+	} catch (Exception $e) {
+		return $e;
+	}
+});
 
