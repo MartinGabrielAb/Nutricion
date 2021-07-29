@@ -2014,20 +2014,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      relevamientoAnteriorId: null,
       relevamientoSelected: null,
       relevamientos: [],
-      relevamiento: null,
+      relevamientoAnterior: null,
       relevamientosSinMenu: [],
       menues: [],
       menuSelected: null,
-      acompaniantes: null,
-      listAcompaniantes: [],
-      //Fijarse bien los acompañantes:CAMBIAR EL METODO
-      comidas: null,
-      comidaSelected: null,
-      listComidas: [],
-      listTotales: [],
-      cantidad: null,
       listErrores: null
     };
   },
@@ -2059,8 +2052,8 @@ __webpack_require__.r(__webpack_exports__);
     getRelevamiento: function getRelevamiento() {
       var _this2 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/getRelevamiento/' + this.relevamientoSelected).then(function (response) {
-        _this2.relevamiento = response.data;
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/getRelevamiento/' + this.relevamientoAnteriorId).then(function (response) {
+        _this2.relevamientoAnterior = response.data;
       })["catch"](function (error) {
         console.log("Error getRelevamiento");
       });
@@ -2071,16 +2064,14 @@ __webpack_require__.r(__webpack_exports__);
       if (window.confirm("Una vez terminado no podra hacer cambios. ¿Desea finalizar?")) {
         axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/seleccionarMenu', {
           params: {
-            relevamientoAnt: this.relevamiento,
+            relevamientoAnt: this.relevamientoAnterior,
             relevamientoNuevo: this.relevamientoSelected,
             menu: this.menuSelected
           }
         }).then(function (response) {
           if (response.data.error) {
             _this3.listErrores = response.data.error;
-          } else {
-            window.location.href = '/seleccionarMenu/' + _this3.relevamientoSelected;
-          }
+          } else {}
         })["catch"](function (error) {
           console.log("Error finalizar");
         });
@@ -2178,21 +2169,35 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ["id"],
+  props: ['relevamientoNuevo', 'relevamientoAnt'],
   data: function data() {
     return {
+      comidasAnteriores: null,
+      comidasNuevas: null,
       relevamiento: null
     };
   },
   mounted: function mounted() {
-    this.getRelevamiento();
+    console.log("relevamientoss");
+    console.log(this.relevamientoNuevo, this.relevamientoAnt); // this.getComidasEnProgreso();
   },
   methods: {
-    getRelevamiento: function getRelevamiento() {
+    getComidasAnteriores: function getComidasAnteriores() {
       var _this = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/getRelevamientoComidas/' + this.id).then(function (response) {
-        _this.relevamiento = response.data;
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/getComidasDeRelevamiento/' + this.relevamientoAnt).then(function (response) {
+        _this.comidasEnProgreso = response.data;
+        console.log(_this.comidas);
+      })["catch"](function (error) {
+        console.log("Error getRelevamiento");
+      });
+    },
+    getComidasEnProgreso: function getComidasEnProgreso() {
+      var _this2 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/getComidasEnProgreso/' + this.id).then(function (response) {
+        _this2.comidasEnProgreso = response.data;
+        console.log(_this2.comidas);
       })["catch"](function (error) {
         console.log("Error getRelevamiento");
       });
@@ -2915,8 +2920,8 @@ var render = function() {
                     {
                       name: "model",
                       rawName: "v-model",
-                      value: _vm.relevamientoSelected,
-                      expression: "relevamientoSelected"
+                      value: _vm.relevamientoAnteriorId,
+                      expression: "relevamientoAnteriorId"
                     }
                   ],
                   staticClass: "w-100",
@@ -2931,7 +2936,7 @@ var render = function() {
                             var val = "_value" in o ? o._value : o.value
                             return val
                           })
-                        _vm.relevamientoSelected = $event.target.multiple
+                        _vm.relevamientoAnteriorId = $event.target.multiple
                           ? $$selectedVal
                           : $$selectedVal[0]
                       },
@@ -2976,7 +2981,7 @@ var render = function() {
                 _vm._v("No hay relevamientos pendientes.")
               ])
             ]
-          : !_vm.relevamientoSelected
+          : _vm.relevamientoAnteriorId == null
           ? [
               _c("span", { staticClass: "text-center" }, [
                 _vm._v("Debe seleccionar un relevamiento.")
@@ -2990,7 +2995,7 @@ var render = function() {
                   [
                     _vm._m(0),
                     _vm._v(" "),
-                    _vm._l(_vm.relevamiento, function(detalle) {
+                    _vm._l(_vm.relevamientoAnterior, function(detalle) {
                       return _c(
                         "div",
                         { key: detalle.id, staticClass: "row border" },
@@ -3205,12 +3210,6 @@ var render = function() {
                     ],
                     2
                   )
-                : _vm._e(),
-              _vm._v(" "),
-              _vm.listComidas.length > 0
-                ? _c("div", { staticClass: "card tex-center" }, [
-                    _c("button", [_vm._v("Finalizar")])
-                  ])
                 : _vm._e()
             ]
       ],
@@ -3651,24 +3650,25 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container-fluid" }, [
-      _c("div", { staticClass: "row" }, [
-        _c("div", { staticClass: "col-lg-12" }, [
-          _c("div", { staticClass: "card", attrs: { id: "divNutrientes" } }, [
-            _c("div", { staticClass: "card-body" })
+  return _c("div", { staticClass: "container-fluid" }, [
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-lg-12" }, [
+        _c("div", { staticClass: "card" }, [
+          _c("div", { staticClass: "card-body" }, [
+            _vm._v(
+              "\n                " +
+                _vm._s(_vm.relevamientoNuevo) +
+                "-" +
+                _vm._s(_vm.relevamientoAnt) +
+                "\n            "
+            )
           ])
         ])
       ])
     ])
-  }
-]
+  ])
+}
+var staticRenderFns = []
 render._withStripped = true
 
 

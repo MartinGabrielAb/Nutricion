@@ -147,6 +147,7 @@ class SeleccionarMenuController extends Controller
     }
     public function show(Request $request ,$id)
     {
+        $relevamientoViejo = $request['params']['relevamientoAnt'];
         return view('seleccionarmenu.show',compact('id'));
 
     }
