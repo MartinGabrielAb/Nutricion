@@ -60,7 +60,8 @@ class PacienteController extends Controller
             try{
                 $detallesRelevamiento = 
                     DB::table('detallerelevamiento as dr')
-                    ->join('relevamiento as re','re.RelevamientoId','dr.RelevamientoId')
+                    ->join('relevamientoporsala as rps','rps.RelevamientoPorSalaId','dr.RelevamientoPorSalaId')
+                    ->join('relevamiento as re','re.RelevamientoId','rps.RelevamientoId')
                     ->join('paciente as pa','pa.PacienteId','dr.PacienteId')
                     ->join('tipopaciente as tp','tp.TipoPacienteId','dr.TipoPacienteId')
                     ->join('cama as c','c.CamaId','dr.CamaId')
@@ -69,8 +70,6 @@ class PacienteController extends Controller
                     ->join('users as u','u.id','dr.UserId')
                     ->join('menu as m','m.MenuId','dr.MenuId')
                     ->where('dr.PacienteId',$id)
-                    ->where('dr.DetalleRelevamientoEstado','!=',-1)
-                    // ->orwhere('dr.DetalleRelevamientoEstado',0)
                     ->select(DB::raw('DATE_FORMAT(re.RelevamientoFecha, "%d/%m/%Y") as RelevamientoFecha'),'re.RelevamientoId',
                             'dr.DetalleRelevamientoId',
                             DB::raw('DATE_FORMAT(dr.updated_at, "%H:%i:%s") as DetalleRelevamientoHora'),

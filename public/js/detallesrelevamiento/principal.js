@@ -94,11 +94,6 @@ $(document).ready( function () {
       }else{
         $( "#vajilladescartable" ).prop( "checked", false );
       }
-      if(detallerelevamiento.DetalleRelevamientoAgregado == 1){
-        $( "#agregado" ).prop( "checked", true );
-      }else{
-        $( "#agregado" ).prop( "checked", false );
-      }
       $('#colacion').val(detallerelevamiento.DetalleRelevamientoColacion).trigger('change');
       menuId = $("#menu").val();
       tipopacienteId = $("#tipoPacienteId").val();
@@ -178,7 +173,6 @@ function guardar(e){
         comidas: comidas,
         acompaniante: $('#acompanianteId').is(':checked'),
         vajilladescartable: $('#vajilladescartable').is(':checked'),
-        agregado: $('#agregado').is(':checked'),
         user: $('#usuarioId').val(),
         colacion: $('#colacion').val(),
       },
@@ -218,9 +212,7 @@ function editar(id,comidas){
       comidas: comidas,
       acompaniante: $('#acompanianteId').is(':checked'),
       vajilladescartable: $('#vajilladescartable').is(':checked'),
-      agregado: $('#agregado').is(':checked'),
       user: $('#usuarioId').val(),
-      agregado: $('#agregado').val(),
       colacion: $('#colacion').val(),
     },
     success: function(response){
@@ -304,7 +296,6 @@ function vaciarCampos(){
   $("#precargarMenu").val(-1).trigger('change');
   $('#acompanianteId').prop( "checked", false );
   $('#vajilladescartable').prop( "checked", false );
-  $('#agregado').prop( "checked", false );
   $(".clsComidas").val(-1).trigger('change');
   $("#listaErrores").empty();
 }
@@ -444,10 +435,6 @@ function getDetallerelevamiento(camaid){
             <p class="m-0">${(detallerelevamiento.DetalleRelevamientoVajillaDescartable == 1 ? 'Si' : 'No')}</p>
           </li>
           <li class="list-group-item text-center">
-            <h6>Agregado</h6>
-            <p class="m-0">${(detallerelevamiento.DetalleRelevamientoAgregado == 1 ? 'Si' : 'No')}</p>
-          </li>
-          <li class="list-group-item text-center">
             <h6>Diagnóstico</h6>
             <p class="m-0">${detallerelevamiento.DetalleRelevamientoDiagnostico}</p>
           </li>
@@ -512,11 +499,6 @@ function getUltimoDetRelevamiento(camaid, paciente = null){
           $( "#vajilladescartable" ).prop( "checked", true );
         }else{
           $( "#vajilladescartable" ).prop( "checked", false );
-        }
-        if(detallerelevamiento.DetalleRelevamientoAgregado == 1){
-          $( "#agregado" ).prop( "checked", true );
-        }else{
-          $( "#agregado" ).prop( "checked", false );
         }
         $('#colacion').val(detallerelevamiento.DetalleRelevamientoColacion).trigger('change'); 
       }else{
