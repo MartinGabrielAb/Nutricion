@@ -92,7 +92,8 @@ class ComidaPorTipoPacienteController extends Controller
         $valoresTotales=array();
         $comidasArray = array();
         foreach ($listaComidas as $comidaId) {
-            $comida = DB::table('comida as c')->where('ComidaId',$comidaId)
+            $comida = DB::table('comida as c')
+                                ->where('ComidaId',$comidaId)
                                 ->join('tipoComida as tc','tc.TipoComidaId','c.TipoComidaId')
                                 ->first();
             $comidaArray = array();
@@ -112,23 +113,28 @@ class ComidaPorTipoPacienteController extends Controller
                 $nutrientesArray = array();
                 if($alimentoPorComida->UnidadMedidaNombre == 'Unidad' ) {
                     foreach ($nutrientes as $nutriente) {
-                        array_push($nutrientesArray,round($cantidad * $nutriente->NutrientePorAlimentoValor,2));
+                        array_push($nutrientesArray,[
+                            "cantidad" =>  round($cantidad * $nutriente->NutrientePorAlimentoValor,2),
+                            "id" => $nutriente->NutrienteId,  
+                        ]);
                         if(!empty($valoresTotales[$cont])){
-                            $valoresTotales[$cont] = $valoresTotales[$cont] + ($cantidad * $nutriente->NutrientePorAlimentoValor);
+                            $valoresTotales[$cont] = $valoresTotales[$cont] + round($cantidad * $nutriente->NutrientePorAlimentoValor,2);
                         }else{
-                            $valoresTotales[$cont] =$cantidad * $nutriente->NutrientePorAlimentoValor;
+                            $valoresTotales[$cont] =$cantidad * round($nutriente->NutrientePorAlimentoValor,2);
     
                         }
                         $cont = $cont +1 ; 
                     }
                 }else{
                     foreach ($nutrientes as $nutriente) {
-                        array_push($nutrientesArray, round($nutriente->NutrientePorAlimentoValor/100 * $cantidad,2));
+                        array_push($nutrientesArray,[
+                            "cantidad" =>  round($nutriente->NutrientePorAlimentoValor/100 * $cantidad,2),
+                            "id" => $nutriente->NutrienteId,  
+                        ]);
                         if(!empty($valoresTotales[$cont])){
-                            $valoresTotales[$cont] = $valoresTotales[$cont] + ($cantidad * $nutriente->NutrientePorAlimentoValor/100);
+                            $valoresTotales[$cont] = $valoresTotales[$cont] + round($cantidad * $nutriente->NutrientePorAlimentoValor/100,2);
                         }else{
-                            $valoresTotales[$cont] =$cantidad * $nutriente->NutrientePorAlimentoValor/100;
-    
+                            $valoresTotales[$cont] =$cantidad * round($nutriente->NutrientePorAlimentoValor/100,2);
                         }
                         $cont = $cont +1 ; 
                     }
@@ -137,6 +143,7 @@ class ComidaPorTipoPacienteController extends Controller
                     "alimento" => $alimentoPorComida->AlimentoNombre,
                     "alimentoId" => $alimentoPorComida->AlimentoId,
                     "cantidad" => $cantidad,
+                    "unidad" => $alimentoPorComida->UnidadMedidaNombre,
                     "nutrientes" => $nutrientesArray,
                 ];
                 array_push($alimentosArray,$alimentoArray);

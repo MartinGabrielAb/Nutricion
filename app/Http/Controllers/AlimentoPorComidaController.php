@@ -52,7 +52,7 @@ class AlimentoPorComidaController extends Controller
     {
         $alimentosPorComida = DB::table('alimentoporcomida as a')
 						->join('alimento as alim','alim.AlimentoId','a.AlimentoId')
-                        ->join('unidadmedida as u','u.UnidadMedidaId','a.UnidadMedidaId')
+                        ->join('unidadmedida as u','u.UnidadMedidaId','alim.UnidadMedidaId')
 						->where('ComidaId',$id)
                         ->orderBy('AlimentoNombre','asc')
 						->get();
@@ -76,7 +76,6 @@ class AlimentoPorComidaController extends Controller
 								'nombreAlimento'  => $alimentoPorComida->AlimentoNombre,
 							    'nutrientes'      =>$nutrientes);
 			array_push($alimentos, $alimento);
-            
         }
         return $alimentos;
     }

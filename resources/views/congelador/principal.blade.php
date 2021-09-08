@@ -5,12 +5,12 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1 class="m-0 text-dark">Historial</h1>
+          <h1 class="m-0 text-dark">Congelador</h1>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <li class="breadcrumb-item active">Historial</li>
+            <li class="breadcrumb-item active">Congelador</li>
           </ol>
         </div>
       </div>
@@ -32,14 +32,13 @@
               <!--------------TABLA PRINCIPAL-------------->
             <div class="row">
               <div class="col">
-                <table id="tableHistorial" class="table table-sm table-striped table-bordered table-hover display nowrap" style="width:100%" cellspacing="0">
+                <table id="tableCongelador" class="table table-sm table-striped table-bordered table-hover display nowrap" style="width:100%" cellspacing="0">
                   <!------Cabecera de la tabla------>
                   <thead>
                     <tr>
                         <th>#</th>
-                        <th>Fecha</th>
-                        <th>Turno</th>
-                        <th>Menú</th>
+                        <th>Comida</th>
+                        <th>Porciones</th>
                         <th width="5%">Acciones</th>
                     </tr>
                   </thead>
@@ -55,7 +54,7 @@
   </div>
 </div>
 @push('custom-scripts')
-<script type="text/javascript" src="{{asset('js/historial/principal.js')}}"></script>
+<script type="text/javascript" src="{{asset('js/congelador/principal.js')}}"></script>
 
 @endpush
 

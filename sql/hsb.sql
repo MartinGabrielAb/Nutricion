@@ -1,10 +1,9 @@
---Usuario: admin@admin.com password: admin
 -- phpMyAdmin SQL Dump
 -- version 5.1.0
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 06-07-2021 a las 22:05:01
+-- Tiempo de generación: 08-09-2021 a las 23:30:45
 -- Versión del servidor: 10.4.19-MariaDB
 -- Versión de PHP: 7.3.28
 
@@ -41,39 +40,10 @@ CREATE TABLE `alimento` (
 --
 
 INSERT INTO `alimento` (`AlimentoId`, `AlimentoNombre`, `AlimentoCantidadTotal`, `UnidadMedidaId`, `AlimentoEstado`) VALUES
-(2, 'Azúcar', 136.48, 6, 1),
-(3, 'Pan', 5, 6, 1),
-(10, 'Leche', 504, 4, 1),
-(13, 'Mermelada', 5000, 1, 1),
-(14, 'Pollo', 97.35, 6, 1),
-(15, 'Limones(jugo)', 0, 1, 1),
-(16, 'Oregano', 0, 1, 1),
-(17, 'Chaucha', 0, 1, 1),
-(18, 'Choclo', 0, 1, 1),
-(19, 'Arveja', 0, 1, 1),
-(20, 'Papa', 0, 1, 1),
-(21, 'Aceite', 0, 1, 1),
-(22, 'Limones(gajo)', 0, 1, 1),
-(23, 'Sal', 0, 1, 1),
-(24, 'Caldo', 0, 1, 1),
-(25, 'Arroz', 0, 1, 1),
-(26, 'Dulce de batata', 0, 1, 1),
-(27, 'Mate', 0, 1, 1),
-(28, 'Fideos', 0, 1, 1),
-(29, 'Blando Especial', 0, 1, 1),
-(30, 'Tomate', 0, 1, 1),
-(31, 'Cebolla', 0, 1, 1),
-(32, 'Pimiento', 0, 1, 1),
-(33, 'Oregano-Laurel', 0, 1, 1),
-(34, 'Queso rallar', 0, 1, 1),
-(35, 'Semola', 0, 1, 1),
-(36, 'Manzana', 0, 1, 1),
-(37, 'Jugo de limón', 0, 1, 1),
-(38, 'Dulce de leche', 2000, 1, 1),
-(40, 'Coso', 5, 4, 1),
-(42, 'aaa', 3, 4, 1),
-(43, 'Zanahoria', 200, 6, 1),
-(44, 'Nuevo alimento', 0, 6, 1);
+(45, 'Pollo', 7, 6, 1),
+(46, 'Papa', 4, 6, 1),
+(47, 'Te', 100, 3, 1),
+(48, 'Leche', 0, 4, 1);
 
 -- --------------------------------------------------------
 
@@ -95,34 +65,10 @@ CREATE TABLE `alimentoporcomida` (
 --
 
 INSERT INTO `alimentoporcomida` (`AlimentoPorComidaId`, `ComidaId`, `AlimentoId`, `AlimentoPorComidaCantidadNeto`, `AlimentoPorComidaEstado`, `UnidadMedidaId`) VALUES
-(18, 9, 14, 200, 1, 1),
-(19, 9, 15, 0, 1, 1),
-(20, 9, 16, 0, 1, 1),
-(21, 9, 23, 0, 1, 1),
-(22, 9, 17, 30, 1, 1),
-(23, 9, 18, 20, 1, 1),
-(24, 9, 19, 20, 1, 1),
-(25, 9, 20, 150, 1, 1),
-(26, 9, 21, 20, 1, 1),
-(27, 9, 22, 20, 1, 1),
-(30, 9, 3, 45, 1, 1),
-(45, 14, 2, 20, 1, 1),
-(46, 14, 36, 60, 1, 1),
-(47, 14, 37, 0, 1, 1),
-(48, 14, 35, 40, 1, 1),
-(49, 15, 27, 0, 1, 1),
-(50, 15, 2, 21, 1, 1),
-(51, 15, 3, 45, 1, 1),
-(52, 15, 13, 20, 1, 1),
-(53, 15, 10, 10, 1, 1),
-(54, 16, 14, 150, 1, 1),
-(60, 18, 2, 10, 1, 1),
-(61, 13, 2, 1, 1, 1),
-(62, 10, 2, 1, 1, 1),
-(63, 11, 2, 1, 1, 1),
-(64, 12, 2, 1, 1, 1),
-(65, 9, 10, 123, 1, 7),
-(66, 9, 27, 1, 1, 1);
+(67, 19, 45, 150, 1, 1),
+(68, 19, 46, 100, 1, 1),
+(69, 20, 47, 1, 1, 1),
+(70, 20, 48, 10, 1, 7);
 
 -- --------------------------------------------------------
 
@@ -147,19 +93,10 @@ CREATE TABLE `alimentoporproveedor` (
 --
 
 INSERT INTO `alimentoporproveedor` (`AlimentoPorProveedorId`, `ProveedorId`, `AlimentoId`, `AlimentoPorProveedorCosto`, `AlimentoPorProveedorCantidad`, `AlimentoPorProveedorVencimiento`, `AlimentoPorProveedorEstado`, `AlimentoPorProveedorFechaEntrada`, `AlimentoPorProveedorCantidadUsada`) VALUES
-(15, 1, 38, 150, 2000, '2021-05-26', 1, '0000-00-00', 0),
-(17, 1, 40, 1, 2, '2021-05-11', 1, '0000-00-00', 0),
-(19, 1, 40, 2, 3, '2021-04-28', 1, '0000-00-00', 0),
-(20, 1, 42, 50, 2, '2021-05-20', 1, '0000-00-00', 0),
-(21, 2, 42, 1, 1, '2021-05-12', 1, '2021-05-11', 0),
-(26, 4, 43, 50, 50, '2021-10-28', 1, '2021-05-28', 0),
-(27, 3, 43, 48, 150, '2021-10-28', 1, '2021-05-28', 0),
-(29, 4, 13, 0.5, 5000, '2022-05-28', 1, '2021-05-28', 0),
-(30, 4, 14, 100, 100, '2021-10-21', 1, '2021-05-28', 2.65),
-(32, 2, 2, 40, 2, '2021-06-29', 1, '2021-06-29', 0.02),
-(33, 2, 2, 40, 2, '2021-06-29', 1, '2021-06-29', 0),
-(35, 2, 2, 10, 123, '2021-06-29', 1, '2021-06-29', 0),
-(36, 1, 2, 10.5, 10.5, '2021-07-10', 1, '2021-06-29', 0);
+(37, 1, 45, 100, 5, '2021-09-15', 1, '2021-09-07', 0),
+(38, 2, 45, 150, 2, '2021-09-16', 1, '2021-09-07', 0),
+(39, 1, 46, 50, 4, '2021-09-21', 1, '2021-09-07', 0),
+(40, 2, 47, 5, 100, '2021-09-30', 1, '2021-09-07', 0);
 
 -- --------------------------------------------------------
 
@@ -225,16 +162,8 @@ CREATE TABLE `comida` (
 --
 
 INSERT INTO `comida` (`ComidaId`, `ComidaNombre`, `TipoComidaId`, `ComidaEstado`) VALUES
-(9, 'Pollo al horno con ensalada', 2, 1),
-(10, 'Sopa c/arroz', 3, 1),
-(11, 'Dulce de batata', 4, 1),
-(12, 'Fideos entrefino con salsa', 6, 1),
-(13, 'Sopa c/semola y sal', 7, 1),
-(14, 'Manzana,azúcar ,limon(jugo),sémola', 8, 1),
-(15, 'Mate leche, azúcar, pan sin sal, mermelada', 5, 1),
-(16, 'Bife de pollo', 2, 1),
-(17, 'Colación 1', 9, 1),
-(18, 'Colación 2', 9, 1);
+(19, 'Pollo al horno con papas', 2, 1),
+(20, 'Té con leche', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -254,17 +183,28 @@ CREATE TABLE `comidaportipopaciente` (
 --
 
 INSERT INTO `comidaportipopaciente` (`ComidaPorTipoPacienteId`, `DetalleMenuTipoPacienteId`, `ComidaId`, `ComidaPorTipoPacientePrincipal`) VALUES
-(20, 16, 10, 0),
-(21, 16, 11, 0),
-(22, 16, 12, 0),
-(24, 16, 14, 0),
-(25, 16, 15, 0),
-(27, 20, 9, 0),
-(29, 16, 13, 1),
-(33, 16, 9, 1),
-(35, 16, 16, 0),
-(36, 18, 11, 1),
-(38, 18, 9, 0);
+(11, 28, 20, 1),
+(12, 28, 19, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `congelador`
+--
+
+CREATE TABLE `congelador` (
+  `CongeladorId` int(11) NOT NULL,
+  `ComidaId` int(11) NOT NULL,
+  `Porciones` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `congelador`
+--
+
+INSERT INTO `congelador` (`CongeladorId`, `ComidaId`, `Porciones`) VALUES
+(1, 17, 4),
+(2, 18, 0);
 
 -- --------------------------------------------------------
 
@@ -283,11 +223,7 @@ CREATE TABLE `detallemenutipopaciente` (
 --
 
 INSERT INTO `detallemenutipopaciente` (`DetalleMenuTipoPacienteId`, `MenuId`, `TipoPacienteId`) VALUES
-(16, 13, 1),
-(17, 13, 2),
-(18, 13, 3),
-(19, 13, 4),
-(20, 17, 1);
+(28, 20, 1);
 
 -- --------------------------------------------------------
 
@@ -308,10 +244,9 @@ CREATE TABLE `detallerelevamiento` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `UserId` bigint(20) UNSIGNED DEFAULT NULL,
   `DetalleRelevamientoDiagnostico` longtext DEFAULT NULL,
-  `MenuId` int(11) DEFAULT NULL,
   `DetalleRelevamientoVajillaDescartable` int(11) DEFAULT NULL,
-  `DetalleRelevamientoAgregado` tinyint(4) NOT NULL,
-  `DetalleRelevamientoColacion` int(11) DEFAULT NULL
+  `DetalleRelevamientoColacion` int(11) DEFAULT NULL,
+  `MenuId` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -323,7 +258,8 @@ CREATE TABLE `detallerelevamiento` (
 CREATE TABLE `detrelevamientoporcomida` (
   `DetRelevamientoPorComidaId` bigint(20) UNSIGNED NOT NULL,
   `DetalleRelevamientoId` int(11) NOT NULL,
-  `ComidaId` int(11) NOT NULL
+  `ComidaId` int(11) NOT NULL,
+  `para_acompaniante` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -375,8 +311,9 @@ CREATE TABLE `historial` (
 --
 
 INSERT INTO `historial` (`HistorialId`, `RelevamientoId`, `HistorialEstado`) VALUES
-(1, 1, 1),
-(2, 2, 1);
+(23, 1, 1),
+(24, 76, 1),
+(25, 76, 1);
 
 -- --------------------------------------------------------
 
@@ -398,8 +335,8 @@ CREATE TABLE `historialdetallealimento` (
 --
 
 INSERT INTO `historialdetallealimento` (`HistorialDetalleAlimentoId`, `HistorialDetalleComidaId`, `AlimentoNombre`, `UnidadMedida`, `Cantidad`, `CostoTotal`) VALUES
-(1, 1, 'Pollo', 'Gramo', 150, 1500),
-(2, 1, 'Limon', 'Gramo', 5, 1000);
+(7, 21, 'Pollo', 'Gramo', 200, 0),
+(8, 22, 'Azúcar', 'Gramo', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -411,16 +348,22 @@ CREATE TABLE `historialdetallecomida` (
   `HistorialDetalleComidaId` int(11) NOT NULL,
   `HistorialId` int(11) NOT NULL,
   `ComidaNombre` varchar(120) NOT NULL,
-  `Porciones` int(11) NOT NULL
+  `Porciones` int(11) NOT NULL,
+  `Congelador` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Volcado de datos para la tabla `historialdetallecomida`
 --
 
-INSERT INTO `historialdetallecomida` (`HistorialDetalleComidaId`, `HistorialId`, `ComidaNombre`, `Porciones`) VALUES
-(1, 1, 'Pollo al horno', 21),
-(2, 1, 'Papa con queso', 11);
+INSERT INTO `historialdetallecomida` (`HistorialDetalleComidaId`, `HistorialId`, `ComidaNombre`, `Porciones`, `Congelador`) VALUES
+(21, 23, 'Pollo al horno con ensalada', 52, 0),
+(22, 23, 'Dulce de batata', 50, 0),
+(23, 25, 'Pollo al horno con ensalada', 2, 0),
+(24, 25, 'Mate leche, azúcar, pan sin sal, mermelada', 2, 0),
+(25, 25, 'Bife de pollo', 1, 0),
+(26, 25, 'Sopa c/arroz', 1, 0),
+(27, 25, 'Colación 1', 2, 3);
 
 -- --------------------------------------------------------
 
@@ -439,11 +382,7 @@ CREATE TABLE `menu` (
 --
 
 INSERT INTO `menu` (`MenuId`, `MenuNombre`, `MenuEstado`) VALUES
-(13, 'Menú 1', 1),
-(14, 'Menú 2', 1),
-(15, 'Menú 3', 1),
-(16, 'Menú 4', 1),
-(17, 'Menú 5', 1);
+(20, 'Menu 1', 1);
 
 -- --------------------------------------------------------
 
@@ -561,25 +500,82 @@ CREATE TABLE `nutrienteporalimento` (
 --
 
 INSERT INTO `nutrienteporalimento` (`NutrientePorAlimentoId`, `AlimentoId`, `NutrienteId`, `NutrientePorAlimentoValor`, `NutrientePorAlimentoEstado`) VALUES
-(425, 2, 1, 1, NULL),
-(426, 2, 2, 1, NULL),
-(427, 2, 3, 1, NULL),
-(428, 2, 4, 1, NULL),
-(429, 2, 5, 1, NULL),
-(430, 2, 6, 1, NULL),
-(431, 2, 7, 1, NULL),
-(432, 2, 8, 11, NULL),
-(433, 2, 9, 11, NULL),
-(434, 2, 10, 1, NULL),
-(435, 2, 11, 1, NULL),
-(436, 2, 12, 1, NULL),
-(437, 2, 13, 1, NULL),
-(438, 2, 14, 1, NULL),
-(439, 2, 15, 1, NULL),
-(440, 2, 16, 1, NULL),
-(441, 2, 17, 1, NULL),
-(442, 2, 18, 1, NULL),
-(443, 2, 19, 1, NULL);
+(444, 45, 1, 1, NULL),
+(445, 45, 2, 2, NULL),
+(446, 45, 3, 3, NULL),
+(447, 45, 4, 4, NULL),
+(448, 45, 5, 5, NULL),
+(449, 45, 6, 6, NULL),
+(450, 45, 7, 7, NULL),
+(451, 45, 8, 8, NULL),
+(452, 45, 9, 9, NULL),
+(453, 45, 10, 10, NULL),
+(454, 45, 11, 11, NULL),
+(455, 45, 12, 12, NULL),
+(456, 45, 13, 13, NULL),
+(457, 45, 14, 14, NULL),
+(458, 45, 15, 15, NULL),
+(459, 45, 16, 16, NULL),
+(460, 45, 17, 17, NULL),
+(461, 45, 18, 18, NULL),
+(462, 45, 19, 19, NULL),
+(482, 46, 1, 1, NULL),
+(483, 46, 2, 2, NULL),
+(484, 46, 3, 3, NULL),
+(485, 46, 4, 4, NULL),
+(486, 46, 5, 5, NULL),
+(487, 46, 6, 6, NULL),
+(488, 46, 7, 7, NULL),
+(489, 46, 8, 8, NULL),
+(490, 46, 9, 9, NULL),
+(491, 46, 10, 10, NULL),
+(492, 46, 11, 11, NULL),
+(493, 46, 12, 12, NULL),
+(494, 46, 13, 13, NULL),
+(495, 46, 14, 14, NULL),
+(496, 46, 15, 15, NULL),
+(497, 46, 16, 16, NULL),
+(498, 46, 17, 17, NULL),
+(499, 46, 18, 18, NULL),
+(500, 46, 19, 0, NULL),
+(501, 47, 1, 1, NULL),
+(502, 47, 2, 2, NULL),
+(503, 47, 3, 3, NULL),
+(504, 47, 4, 4, NULL),
+(505, 47, 5, 5, NULL),
+(506, 47, 6, 6, NULL),
+(507, 47, 7, 7, NULL),
+(508, 47, 8, 8, NULL),
+(509, 47, 9, 9, NULL),
+(510, 47, 10, 0, NULL),
+(511, 47, 11, 1, NULL),
+(512, 47, 12, 2, NULL),
+(513, 47, 13, 3, NULL),
+(514, 47, 14, 4, NULL),
+(515, 47, 15, 5, NULL),
+(516, 47, 16, 6, NULL),
+(517, 47, 17, 7, NULL),
+(518, 47, 18, 8, NULL),
+(519, 47, 19, 9, NULL),
+(520, 48, 1, 10, NULL),
+(521, 48, 2, 10, NULL),
+(522, 48, 3, 10, NULL),
+(523, 48, 4, 10, NULL),
+(524, 48, 5, 10, NULL),
+(525, 48, 6, 10, NULL),
+(526, 48, 7, 10, NULL),
+(527, 48, 8, 10, NULL),
+(528, 48, 9, 10, NULL),
+(529, 48, 10, 10, NULL),
+(530, 48, 11, 10, NULL),
+(531, 48, 12, 10, NULL),
+(532, 48, 13, 10, NULL),
+(533, 48, 14, 10, NULL),
+(534, 48, 15, 10, NULL),
+(535, 48, 16, 10, NULL),
+(536, 48, 17, 10, NULL),
+(537, 48, 18, 10, NULL),
+(538, 48, 19, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -800,7 +796,21 @@ INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at
 (469, 'nutrientes.update', 'web', '2021-06-18 22:20:11', '2021-06-18 22:20:11'),
 (470, 'nutrientes.show', 'web', '2021-06-18 22:20:11', '2021-06-18 22:20:11'),
 (471, 'nutrientes.destroy', 'web', '2021-06-18 22:20:11', '2021-06-18 22:20:11'),
-(472, 'nutrientes.edit', 'web', '2021-06-18 22:20:11', '2021-06-18 22:20:11');
+(472, 'nutrientes.edit', 'web', '2021-06-18 22:20:11', '2021-06-18 22:20:11'),
+(473, 'relevamientoPorSalas.store', 'web', '2021-07-22 01:20:13', '2021-07-22 01:20:13'),
+(474, 'relevamientoPorSalas.index', 'web', '2021-07-22 01:20:13', '2021-07-22 01:20:13'),
+(475, 'relevamientoPorSalas.create', 'web', '2021-07-22 01:20:13', '2021-07-22 01:20:13'),
+(476, 'relevamientoPorSalas.update', 'web', '2021-07-22 01:20:13', '2021-07-22 01:20:13'),
+(477, 'relevamientoPorSalas.show', 'web', '2021-07-22 01:20:13', '2021-07-22 01:20:13'),
+(478, 'relevamientoPorSalas.destroy', 'web', '2021-07-22 01:20:13', '2021-07-22 01:20:13'),
+(479, 'relevamientoPorSalas.edit', 'web', '2021-07-22 01:20:13', '2021-07-22 01:20:13'),
+(480, 'congelador.store', 'web', '2021-09-01 22:47:01', '2021-09-01 22:47:01'),
+(481, 'congelador.index', 'web', '2021-09-01 22:47:01', '2021-09-01 22:47:01'),
+(482, 'congelador.create', 'web', '2021-09-01 22:47:01', '2021-09-01 22:47:01'),
+(483, 'congelador.update', 'web', '2021-09-01 22:47:01', '2021-09-01 22:47:01'),
+(484, 'congelador.show', 'web', '2021-09-01 22:47:01', '2021-09-01 22:47:01'),
+(485, 'congelador.destroy', 'web', '2021-09-01 22:47:01', '2021-09-01 22:47:01'),
+(486, 'congelador.edit', 'web', '2021-09-01 22:47:01', '2021-09-01 22:47:01');
 
 -- --------------------------------------------------------
 
@@ -883,37 +893,9 @@ CREATE TABLE `relevamiento` (
   `RelevamientoFecha` date NOT NULL,
   `RelevamientoTurno` varchar(64) NOT NULL,
   `RelevamientoEstado` tinyint(4) DEFAULT NULL,
-  `RelevamientoControlado` tinyint(4) NOT NULL DEFAULT 0
+  `RelevamientoControlado` tinyint(4) NOT NULL DEFAULT 0,
+  `RelevamientoMenu` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Volcado de datos para la tabla `relevamiento`
---
-
-INSERT INTO `relevamiento` (`RelevamientoId`, `RelevamientoFecha`, `RelevamientoTurno`, `RelevamientoEstado`, `RelevamientoControlado`) VALUES
-(1, '2021-06-02', 'Mañana', 1, 1),
-(2, '2021-07-20', 'Tarde', 1, 1);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `relevamientocomida`
---
-
-CREATE TABLE `relevamientocomida` (
-  `RelevamientoComidaId` int(11) NOT NULL,
-  `RelevamientoId` int(11) NOT NULL,
-  `ComidaId` int(11) NOT NULL,
-  `RelevamientoComidaCantidad` int(11) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `relevamientocomida`
---
-
-INSERT INTO `relevamientocomida` (`RelevamientoComidaId`, `RelevamientoId`, `ComidaId`, `RelevamientoComidaCantidad`) VALUES
-(1, 1, 17, 5),
-(2, 1, 10, 13);
 
 -- --------------------------------------------------------
 
@@ -925,16 +907,9 @@ CREATE TABLE `relevamientoporsala` (
   `RelevamientoPorSalaId` int(11) NOT NULL,
   `RelevamientoId` int(11) NOT NULL,
   `SalaId` int(11) NOT NULL,
-  `RelevamientoPorSalaAcompaniantes` int(11) NOT NULL DEFAULT 0
+  `RelevamientoPorSalaAcompaniantes` int(11) NOT NULL DEFAULT 0,
+  `RelevamientoPorSalaEstado` tinyint(4) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Volcado de datos para la tabla `relevamientoporsala`
---
-
-INSERT INTO `relevamientoporsala` (`RelevamientoPorSalaId`, `RelevamientoId`, `SalaId`, `RelevamientoPorSalaAcompaniantes`) VALUES
-(1, 1, 1, 10),
-(2, 1, 2, 5);
 
 -- --------------------------------------------------------
 
@@ -1135,7 +1110,21 @@ INSERT INTO `role_has_permissions` (`id`, `permission_id`, `role_id`) VALUES
 (159, 469, 9),
 (160, 470, 9),
 (161, 471, 9),
-(162, 472, 9);
+(162, 472, 9),
+(163, 473, 9),
+(164, 474, 9),
+(165, 475, 9),
+(166, 476, 9),
+(167, 477, 9),
+(168, 478, 9),
+(169, 479, 9),
+(170, 480, 9),
+(171, 481, 9),
+(172, 482, 9),
+(173, 483, 9),
+(174, 484, 9),
+(175, 485, 9),
+(176, 486, 9);
 
 -- --------------------------------------------------------
 
@@ -1172,6 +1161,46 @@ INSERT INTO `sala` (`SalaId`, `SalaNombre`, `SalaEstado`, `SalaPseudonimo`) VALU
 (15, 'BRAQUI', 1, 'BRAQUI'),
 (16, 'Quemado', 1, 'Quemado'),
 (17, 'Guardia', 1, 'Guardia');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `temp_comida`
+--
+
+CREATE TABLE `temp_comida` (
+  `TempComidaId` int(11) NOT NULL,
+  `TempTandaId` int(11) NOT NULL,
+  `ComidaId` int(11) NOT NULL,
+  `CantidadNormal` int(11) NOT NULL,
+  `CantidadCongelada` int(11) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `temp_relevamiento`
+--
+
+CREATE TABLE `temp_relevamiento` (
+  `TempRelevamientoId` int(11) NOT NULL,
+  `RelevamientoId` int(11) NOT NULL,
+  `MenuId` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `temp_tanda`
+--
+
+CREATE TABLE `temp_tanda` (
+  `TempTandaId` int(11) NOT NULL,
+  `TempRelevamientoId` int(11) NOT NULL DEFAULT 1,
+  `TandaNumero` int(11) NOT NULL,
+  `TandaObservacion` varchar(256) DEFAULT NULL,
+  `TandaHora` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1331,6 +1360,12 @@ ALTER TABLE `comidaportipopaciente`
   ADD KEY `DetalleMenuTipoPacienteId` (`DetalleMenuTipoPacienteId`);
 
 --
+-- Indices de la tabla `congelador`
+--
+ALTER TABLE `congelador`
+  ADD PRIMARY KEY (`CongeladorId`);
+
+--
 -- Indices de la tabla `detallemenutipopaciente`
 --
 ALTER TABLE `detallemenutipopaciente`
@@ -1473,14 +1508,6 @@ ALTER TABLE `relevamiento`
   ADD PRIMARY KEY (`RelevamientoId`);
 
 --
--- Indices de la tabla `relevamientocomida`
---
-ALTER TABLE `relevamientocomida`
-  ADD PRIMARY KEY (`RelevamientoComidaId`),
-  ADD KEY `RelevamientoId` (`RelevamientoId`),
-  ADD KEY `ComidaId` (`ComidaId`);
-
---
 -- Indices de la tabla `relevamientoporsala`
 --
 ALTER TABLE `relevamientoporsala`
@@ -1506,6 +1533,24 @@ ALTER TABLE `role_has_permissions`
 --
 ALTER TABLE `sala`
   ADD PRIMARY KEY (`SalaId`);
+
+--
+-- Indices de la tabla `temp_comida`
+--
+ALTER TABLE `temp_comida`
+  ADD PRIMARY KEY (`TempComidaId`);
+
+--
+-- Indices de la tabla `temp_relevamiento`
+--
+ALTER TABLE `temp_relevamiento`
+  ADD PRIMARY KEY (`TempRelevamientoId`);
+
+--
+-- Indices de la tabla `temp_tanda`
+--
+ALTER TABLE `temp_tanda`
+  ADD PRIMARY KEY (`TempTandaId`);
 
 --
 -- Indices de la tabla `tipocomida`
@@ -1540,19 +1585,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `alimento`
 --
 ALTER TABLE `alimento`
-  MODIFY `AlimentoId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `AlimentoId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT de la tabla `alimentoporcomida`
 --
 ALTER TABLE `alimentoporcomida`
-  MODIFY `AlimentoPorComidaId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+  MODIFY `AlimentoPorComidaId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
 
 --
 -- AUTO_INCREMENT de la tabla `alimentoporproveedor`
 --
 ALTER TABLE `alimentoporproveedor`
-  MODIFY `AlimentoPorProveedorId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `AlimentoPorProveedorId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT de la tabla `cama`
@@ -1564,31 +1609,37 @@ ALTER TABLE `cama`
 -- AUTO_INCREMENT de la tabla `comida`
 --
 ALTER TABLE `comida`
-  MODIFY `ComidaId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `ComidaId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `comidaportipopaciente`
 --
 ALTER TABLE `comidaportipopaciente`
-  MODIFY `ComidaPorTipoPacienteId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `ComidaPorTipoPacienteId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT de la tabla `congelador`
+--
+ALTER TABLE `congelador`
+  MODIFY `CongeladorId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `detallemenutipopaciente`
 --
 ALTER TABLE `detallemenutipopaciente`
-  MODIFY `DetalleMenuTipoPacienteId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `DetalleMenuTipoPacienteId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT de la tabla `detallerelevamiento`
 --
 ALTER TABLE `detallerelevamiento`
-  MODIFY `DetalleRelevamientoId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=324;
+  MODIFY `DetalleRelevamientoId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=338;
 
 --
 -- AUTO_INCREMENT de la tabla `detrelevamientoporcomida`
 --
 ALTER TABLE `detrelevamientoporcomida`
-  MODIFY `DetRelevamientoPorComidaId` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `DetRelevamientoPorComidaId` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT de la tabla `empleado`
@@ -1606,25 +1657,25 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT de la tabla `historial`
 --
 ALTER TABLE `historial`
-  MODIFY `HistorialId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `HistorialId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT de la tabla `historialdetallealimento`
 --
 ALTER TABLE `historialdetallealimento`
-  MODIFY `HistorialDetalleAlimentoId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `HistorialDetalleAlimentoId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `historialdetallecomida`
 --
 ALTER TABLE `historialdetallecomida`
-  MODIFY `HistorialDetalleComidaId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `HistorialDetalleComidaId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT de la tabla `menu`
 --
 ALTER TABLE `menu`
-  MODIFY `MenuId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `MenuId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `migrations`
@@ -1642,7 +1693,7 @@ ALTER TABLE `nutriente`
 -- AUTO_INCREMENT de la tabla `nutrienteporalimento`
 --
 ALTER TABLE `nutrienteporalimento`
-  MODIFY `NutrientePorAlimentoId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=444;
+  MODIFY `NutrientePorAlimentoId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=539;
 
 --
 -- AUTO_INCREMENT de la tabla `paciente`
@@ -1654,7 +1705,7 @@ ALTER TABLE `paciente`
 -- AUTO_INCREMENT de la tabla `permissions`
 --
 ALTER TABLE `permissions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=473;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=487;
 
 --
 -- AUTO_INCREMENT de la tabla `pieza`
@@ -1678,19 +1729,13 @@ ALTER TABLE `proveedor`
 -- AUTO_INCREMENT de la tabla `relevamiento`
 --
 ALTER TABLE `relevamiento`
-  MODIFY `RelevamientoId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
-
---
--- AUTO_INCREMENT de la tabla `relevamientocomida`
---
-ALTER TABLE `relevamientocomida`
-  MODIFY `RelevamientoComidaId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `RelevamientoId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 
 --
 -- AUTO_INCREMENT de la tabla `relevamientoporsala`
 --
 ALTER TABLE `relevamientoporsala`
-  MODIFY `RelevamientoPorSalaId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `RelevamientoPorSalaId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`
@@ -1702,13 +1747,31 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT de la tabla `role_has_permissions`
 --
 ALTER TABLE `role_has_permissions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=163;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=177;
 
 --
 -- AUTO_INCREMENT de la tabla `sala`
 --
 ALTER TABLE `sala`
   MODIFY `SalaId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+
+--
+-- AUTO_INCREMENT de la tabla `temp_comida`
+--
+ALTER TABLE `temp_comida`
+  MODIFY `TempComidaId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+
+--
+-- AUTO_INCREMENT de la tabla `temp_relevamiento`
+--
+ALTER TABLE `temp_relevamiento`
+  MODIFY `TempRelevamientoId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+
+--
+-- AUTO_INCREMENT de la tabla `temp_tanda`
+--
+ALTER TABLE `temp_tanda`
+  MODIFY `TempTandaId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT de la tabla `tipocomida`
@@ -1789,7 +1852,6 @@ ALTER TABLE `detallemenutipopaciente`
 -- Filtros para la tabla `detallerelevamiento`
 --
 ALTER TABLE `detallerelevamiento`
-  ADD CONSTRAINT `detallerelevamiento_menuid_foreign` FOREIGN KEY (`MenuId`) REFERENCES `menu` (`MenuId`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_DetalleRelevamiento_Comida` FOREIGN KEY (`DetalleRelevamientoColacion`) REFERENCES `comida` (`ComidaId`) ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_DetalleRelevamiento_Paciente` FOREIGN KEY (`PacienteId`) REFERENCES `paciente` (`PacienteId`) ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_DetalleRelevamiento_TipoPaciente` FOREIGN KEY (`TipoPacienteId`) REFERENCES `tipopaciente` (`TipoPacienteId`) ON UPDATE CASCADE;
@@ -1837,13 +1899,6 @@ ALTER TABLE `pieza`
 --
 ALTER TABLE `profesional`
   ADD CONSTRAINT `fk_Profesional_Empleado` FOREIGN KEY (`EmpleadoId`) REFERENCES `empleado` (`EmpleadoId`) ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `relevamientocomida`
---
-ALTER TABLE `relevamientocomida`
-  ADD CONSTRAINT `fk_Comdia_RelevamientoComida` FOREIGN KEY (`ComidaId`) REFERENCES `comida` (`ComidaId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_Relevamiento_RelevamientoComida` FOREIGN KEY (`RelevamientoId`) REFERENCES `relevamiento` (`RelevamientoId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `role_has_permissions`

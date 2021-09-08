@@ -29,6 +29,7 @@ class HistorialController extends Controller
             $historial = DB::table('historial as h')
                                     ->where('HistorialEstado',1)
                                     ->join('relevamiento as r','r.RelevamientoId','h.RelevamientoId')
+                                    ->join('menu as m','m.MenuId','r.RelevamientoMenu')
                                     ->get();
             if($historial){
                 return datatables()->of($historial)
@@ -55,6 +56,7 @@ class HistorialController extends Controller
             $historial = DB::table('historial as h')
                                     ->where('HistorialId',$id)
                                     ->join('relevamiento as r','r.RelevamientoId','h.RelevamientoId')
+                                    ->join('menu as m','m.MenuId','r.RelevamientoMenu')
                                     ->first();
             $detallesComidas = DB::table('historialdetallecomida')
                                 ->where('HistorialId',$historial->HistorialId)
@@ -70,7 +72,7 @@ class HistorialController extends Controller
                     'porciones'=> $detalleComida->Porciones,
                     'alimentos' => $alimentos
                 );
-            array_push($comidas,$detalle);
+                array_push($comidas,$detalle);
             }
                                 
             $data = Array(

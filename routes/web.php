@@ -279,6 +279,16 @@ Route::middleware(['auth'])->group(function(){
 	Route::delete('relevamientoPorSalas/{id}','RelevamientoPorSalaController@destroy')->name('relevamientoPorSalas.destroy')->middleware('permission:relevamientoPorSalas.destroy');
 	Route::get('relevamientoPorSalas/{id}/edit','RelevamientoPorSalaController@edit')->name('relevamientoPorSalas.edit')->middleware('permission:relevamientoPorSalas.edit');
 });
+
+Route::middleware(['auth'])->group(function(){
+	Route::post('congelador','CongeladorController@store')->name('congelador.store')->middleware('permission:congelador.store');
+	Route::get('congelador','CongeladorController@index')->name('congelador.index')->middleware('permission:congelador.index');
+	Route::get('congelador/create','CongeladorController@create')->name('congelador.create')->middleware('permission:congelador.RelevamientoPorSalas');
+	Route::put('congelador/{id}','CongeladorController@update')->name('congelador.update')->middleware('permission:congelador.update');
+	Route::get('congelador/{id}','CongeladorController@show')->name('congelador.show')->middleware('permission:congelador.show');
+	Route::delete('congelador/{id}','CongeladorController@destroy')->name('congelador.destroy')->middleware('permission:congelador.destroy');
+	Route::get('congelador/{id}/edit','CongeladorController@edit')->name('congelador.edit')->middleware('permission:congelador.edit');
+});
 //reportes
 // Route::middleware(['auth'])->group(function(){
 	Route::get('reporte/relevamientos','ReporteController@exportRelevamientosExcel')->name('reportes.pacientes');

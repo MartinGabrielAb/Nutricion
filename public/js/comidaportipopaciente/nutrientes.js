@@ -48,6 +48,7 @@ function simular(e){
         beforeSend:function(){
         },
         success: function(response){
+          console.log("Responseee",reponse);
            for (let comida of response.comidas){
             var trComida = `<tr id=trComida${comida.comidaId}>
               <td class="text-center align-middle" rowspan=${comida.alimentos.length}>
@@ -71,8 +72,7 @@ function simular(e){
                                   </p>
                                   </td>`;
               $('#bodyNutrientes').append(tdAlimento);
-              var nutrientes = alimento.nutrientes;
-              for (let nutriente of nutrientes){
+              for (let nutriente of alimento.nutrientes){
                 var tdNutriente = `<td class="text-center align-middle">
                                     <p class="text-xs">
                                     <small>${nutriente}</small>

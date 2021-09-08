@@ -4,6 +4,7 @@
             <div class="row" >
                 <div class="col">Fecha:{{historial.RelevamientoFecha}}</div>
                 <div class="col">Turno:{{historial.RelevamientoTurno}}</div>
+                <div class="col">Menú:{{historial.MenuNombre}}</div>
             </div>
         </div>
         <div class="card-body text-center">

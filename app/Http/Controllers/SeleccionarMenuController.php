@@ -17,14 +17,8 @@ class SeleccionarMenuController extends Controller
     public function index(Request $request)
     {
         if($request->ajax()){
-            $relevamientosNoControlados = DB::table('relevamiento as r')
-                                ->where('RelevamientoControlado',0)
-                                ->where('RelevamientoEstado',1)
-                                ->orderBy('RelevamientoFecha','ASC')
-                                ->get();
-            return response($relevamientosNoControlados);
+           
         }
-
         return view('seleccionarmenu.principal');
     }
 
@@ -147,7 +141,6 @@ class SeleccionarMenuController extends Controller
     }
     public function show(Request $request ,$id)
     {
-        $relevamientoViejo = $request['params']['relevamientoAnt'];
         return view('seleccionarmenu.show',compact('id'));
 
     }

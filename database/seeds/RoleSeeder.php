@@ -204,12 +204,22 @@ class RoleSeeder extends Seeder
         // $permission = Permission::create(['name' => 'nutrientes.destroy'])->syncRoles(['Admin']);
         // $permission = Permission::create(['name' => 'nutrientes.edit'])->syncRoles(['Admin']);
 
-        $permission = Permission::create(['name' => 'relevamientoPorSalas.store'])->syncRoles(['Admin']);
-        $permission = Permission::create(['name' => 'relevamientoPorSalas.index'])->syncRoles(['Admin']);
-        $permission = Permission::create(['name' => 'relevamientoPorSalas.create'])->syncRoles(['Admin']);
-        $permission = Permission::create(['name' => 'relevamientoPorSalas.update'])->syncRoles(['Admin']);
-        $permission = Permission::create(['name' => 'relevamientoPorSalas.show'])->syncRoles(['Admin']);
-        $permission = Permission::create(['name' => 'relevamientoPorSalas.destroy'])->syncRoles(['Admin']);
-        $permission = Permission::create(['name' => 'relevamientoPorSalas.edit'])->syncRoles(['Admin']);
+        // $permission = Permission::create(['name' => 'relevamientoPorSalas.store'])->syncRoles(['Admin']);
+        // $permission = Permission::create(['name' => 'relevamientoPorSalas.index'])->syncRoles(['Admin']);
+        // $permission = Permission::create(['name' => 'relevamientoPorSalas.create'])->syncRoles(['Admin']);
+        // $permission = Permission::create(['name' => 'relevamientoPorSalas.update'])->syncRoles(['Admin']);
+        // $permission = Permission::create(['name' => 'relevamientoPorSalas.show'])->syncRoles(['Admin']);
+        // $permission = Permission::create(['name' => 'relevamientoPorSalas.destroy'])->syncRoles(['Admin']);
+        // $permission = Permission::create(['name' => 'relevamientoPorSalas.edit'])->syncRoles(['Admin']);
+
+
+        $permission = Permission::create(['name' => 'congelador.store'])->syncRoles(['Admin']);
+        $permission = Permission::create(['name' => 'congelador.index'])->syncRoles(['Admin']);
+        $permission = Permission::create(['name' => 'congelador.create'])->syncRoles(['Admin']);
+        $permission = Permission::create(['name' => 'congelador.update'])->syncRoles(['Admin']);
+        $permission = Permission::create(['name' => 'congelador.show'])->syncRoles(['Admin']);
+        $permission = Permission::create(['name' => 'congelador.destroy'])->syncRoles(['Admin']);
+        $permission = Permission::create(['name' => 'congelador.edit'])->syncRoles(['Admin']);
+
     }
 }

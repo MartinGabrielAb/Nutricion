@@ -8,6 +8,17 @@ $(document).ready( function () {
       {data: "RelevamientoId", name:"r.RelevamientoId"},
       {data: "RelevamientoFecha", name:"r.RelevamientoFecha"},
       {data: "RelevamientoTurno", name:"r.RelevamientoTurno"},
+      {
+        data: null,
+        name:"RelevamientoControlado",
+        render: function ( data, type, row ) {
+          if (data.RelevamientoControlado == 0) {
+            return '<td><p class="text-success">Activo</p></td>';
+          }else{
+            return '<td><p class="text-danger">Inactivo</p></td>';
+          };
+        }
+      },
       {data:'btn',orderable:false,sercheable:false},
     ],
     "language": { "url": "../JSON/Spanish_dataTables.json"},

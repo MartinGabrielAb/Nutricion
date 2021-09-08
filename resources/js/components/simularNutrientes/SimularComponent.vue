@@ -27,21 +27,23 @@
                           <td  class="text-xs text-center" :rowspan="comida.alimentos.length"><small>{{comida.tipoComida}}</small></td>
                           <td  class="text-xs text-center" :rowspan="comida.alimentos.length"><small>{{comida.comida}}</small></td>
                           <td  class="text-xs text-center"><small>{{alimento.alimento}}</small></td>
-                          <td  class="text-xs text-center"><small>{{alimento.cantidad}}</small></td>
+                          <td  class="text-xs text-center"><small>{{alimento.cantidad + " " +alimento.unidad}}</small></td>
                           <td v-if="alimento.nutrientes.length ==0"  class="text-xs text-center" colspan="19" ><small>Debe asignar los nutrientes</small></td>
-                          <td v-else v-for="nutriente in alimento.nutrientes" :key="nutriente.nutriente"  class="text-xs text-center"><small>{{nutriente.nutriente}}</small></td>
+                          <td v-else v-for="nutriente in alimento.nutrientes" :key="nutriente.id"  class="text-xs text-center"><small>{{nutriente.cantidad}}</small></td>
                   
                         </tr>
                         <tr v-else :key="alimento.alimentoId">
                             <td  class="text-xs text-center"><small>{{alimento.alimento}}</small></td>
-                            <td  class="text-xs text-center"><small>{{alimento.cantidad}}</small></td>
+                            <td  class="text-xs text-center"><small>{{alimento.cantidad + " " + alimento.unidad}}</small></td>
                             <td v-if="alimento.nutrientes.length ==0"  class="text-xs text-center" colspan="19" ><small>Debe asignar los nutrientes</small></td>
-                            <td v-else v-for="nutriente in alimento.nutrientes" :key="nutriente.nutriente"  class="text-xs text-center"><small>{{nutriente.nutriente}}</small></td>
-                            
+                            <td v-else v-for="nutriente in alimento.nutrientes" :key="nutriente.id"  class="text-xs text-center"><small>{{nutriente.cantidad}}</small></td> 
                         </tr>
                       </template> 
-                    </template>                 
-        
+                    </template>
+                    <tr>
+                            <td></td><td></td><td></td><td></td>
+                            <td v-for="(total,index) in listNutrientes.totales" :key="index" class="text-xs text-center"><small>{{total.toFixed(2)}}</small></td>
+                    </tr>
               </tbody>
             </table>
           </div>

@@ -9,8 +9,14 @@ $(document).ready( function () {
           {data: 'ProveedorNombre'},
           {data: 'AlimentoPorProveedorCantidad'},
           {data: 'AlimentoPorProveedorCantidadUsada'},
-          {data: 'AlimentoPorProveedorCosto'},
-          {data: 'AlimentoPorProveedorCostoTotal'},
+          {data: null, name: 'AlimentoPorProveedorCosto',
+            render: function ( data) {
+              return '$'+(data.AlimentoPorProveedorCosto);
+          }},
+          {data: null, name: 'AlimentoPorProveedorCosto',
+            render: function ( data) {
+              return '$'+(data.AlimentoPorProveedorCosto * data.AlimentoPorProveedorCantidad);
+          }},
           {data: 'AlimentoPorProveedorFechaEntrada'},
           {data: 'AlimentoPorProveedorVencimiento'},
           {data: null, name: 'AlimentoPorProveedorEstado',

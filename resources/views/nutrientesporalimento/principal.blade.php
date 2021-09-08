@@ -78,7 +78,11 @@
           @if($alimento->UnidadMedidaNombre == 'Litro' )
             <small>Los nutrientes son valores por cada 100 cm3 de {{$alimento->AlimentoNombre}}<small>
           @else
-            <small>Los nutrientes son valores por cada 100g de {{$alimento->AlimentoNombre}}<small>
+            @if($alimento->UnidadMedidaNombre == 'Unidad' )
+              <small>Los nutrientes son valores por cada unidad de {{$alimento->AlimentoNombre}}<small>
+            @else
+              <small>Los nutrientes son valores por cada 100g de {{$alimento->AlimentoNombre}}<small>
+            @endif
           @endif
           @if(count($nutrientesPorAlimento) ==0)
             @foreach($nutrientes as $nutriente)

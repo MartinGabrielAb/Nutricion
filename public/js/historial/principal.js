@@ -8,6 +8,7 @@ $(document).ready( function () {
       {data: 'HistorialId'},
       {data: 'RelevamientoFecha'},
       {data: 'RelevamientoTurno'},
+      {data: 'MenuNombre'},
       {data:'btn',orderable:false,sercheable:false},
     ],
     "language": { "url": "../JSON/Spanish_dataTables.json"},

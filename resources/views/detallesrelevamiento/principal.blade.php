@@ -203,6 +203,12 @@
                             Vajilla Descartable
                         </label>
                     </div>
+                    <div class="form-check mt-3">
+                        <input class="form-check-input" type="checkbox" value="1" id="agregado" name="agregado">
+                        <label class="form-check-label" for="agregado">
+                            Agregado
+                        </label>
+                    </div>
                 </div>
                 <div id="modal-footer-comidas" class="modal-footer d-none">
                     <div class="container-fluid">
