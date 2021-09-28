@@ -48,6 +48,7 @@
                       <th scope="col" width="5%">#</th>
                       <th scope="col">Fecha</th>
                       <th scope="col">Turno</th>
+                      <th scope="col">Menu</th>
                       <th scope="col">Estado</th>
                       <th scope="col" width="5%">Acciones</th>
                     </tr>

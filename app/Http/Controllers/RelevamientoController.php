@@ -23,7 +23,7 @@ class RelevamientoController extends Controller
             try{
                 $relevamientos = DB::table('relevamiento as r')
                                     ->where('r.RelevamientoEstado',1)
-                                    ->select('r.RelevamientoId','r.RelevamientoId',DB::raw('DATE_FORMAT(r.RelevamientoFecha, "%d/%m/%Y") as RelevamientoFecha'),'r.RelevamientoControlado','r.RelevamientoTurno','r.RelevamientoEstado')
+                                    ->select('r.RelevamientoId','r.RelevamientoMenu',DB::raw('DATE_FORMAT(r.RelevamientoFecha, "%d/%m/%Y") as RelevamientoFecha'),'r.RelevamientoControlado','r.RelevamientoTurno','r.RelevamientoEstado')
                                     ->get();
                             return DataTables::of($relevamientos)
                             ->addColumn('btn','relevamientos/actions')

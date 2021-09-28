@@ -322,6 +322,7 @@ Route::post('/finalizar/{id}',function($id){
 Route::get('/getRelevamientosSinMenuAsignado', function () {
 	$relevamientos = DB::table('relevamiento as r')
 						->where('RelevamientoMenu',NULL)
+						->where('RelevamientoControlado',0)
 						->where('RelevamientoEstado',1)
 						->get();
 	return response($relevamientos);
@@ -518,6 +519,12 @@ Route::post('seleccionarMenu',function(Request $request){
 		$relevamientoAnt = $request['params']['relevamientoAnt'];
 		$relevamientoNuevo = $request['params']['relevamientoNuevo'];
 		$menuId = $request['params']['menu'];
+		$relevamiento = DB::table('relevamiento')
+							->where('RelevamientoId',$relevamientoNuevo)
+							->update(['RelevamientoMenu' => $menuId]);
+		$relevamiento =  DB::table('relevamiento')
+								->where('RelevamientoId',$relevamientoNuevo)
+								->first();
 		//Creo la tabla temporal para la primera vez con los datos del relevamiento anterior
 		$tempRelevamientoId = DB::table('temp_relevamiento')->insertGetId(
 			['RelevamientoId' => $relevamientoNuevo, 'MenuId' => $menuId]
@@ -527,6 +534,7 @@ Route::post('seleccionarMenu',function(Request $request){
 		);
 		foreach ($relevamientoAnt as $tipoPaciente){
 			if($tipoPaciente['cantidad']>0){
+				//Si el tipo de paciente es 0 es porque es un acompañante y le mando un tipo normal
 				if($tipoPaciente['id'] == 0){
 					$tipoNormal = DB::table('tipopaciente')
 											->where('TipoPacienteNombre','Normal')
@@ -538,13 +546,29 @@ Route::post('seleccionarMenu',function(Request $request){
 								->where('TipoPacienteId',$tipoPaciente['id'])
 								->first();
 				if($detalle != null){
-					$comidas = DB::table('comidaportipopaciente')
-								->where('DetalleMenuTipoPacienteId',$detalle->DetalleMenuTipoPacienteId)
-								->where('ComidaPorTipoPacientePrincipal',1)
-								->get();
-	
+					//HARDCODE TIPOSCOMIDA
+					//SI ES RELEVAMIENTO DE LA MAÑANA TOMA SOLO LOS PRIMEROS TIPOS DE COMIDA
+					if($relevamiento->RelevamientoTurno == 'Mañana'){
+						$comidas = DB::table('comidaportipopaciente')
+						->where('DetalleMenuTipoPacienteId',$detalle->DetalleMenuTipoPacienteId)
+						->where('ComidaPorTipoPacientePrincipal',1)
+						->where('TipoComidaId',1)
+						->orWhere('TipoComidaId',2)
+						->orWhere('TipoComidaId',3)
+						->orWhere('TipoComidaId',4)
+						->get();
+					}else{
+					//SI ES RELEVAMIENTO DE LA TARDE TOMA LOS OTROS TIPOS DE COMIDA(LA COLACION NO ES CONTEMPLADA)
+						$comidas = DB::table('comidaportipopaciente')
+						->where('DetalleMenuTipoPacienteId',$detalle->DetalleMenuTipoPacienteId)
+						->where('ComidaPorTipoPacientePrincipal',1)
+						->where('TipoComidaId',5)
+						->orWhere('TipoComidaId',6)
+						->orWhere('TipoComidaId',7)
+						->orWhere('TipoComidaId',8)
+						->get();
+					}
 					foreach($comidas as $comida){
-
 						$tempComida = DB::table('temp_comida')
 										->where('TempTandaId',$tempTandaId)
 										->where('ComidaId',$comida->ComidaId)
@@ -571,4 +595,12 @@ Route::post('seleccionarMenu',function(Request $request){
 	} catch (Exception $e) {
 		return $e;
 	}
+});
+
+Route::get('getMenu/{id}',function($id){
+	$menu = DB::table('menu')
+				->where('MenuId',$id)	
+				->where('MenuEstado',1)
+				->first();
+	return response(array($menu));
 });
