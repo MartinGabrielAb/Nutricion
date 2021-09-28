@@ -61,7 +61,7 @@ Route::get('/getRelevamientoPorMenu/{id}', function ($id) {
 });
 Route::get('/getRelevamientosAnteriores', function () {
 		$relevamientosAnteriores = DB::table('relevamiento as r')
-				->where('RelevamientoControlado',0)
+				->where('RelevamientoControlado',1)
 				->where('RelevamientoEstado',1)
 				->orderBy('RelevamientoFecha','ASC')
 				->get();
@@ -316,6 +316,8 @@ Route::post('/finalizar/{id}',function($id){
 			]
 		);
 	}
+	DB::table('relevamiento')->where('RelevamientoId',$id)
+							->update(['RelevamientoControlado' => 1]);
 	return $historialId;
 });
 

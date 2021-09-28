@@ -15,17 +15,18 @@ $(document).ready( function () {
           if (data.RelevamientoMenu == null ) {
             return '<td><p class="text-danger">No asignado</p></td>';
           }else{
-            return ($.ajax({
-              type:'GET',
-              url:"api/getMenu/"+data.RelevamientoMenu,
-              dataType:"json",
-                success: function(response){
-                  return response[0].MenuNombre;
-                },
-                error:function(error){
-                  console.log("Error al traer el menu");     
-                }
-            }));
+            return '<td><p class="text-success">Asignado</p></td>';
+            // return ($.ajax({
+            //   type:'GET',
+            //   url:"api/getMenu/"+data.RelevamientoMenu,
+            //   dataType:"json",
+            //     success: function(response){
+            //       return response[0].MenuNombre;
+            //     },
+            //     error:function(error){
+            //       console.log("Error al traer el menu");     
+            //     }
+            // }));
           }
         }
       },
@@ -36,7 +37,7 @@ $(document).ready( function () {
           if (data.RelevamientoControlado == 0) {
             return '<td><p class="text-success m-0">Activo</p></td>';
           }else{
-            return '<td><p class="text-danger m-0">Inactivo</p></td>';
+            return '<td><p class="text-danger m-0">Finalizado</p></td>';
           };
         }
       },

@@ -110,7 +110,7 @@ export default {
             var res = confirm("¿Esta seguro/a desea finalizar el relevamiento?");
             if (res){
                 await axios.post('/api/finalizar/'+this.id).then(response =>{
-                    console.log( response.data);
+                    window.location.href = "/historial/" + response.data;
             })
             .catch(error => { console.log("Error getFinalizar");})      
             }
