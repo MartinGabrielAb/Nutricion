@@ -10,6 +10,27 @@ $(document).ready( function () {
       {data: "RelevamientoTurno", name:"r.RelevamientoTurno"},
       {
         data: null,
+        name:"RelevamientoMenu",
+        render: function ( data, type, row ) {
+          if (data.RelevamientoMenu == null ) {
+            return '<td><p class="text-danger">No asignado</p></td>';
+          }else{
+            return ($.ajax({
+              type:'GET',
+              url:"api/getMenu/"+data.RelevamientoMenu,
+              dataType:"json",
+                success: function(response){
+                  return response[0].MenuNombre;
+                },
+                error:function(error){
+                  console.log("Error al traer el menu");     
+                }
+            }));
+          }
+        }
+      },
+      {
+        data: null,
         name:"RelevamientoControlado",
         render: function ( data, type, row ) {
           if (data.RelevamientoControlado == 0) {
