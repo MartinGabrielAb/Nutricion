@@ -29,6 +29,7 @@ class MenuPorTipoPacienteController extends Controller
                         $comidasportipopaciente = 
                             DB::table('comidaportipopaciente as cptp')
                                 ->join('comida as c','c.ComidaId','cptp.ComidaId')
+                                ->join('tipocomida as tc','tc.TipoComidaId','c.TipoComidaId')
                                 ->where('cptp.DetalleMenuTipoPacienteId',$menuportipopaciente->DetalleMenuTipoPacienteId)
                                 ->get();
                     }else{

@@ -13,9 +13,9 @@ $(document).ready( function () {
         name:"RelevamientoControlado",
         render: function ( data, type, row ) {
           if (data.RelevamientoControlado == 0) {
-            return '<td><p class="text-success">Activo</p></td>';
+            return '<td><p class="text-success m-0">Activo</p></td>';
           }else{
-            return '<td><p class="text-danger">Inactivo</p></td>';
+            return '<td><p class="text-danger m-0">Inactivo</p></td>';
           };
         }
       },

@@ -9,15 +9,6 @@ $(document).ready( function () {
     },
     allowClear: true
   });
-  $('#menu').select2({
-    width: 'resolve',
-    theme: "classic",
-    placeholder: {
-      id: '-1', 
-      text: 'Buscar por Menú',
-    },
-    allowClear: true,
-  });
   $('#tipoPacienteId').select2({
       width: 'resolve',
       theme: "classic",
@@ -37,24 +28,6 @@ $(document).ready( function () {
     allowClear: true,
   });
   $('#colacion').select2({
-    width: 'resolve',
-    theme: "classic",
-    placeholder: {
-      id: '-1', 
-      text: 'Buscar',
-    },
-    allowClear: true,
-  });
-  $('#precargarMenu').select2({
-    width: 'resolve',
-    theme: "classic",
-    placeholder: {
-      id: '-1', 
-      text: 'Buscar',
-    },
-    allowClear: true,
-  });
-  $('#precargarTipoPaciente').select2({
     width: 'resolve',
     theme: "classic",
     placeholder: {
@@ -94,11 +67,6 @@ $(document).ready( function () {
       }else{
         $( "#vajilladescartable" ).prop( "checked", false );
       }
-      if(detallerelevamiento.DetalleRelevamientoAgregado == 1){
-        $( "#agregado" ).prop( "checked", true );
-      }else{
-        $( "#agregado" ).prop( "checked", false );
-      }
       $('#colacion').val(detallerelevamiento.DetalleRelevamientoColacion).trigger('change');
       menuId = $("#menu").val();
       tipopacienteId = $("#tipoPacienteId").val();
@@ -114,6 +82,12 @@ $(document).ready( function () {
       tipopacienteId = $("#tipoPacienteId").val();
       menuportipopaciente(menuId,tipopacienteId,detallerelevamiento.DetalleRelevamientoId);
     }
+
+    // ocultar boton de seleccion de paciente.
+    $('#select_paciente').addClass('d-none');
+    // ocultar inputs de add_paciente.
+    $('.col_add_paciente').addClass('d-none');
+
   });
   //eventos para seleccionar las comidas del menú
   $('#menu').on("select2:select", function(e) { 
@@ -127,19 +101,15 @@ $(document).ready( function () {
       elementoComidas = $('#comidas');
       if(elementoComidas.hasClass('d-none')){
         $('#comidas').removeClass('d-none');
-        $('.clsComidas').prop('required',true);
+        $('#seleccionar_comidas_individuales').removeClass('d-none');
+        $('#seleccionar_comidas_no_individuales').addClass('d-none');
       }
+    }else if(menuId != -1 && $("#tipoPacienteId option:selected").text() != 'Individual'){
+      seleccionar_comidas();
     }else{
       $('#comidas').addClass('d-none');
-      $('.clsComidas').prop('required',false);
     }
-  });
-  $('#btnPrecargarComidas').on("click", function(e) {
-    menuId = $("#precargarMenu").val();
-    tipopacienteId = $("#precargarTipoPaciente").val();
-    if(menuId != -1 && tipopacienteId != -1){
-      menuportipopaciente(menuId,tipopacienteId,null);
-    }
+    
   });
 });
 
@@ -148,20 +118,34 @@ function guardar(e){
   $("#listaErrores").empty();
   e.preventDefault();
   var id = $("#id").val();
-  clsComidas = $('.clsComidas');
   comidas = [];
-  clsComidas.each(function(index, item) {
-    var $comidaid = $(item).val();
-    $comidaid = {
-      'ComidaId' : $comidaid,
-    }
-    if($comidaid != null){
-      comidas.push($comidaid);
-    }
-  });
+  if($('#seleccionar_comidas_no_individuales').hasClass('d-none')){
+    clsComidas = $('.clsComidas');
+    clsComidas.each(function(index, item) {
+      var $comidaid = $(item).val();
+      $comidaid = {
+        'ComidaId' : $comidaid,
+      }
+      if($comidaid != null){
+        comidas.push($comidaid);
+      }
+    });
+  }else{
+    comidas_no_individuales = $('.comidas_no_individuales');
+    comidas_no_individuales.each(function(index, item) {
+      var $comidaid = $(item).val();
+      $comidaid = {
+        'ComidaId' : $comidaid,
+      }
+      if($comidaid != null){
+        comidas.push($comidaid);
+      }
+    });
+  }
   if(comidas.length == 0){
     comidas = null;
   }
+  console.log(comidas);
   if(id == 0){
     $.ajax({
       type:'POST',
@@ -178,9 +162,12 @@ function guardar(e){
         comidas: comidas,
         acompaniante: $('#acompanianteId').is(':checked'),
         vajilladescartable: $('#vajilladescartable').is(':checked'),
-        agregado: $('#agregado').is(':checked'),
         user: $('#usuarioId').val(),
         colacion: $('#colacion').val(),
+        paciente_modo_carga: $('#paciente_modo_carga').val(),
+        paciente_nombre: $('#paciente_nombre').val(),
+        paciente_apellido: $('#paciente_apellido').val(),
+        paciente_dni: $('#paciente_dni').val(),
       },
       success: function(response){
         camaid = response.success;
@@ -218,10 +205,12 @@ function editar(id,comidas){
       comidas: comidas,
       acompaniante: $('#acompanianteId').is(':checked'),
       vajilladescartable: $('#vajilladescartable').is(':checked'),
-      agregado: $('#agregado').is(':checked'),
       user: $('#usuarioId').val(),
-      agregado: $('#agregado').val(),
       colacion: $('#colacion').val(),
+      paciente_modo_carga: $('#paciente_modo_carga').val(),
+      paciente_nombre: $('#paciente_nombre').val(),
+      paciente_apellido: $('#paciente_apellido').val(),
+      paciente_dni: $('#paciente_dni').val(),
     },
     success: function(response){
       camaid = response.success[0];
@@ -297,14 +286,10 @@ function vaciarCampos(){
   $("#pacienteId").val(-1).trigger('change');
   $('#diagnosticoId').val("");
   $('#observacionesId').val("");
-  $("#menu").val(-1).trigger('change');
   $("#tipoPacienteId").val(-1).trigger('change');
   $("#colacion").val(-1).trigger('change');
-  $("#precargarTipoPaciente").val(-1).trigger('change');
-  $("#precargarMenu").val(-1).trigger('change');
   $('#acompanianteId').prop( "checked", false );
   $('#vajilladescartable').prop( "checked", false );
-  $('#agregado').prop( "checked", false );
   $(".clsComidas").val(-1).trigger('change');
   $("#listaErrores").empty();
 }
@@ -320,6 +305,7 @@ function agregar(){
   $("#btnGuardar span").text("Guardar");
   camaid = $('#camaId').val();
   getUltimoDetRelevamiento(camaid);
+  pantalla_select_paciente();
 }
 function mostrarCartel(texto,clase){
     $('#divMensaje').removeClass('alert-success alert-danger');
@@ -444,10 +430,6 @@ function getDetallerelevamiento(camaid){
             <p class="m-0">${(detallerelevamiento.DetalleRelevamientoVajillaDescartable == 1 ? 'Si' : 'No')}</p>
           </li>
           <li class="list-group-item text-center">
-            <h6>Agregado</h6>
-            <p class="m-0">${(detallerelevamiento.DetalleRelevamientoAgregado == 1 ? 'Si' : 'No')}</p>
-          </li>
-          <li class="list-group-item text-center">
             <h6>Diagnóstico</h6>
             <p class="m-0">${detallerelevamiento.DetalleRelevamientoDiagnostico}</p>
           </li>
@@ -500,7 +482,6 @@ function getUltimoDetRelevamiento(camaid, paciente = null){
         $('#pacienteId').val(detallerelevamiento.PacienteCuil).trigger('change');
         $('#diagnosticoId').val(detallerelevamiento.DetalleRelevamientoDiagnostico);
         $('#observacionesId').val(detallerelevamiento.DetalleRelevamientoObservaciones);
-        $('#menu').val(detallerelevamiento.MenuId).trigger('change');
         $('#tipoPacienteId').val(detallerelevamiento.TipoPacienteId).trigger('change');
         $('#comidas').addClass('d-none');
         if(detallerelevamiento.DetalleRelevamientoAcompaniante == 1){
@@ -512,11 +493,6 @@ function getUltimoDetRelevamiento(camaid, paciente = null){
           $( "#vajilladescartable" ).prop( "checked", true );
         }else{
           $( "#vajilladescartable" ).prop( "checked", false );
-        }
-        if(detallerelevamiento.DetalleRelevamientoAgregado == 1){
-          $( "#agregado" ).prop( "checked", true );
-        }else{
-          $( "#agregado" ).prop( "checked", false );
         }
         $('#colacion').val(detallerelevamiento.DetalleRelevamientoColacion).trigger('change'); 
       }else{
@@ -535,4 +511,89 @@ function getUltimoDetRelevamientoPaciente(){
   $('#respuestaUltimoRelevamiento').stop().empty();
   paciente = $('#pacienteId option:selected').val();
   getUltimoDetRelevamiento(null,paciente);
+}
+
+function pantalla_add_new_paciente(){
+  $('.col_add_paciente').removeClass('d-none');
+  $('.col_select_paciente').addClass('d-none');
+  $('#pacienteId').val(-1).trigger('change');
+  $('#add_paciente').addClass('d-none');
+  $('#select_paciente').removeClass('d-none');
+  $('#ultimoRelevamientoId').addClass('d-none');
+  $('#paciente_modo_carga').val('add_new');
+  $('#pacienteId').attr('required', false);
+  $('#paciente_nombre').val('').attr('required', true);
+  $('#paciente_apellido').val('').attr('required', true);
+  $('#paciente_dni').val('').attr('required', true);
+}
+function pantalla_select_paciente(){
+  $('.col_select_paciente').removeClass('d-none');
+  $('.col_add_paciente').addClass('d-none');
+  $('#paciente_nombre').val('');
+  $('#paciente_apellido').val('');
+  $('#paciente_dni').val('');
+  $('#add_paciente').removeClass('d-none');
+  $('#select_paciente').addClass('d-none');
+  $('#ultimoRelevamientoId').removeClass('d-none');
+  $('#paciente_modo_carga').val('select');
+  $('#pacienteId').attr('required', true);
+  $('#paciente_nombre').val('').attr('required', false);
+  $('#paciente_apellido').val('').attr('required', false);
+  $('#paciente_dni').val('').attr('required', false);
+}
+function seleccionar_comidas(){
+  $('#seleccionar_comidas_no_individuales').empty();
+  if($('#tipoPacienteId option:selected').text() != ''){
+    if($('#tipoPacienteId option:selected').text() != 'Individual'){
+      $('#comidas').removeClass('d-none');
+      $('#seleccionar_comidas_individuales').addClass('d-none');
+      $('#seleccionar_comidas_no_individuales').removeClass('d-none');  
+      menu = $('#menu').val();
+      tipopaciente = $('#tipoPacienteId').val();
+      $.ajax({
+        type:"GET",
+        url: "../menuportipopaciente/",
+        data: {
+          "menu": menu,
+          "tipopaciente": tipopaciente
+        },
+        success: function(response) {
+          menuportipopacienteComidas = response.success;
+          mostrar_checkbox_comidas(menuportipopacienteComidas);
+        },
+        error:function(){
+          mostrarCartel('Error al obtener comidas.','alert-danger');
+        }
+      });
+    }
+  }
+}
+function mostrar_checkbox_comidas(comidas) {
+  comidas.forEach(comida => {
+    if ($('#turno').val() == 'Mañana') {
+      if(comida.TipoComidaNombre == 'Almuerzo' || comida.TipoComidaNombre == 'Sopa Almuerzo' || comida.TipoComidaNombre == 'Postre Almuerzo' || comida.TipoComidaNombre == 'Merienda'){
+        html = `
+        <div class="form-check">
+          <input class="form-check-input comidas_no_individuales" checked type="checkbox" value="${comida.ComidaId}" id="comida_id_${comida.ComidaId}" name="comida_id_${comida.ComidaId}">
+          <label class="form-check-label" for="comida_id_${comida.ComidaId}">
+            ${comida.TipoComidaNombre} - ${comida.ComidaNombre}
+          </label>
+        </div>
+        `;
+        $('#seleccionar_comidas_no_individuales').append(html);
+      }
+    }else if($('#turno').val() == 'Tarde'){
+      if(comida.TipoComidaNombre == 'Cena' || comida.TipoComidaNombre == 'Sopa Cena' || comida.TipoComidaNombre == 'Postre Cena' || comida.TipoComidaNombre == 'Desayuno'){
+        html = `
+        <div class="form-check">
+          <input class="form-check-input comidas_no_individuales" checked type="checkbox" value="${comida.ComidaId}" id="comida_id_${comida.ComidaId}" name="comida_id_${comida.ComidaId}">
+          <label class="form-check-label" for="comida_id_${comida.ComidaId}">
+            ${comida.TipoComidaNombre} - ${comida.ComidaNombre}
+          </label>
+        </div>
+        `;
+        $('#seleccionar_comidas_no_individuales').append(html);
+      }
+    }
+  });
 }

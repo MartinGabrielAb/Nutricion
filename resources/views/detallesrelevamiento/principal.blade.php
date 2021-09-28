@@ -1,3 +1,7 @@
+@php
+    $relevamiento = App\Relevamiento::where('RelevamientoId',$relevamiento_por_salas->RelevamientoId)->first();
+    $menuSeleccionado = App\Menu::findOrFail($relevamiento->RelevamientoMenu);
+@endphp
 <!-- Main content -->
 <div class="container-fluid">
     <input type="hidden" id="relevamientoPorSalaId" value="{{$relevamiento_por_salas->RelevamientoPorSalaId}}">
@@ -82,6 +86,7 @@
                 <div id="modal-body" class="modal-body">
                     <input type="hidden" id="id" name="id">
                     <input type="hidden" id="camaId" name="camaId">
+                    <input type="hidden" id="turno" name="turno" value="{{$relevamiento_por_salas->RelevamientoTurno}}">
                     <div class="row">
                         <div class="col-7">
                             <label for="pacienteId" class="m-0">Paciente</label>
@@ -90,13 +95,31 @@
                             <small id="respuestaUltimoRelevamiento" class="m-0 text-warning"></small>
                         </div>
                     </div>
-                    <div class="form-inline pb-2 border-bottom">
-                        <select class="form-control" id="pacienteId" name="pacienteId" style="width: 83%" required>
-                            @foreach ($pacientes as $paciente)
-                                <option value="{{$paciente->PacienteCuil}}">{{$paciente->PacienteApellido}}, {{$paciente->PacienteNombre}} - {{$paciente->PacienteCuil}}</option>
-                            @endforeach
-                        </select>
-                        <button type="button" id="ultimoRelevamientoId" onclick="getUltimoDetRelevamientoPaciente()" class="btn btn-sm btn-default ml-3" style="width: 10%"><i title="Último relevamiento del paciente" class="fas fa-undo-alt"></i></button>
+                    <div class="form-inline pb-2 border-bottom row">
+                        <input type="text" class="form-control d-none" id="paciente_modo_carga" name="paciente_modo_carga" value="select">
+                        <div class="col-lg-10 col-sm-8 pl-1 pr-1 col_select_paciente">
+                            <select class="form-control" id="pacienteId" name="pacienteId" style="width: 100%" required>
+                                @foreach ($pacientes as $paciente)
+                                    <option value="{{$paciente->PacienteCuil}}">{{$paciente->PacienteApellido}}, {{$paciente->PacienteNombre}} - {{$paciente->PacienteCuil}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-lg-1 col-sm-2 p-1 text-center col_select_paciente">
+                            <button type="button" id="ultimoRelevamientoId" onclick="getUltimoDetRelevamientoPaciente()" class="btn btn-sm btn-default w-100 m-1"><i title="Último relevamiento del paciente" class="fas fa-undo-alt"></i></button>
+                        </div>
+                        <div class="col-lg-4 col-sm-4 pl-1 pr-1 col_add_paciente">
+                            <input type="text" class="form-control w-100" name="paciente_nombre" id="paciente_nombre" placeholder="Nombre">
+                        </div>
+                        <div class="col-lg-4 col-sm-4 pl-1 pr-1 col_add_paciente">
+                            <input type="text" class="form-control w-100" name="paciente_apellido" id="paciente_apellido" placeholder="Apellido">
+                        </div>
+                        <div class="col-lg-3 col-sm-3 p-1 text-center col_add_paciente">
+                            <input type="number" id="paciente_dni" name="paciente_dni" minlength="7" maxlength="15" class="form-control w-100" placeholder="DNI">
+                        </div>
+                        <div class="col-lg-1 col-sm-2 p-1 text-center">
+                            <button type="button" id="add_paciente" onclick="pantalla_add_new_paciente()" class="btn btn-sm btn-default w-100 m-1"><i title="Agregar nuevo paciente" class="fas fa-user-plus"></i></button>
+                            <button type="button" id="select_paciente" onclick="pantalla_select_paciente()" class="btn btn-sm btn-default w-100 m-1"><i title="Seleccionar paciente" class="fas fa-address-book"></i></button>
+                        </div>
                     </div>
                     <div class="form-inline m-0 pb-2 border-bottom">
                         <label for="diagnosticoId">Diagnóstico</label>
@@ -106,84 +129,59 @@
                         <label for="observacionesId">Observaciones</label>
                         <textarea class="form-control" id="observacionesId" rows="2" style="width: 100%"></textarea>
                     </div> 
-                    <div class="form-inline border-top">
-                        <label for="tipoPacienteId">Regímen</label>
-                        <select class="form-control" id="tipoPacienteId" name="tipoPacienteId" style="width: 100%" required>
-                            @foreach ($tiposPaciente as $tipoPaciente)
-                                <option value="{{$tipoPaciente->TipoPacienteId}}">{{$tipoPaciente->TipoPacienteNombre}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div id="menus" class="form-inline pb-2">
+                    <div id="menus" class="form-inline border-top">
                         <label for="menu">Menú</label>
-                        <select class="form-control" id="menu" name="menu" style="width: 100%" required>
-                            @foreach ($menus as $menu)
-                                <option value="{{$menu->MenuId}}">{{$menu->MenuNombre}}</option>
-                            @endforeach
-                        </select>
+                        <input type="text" name="menu" id="menu" value="{{$menuSeleccionado->MenuId}}" hidden>
+                        <input type="text" class="form-control" readonly style="width: 100%" name="menu_nombre" id="menu_nombre" value="{{$menuSeleccionado->MenuNombre}}">
                     </div>
-                    <div id="comidas" class="form-check mt-3 pl-0 border-bottom pb-2 d-none">
-                        <div class="row border pb-2">
-                            <div class="col">
-                                <div class="row">
-                                    <div class="col text-center">
-                                        <p class="font-weight-bold m-0">Precargar menú</p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-6 form-inline">
-                                        <label for="precargarTipoPaciente">Regímen</label>
-                                        <select class="form-control" id="precargarTipoPaciente" style="width: 100%">
-                                            @foreach ($tiposPaciente as $tipoPaciente)
-                                                <option value="{{$tipoPaciente->TipoPacienteId}}">{{$tipoPaciente->TipoPacienteNombre}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-5 form-inline">
-                                        <label for="precargarMenu">Menú</label>
-                                        <select class="form-control" id="precargarMenu" name="precargarMenu" style="width: 100%">
-                                            @foreach ($menus as $menu)
-                                                <option value="{{$menu->MenuId}}">{{$menu->MenuNombre}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-1 align-self-end form-inline p-0">
-                                        <button type="button" id="btnPrecargarComidas" class="btn btn-sm btn-success p-2 ml-auto mr-auto"><i class="fas fa-check"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                           
+                    <div class="row">
+                        <div class="col">
+                            <label for="tipoPacienteId" class="m-0">Regímen</label>
                         </div>
-                        
-                        @if ($relevamiento_por_salas->RelevamientoTurno == 'Mañana')
-                            @foreach ($tiposcomida as $tipocomida)
-                                @if ($tipocomida->TipoComidaNombre == 'Merienda' || $tipocomida->TipoComidaNombre == 'Cena' || $tipocomida->TipoComidaNombre == 'Sopa Cena' || $tipocomida->TipoComidaNombre == 'Postre Cena')
-                                    <div class="form-inline">
-                                        <label for="comidaid{{$tipocomida->TipoComidaId}}">{{$tipocomida->TipoComidaNombre}}</label>
-                                        <select class="form-control clsComidas" id="comidaid{{$tipocomida->TipoComidaId}}" name="comidas[]"  style="width: 100%">
-                                            @foreach ($tipocomida->comidas as $comida)
-                                            <option value="{{$comida->ComidaId}}">{{$comida->ComidaNombre}}</option>
-                                            @endforeach
-                                        </select> 
-                                    </div>
-                                @endif
-                            @endforeach    
-                        @elseif(($relevamiento_por_salas->RelevamientoTurno == 'Tarde'))
-                            @foreach ($tiposcomida as $tipocomida)
-                                @if ($tipocomida->TipoComidaNombre == 'Desayuno' || $tipocomida->TipoComidaNombre == 'Almuerzo' || $tipocomida->TipoComidaNombre == 'Sopa Almuerzo' || $tipocomida->TipoComidaNombre == 'Postre Almuerzo')
-                                    <div class="form-inline">
-                                        <label for="comidaid{{$tipocomida->TipoComidaId}}">{{$tipocomida->TipoComidaNombre}}</label>
-                                        <select class="form-control clsComidas" id="comidaid{{$tipocomida->TipoComidaId}}" name="comidas[]"  style="width: 100%">
-                                            @foreach ($tipocomida->comidas as $comida)
-                                                <option value="{{$comida->ComidaId}}">{{$comida->ComidaNombre}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                @endif 
-                            @endforeach
-                        @endif
                     </div>
-                    <div class="form-inline border-bottom border-top pb-2">
+                    <div class="form-inline pb-2">
+                        <div class="col-12 p-0">
+                            <select class="form-control" id="tipoPacienteId" name="tipoPacienteId" style="width: 100%" required>
+                                @foreach ($tiposPaciente as $tipoPaciente)
+                                    <option value="{{$tipoPaciente->TipoPacienteId}}">{{$tipoPaciente->TipoPacienteNombre}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div id="comidas" class="form-check p-2 border d-none">
+                        <div id="seleccionar_comidas_no_individuales" class="d-none">
+                        </div>
+                        <div id="seleccionar_comidas_individuales">
+                            @if ($relevamiento_por_salas->RelevamientoTurno == 'Mañana')
+                                @foreach ($tiposcomida as $tipocomida)
+                                    @if ($tipocomida->TipoComidaNombre == 'Almuerzo' || $tipocomida->TipoComidaNombre == 'Sopa Almuerzo' || $tipocomida->TipoComidaNombre == 'Merienda' || $tipocomida->TipoComidaNombre == 'Postre Almuerzo')
+                                        <div class="form-inline">
+                                            <label for="comidaid{{$tipocomida->TipoComidaId}}">{{$tipocomida->TipoComidaNombre}}</label>
+                                            <select class="form-control clsComidas" id="comidaid{{$tipocomida->TipoComidaId}}" name="comidas[]"  style="width: 100%">
+                                                @foreach ($tipocomida->comidas as $comida)
+                                                <option value="{{$comida->ComidaId}}">{{$comida->ComidaNombre}}</option>
+                                                @endforeach
+                                            </select> 
+                                        </div>
+                                    @endif
+                                @endforeach    
+                            @elseif(($relevamiento_por_salas->RelevamientoTurno == 'Tarde'))
+                                @foreach ($tiposcomida as $tipocomida)
+                                    @if ($tipocomida->TipoComidaNombre == 'Cena' || $tipocomida->TipoComidaNombre == 'Sopa Cena' || $tipocomida->TipoComidaNombre == 'Desayuno' || $tipocomida->TipoComidaNombre == 'Postre Cena')
+                                        <div class="form-inline">
+                                            <label for="comidaid{{$tipocomida->TipoComidaId}}">{{$tipocomida->TipoComidaNombre}}</label>
+                                            <select class="form-control clsComidas" id="comidaid{{$tipocomida->TipoComidaId}}" name="comidas[]"  style="width: 100%">
+                                                @foreach ($tipocomida->comidas as $comida)
+                                                    <option value="{{$comida->ComidaId}}">{{$comida->ComidaNombre}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    @endif 
+                                @endforeach
+                            @endif
+                        </div>
+                    </div>
+                    <div class="form-inline border-bottom border-top pb-2 pt-2">
                         <label for="colacion">Colación</label>
                         <select class="form-control" id="colacion" name="colacion" style="width: 100%">
                             @foreach ($colaciones as $colacion)
@@ -201,12 +199,6 @@
                         <input class="form-check-input" type="checkbox" value="1" id="vajilladescartable" name="vajilladescartable">
                         <label class="form-check-label" for="vajilladescartable">
                             Vajilla Descartable
-                        </label>
-                    </div>
-                    <div class="form-check mt-3">
-                        <input class="form-check-input" type="checkbox" value="1" id="agregado" name="agregado">
-                        <label class="form-check-label" for="agregado">
-                            Agregado
                         </label>
                     </div>
                 </div>

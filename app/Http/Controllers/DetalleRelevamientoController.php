@@ -23,8 +23,11 @@ class DetalleRelevamientoController extends Controller
     public function create()
     { }
 
-    public function store(Request $request)//request: relevamientoPorSalaId, paciente, cama, diagnostico, observaciones, menu, tipopaciente, acompaniante, vajilladescartable, user, comidas[], colacion
+    public function store(Request $request)//request: relevamientoPorSalaId,paciente_modo_carga , paciente, paciente_nombre, paciente_apellido, paciente_dni, cama, diagnostico, observaciones, menu, tipopaciente, acompaniante, vajilladescartable, user, comidas[], colacion
     {
+        if($request->get('paciente_modo_carga') == 'add_new'){
+            $this->set_paciente_nuevo($request->get('paciente_nombre'), $request->get('paciente_apellido'), $request->get('paciente_dni'));
+        }
         $para_acompaniante = 0;
         $relevamientoPorSala = RelevamientoPorSala::findOrFail($request->get('relevamientoPorSalaId'));
         if($relevamientoPorSala){
@@ -41,7 +44,7 @@ class DetalleRelevamientoController extends Controller
             //si es Individual uso las comidas seleccionadas en el crud.
             $comidas = $request->get('comidas');
         }
-
+        
         //sumo y seteo cantidad de comidas en el relevamiento actual.
         foreach ($comidas as $comida) {
             $this->setComidaPorRelevamiento($comida,$detalleRelevamiento->DetalleRelevamientoId,$relevamientoPorSala->RelevamientoId,$para_acompaniante);
@@ -92,7 +95,6 @@ class DetalleRelevamientoController extends Controller
                     'dr.DetalleRelevamientoDiagnostico',
                     'dr.DetalleRelevamientoAcompaniante',
                     'dr.DetalleRelevamientoVajillaDescartable',
-                    'dr.DetalleRelevamientoAgregado',
                     'dr.DetalleRelevamientoEstado','dr.DetalleRelevamientoObservaciones',
                     'dr.DetalleRelevamientoColacion',
                     'm.MenuNombre','m.MenuId',
@@ -120,7 +122,6 @@ class DetalleRelevamientoController extends Controller
                         'dr.DetalleRelevamientoDiagnostico',
                         'dr.DetalleRelevamientoAcompaniante',
                         'dr.DetalleRelevamientoVajillaDescartable',
-                        'dr.DetalleRelevamientoAgregado',
                         'dr.DetalleRelevamientoEstado','dr.DetalleRelevamientoObservaciones',
                         'dr.DetalleRelevamientoColacion',
                         'm.MenuNombre','m.MenuId',
@@ -155,7 +156,6 @@ class DetalleRelevamientoController extends Controller
                             'dr.DetalleRelevamientoDiagnostico',
                             'dr.DetalleRelevamientoAcompaniante',
                             'dr.DetalleRelevamientoVajillaDescartable',
-                            'dr.DetalleRelevamientoAgregado',
                             'dr.DetalleRelevamientoEstado','dr.DetalleRelevamientoObservaciones',
                             'dr.DetalleRelevamientoColacion',
                             'm.MenuNombre','m.MenuId',
@@ -181,7 +181,6 @@ class DetalleRelevamientoController extends Controller
                         'dr.DetalleRelevamientoDiagnostico',
                         'dr.DetalleRelevamientoAcompaniante',
                         'dr.DetalleRelevamientoVajillaDescartable',
-                        'dr.DetalleRelevamientoAgregado',
                         'dr.DetalleRelevamientoEstado','dr.DetalleRelevamientoObservaciones',
                         'dr.DetalleRelevamientoColacion',
                         'm.MenuNombre','m.MenuId',
@@ -205,7 +204,9 @@ class DetalleRelevamientoController extends Controller
 
     public function update(Request $request, $id)//request: relevamiento, paciente, cama, diagnostico, observaciones, menu, tipopaciente, acompaniante, vajilladescartable, user, comidas[], colacion
     {
-        // dd($id);
+        if($request->get('paciente_modo_carga') == 'add_new'){
+            $this->set_paciente_nuevo($request->get('paciente_nombre'), $request->get('paciente_apellido'), $request->get('paciente_dni'));
+        }
         $para_acompaniante = 0;
         $relevamientoPorSala = RelevamientoPorSala::findOrFail($request->get('relevamientoPorSalaId'));
         if($relevamientoPorSala){
@@ -239,7 +240,6 @@ class DetalleRelevamientoController extends Controller
             //si es Individual uso las comidas seleccionadas en el crud.
             $comidas = $request->get('comidas');
         }
-
         //sumo y seteo cantidad de comidas en el relevamiento actual.
         foreach ($comidas as $comida) {
             $this->setComidaPorRelevamiento($comida,$detalleRelevamiento->DetalleRelevamientoId,$relevamientoPorSala->RelevamientoPorSalaId,$para_acompaniante);
@@ -302,12 +302,11 @@ class DetalleRelevamientoController extends Controller
         ->get();
 
         $comidas = json_decode($comidas,true);
-
         return $comidas;
     }
 
     private function setComidaPorRelevamiento($comida,$detalleRelevamientoId,$relevamientoId,$para_acompaniante){
-        if($comida != null){
+        if($comida != null && $comida['ComidaId'] != null){
             $detRelevamientoPorComida = new DetRelevamientoPorComida;
             $detRelevamientoPorComida->DetalleRelevamientoId = $detalleRelevamientoId;
             $detRelevamientoPorComida->ComidaId = $comida['ComidaId'];
@@ -316,15 +315,16 @@ class DetalleRelevamientoController extends Controller
         }
     }
 
-    private function deleteComidaPorRelevamiento($comida,$relevamientoId){
-
-    }
-
     private function setDetalleRelevamiento($request){
         $detalleRelevamiento = new DetalleRelevamiento;
         $detalleRelevamiento->DetalleRelevamientoEstado = 1;
         $detalleRelevamiento->RelevamientoPorSalaId = $request['relevamientoPorSalaId'];
-        $paciente = Paciente::where('PacienteCuil',$request['paciente'])->where('PacienteEstado','!=',-1)->first();
+        
+        if($request['paciente'] != null){
+            $paciente = Paciente::where('PacienteCuil',$request['paciente'])->where('PacienteEstado','!=',-1)->first();
+        }else{
+            $paciente = Paciente::where('PacienteCuil',$request['paciente_dni'])->where('PacienteEstado','!=',-1)->first();
+        }
         $detalleRelevamiento->PacienteId = $paciente->PacienteId;
         $detalleRelevamiento->CamaId = $request['cama'];
         $detalleRelevamiento->DetalleRelevamientoDiagnostico = $request['diagnostico'];
@@ -340,11 +340,6 @@ class DetalleRelevamientoController extends Controller
             $detalleRelevamiento->DetalleRelevamientoVajillaDescartable = 1;
         }else{
             $detalleRelevamiento->DetalleRelevamientoVajillaDescartable = 0;
-        }
-        if($request['agregado'] == 'true'){
-            $detalleRelevamiento->DetalleRelevamientoAgregado = 1;
-        }else{
-            $detalleRelevamiento->DetalleRelevamientoAgregado = 0;
         }
         $detalleRelevamiento->UserId = $request['user'];
         $detalleRelevamiento->DetalleRelevamientoColacion = $request['colacion'];
@@ -367,5 +362,15 @@ class DetalleRelevamientoController extends Controller
         }
         
         return $comidas;
+    }
+
+    private function set_paciente_nuevo($nombre,$apellido,$dni){
+        $paciente = new Paciente;
+        $paciente->PacienteNombre = $nombre;
+        $paciente->PacienteApellido = $apellido;
+        $paciente->PacienteCuil = $dni;
+        $paciente->PacienteEstado = 1;
+        $paciente->save();
+        sleep(1); // tiempo para que se cree el paciente correctamente
     }
 }
