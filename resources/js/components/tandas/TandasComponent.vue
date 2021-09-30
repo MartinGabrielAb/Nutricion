@@ -51,46 +51,49 @@
         </div>
         <!-- Agregar tanda -->
         <div class="row">
-            <div class="col-lg-12">
+            <div class="col">
                 <div class="card" >
                     <div class="card-body">
-                        <div class="row text-sm mb-4">
+                        <div class="row text-sm mb-3">
                             <div class="col">Nueva tanda</div>
-                            <div class="col">
+                            <div class="col ">
+                                <textarea class="w-100" rows="1"  v-model="observacion" placeholder="Observaciones"></textarea>
+                            </div>
+                            <div class="col text-right">
                                 <button type="button" class="btn btn-sm btn-outline-primary"  @click="getCongelador()" data-toggle="modal"  data-target="#modalCongelador">
                                     Ver congelador
                                 </button>
-                                <textarea v-model="observacion" placeholder="Observaciones"></textarea>
                             </div>
                         </div>
-                        <div class="row text-sm">
-                            <div class="col">
+                        <hr>
+                        <div class="row text-sm ">
+                            <div class="col input-group ">
                                 <select class="w-100" v-model="comidaSelected">
                                     <option v-for="comida in allComidas" :key="comida.ComidaId" :value="comida">
                                         {{ comida.ComidaNombre }}
                                     </option>
                                 </select>
                             </div>
-                            <div class="col">
+                            <div class="col input-group">
                                 <input class="mr-3" v-model="cantidadNormal" placeholder="Porciones a preparar" type="number">
                                 <input class="mr-3" v-model="cantidadCongelador" placeholder="Porciones del congelador" type="number">
-                                <button type="button" class="btn btn-sm btn-outline-primary" @click="addComida()">
+                                <button  type="button" class=" btn btn-sm btn-outline-primary" @click="addComida()">
                                    +
                                 </button>
                             </div>                           
                         </div>
                         <hr>
-                        <div class="row"  v-if="comidasNuevas.length > 0">
+                        <div class="row "  v-if="comidasNuevas.length > 0">
                             <div class="col">Comida</div>
-                            <div class="col">Cantidad a preparar</div>
-                            <div class="col">Cantidad del congelador</div>
+                            <div class="col text-center">Cantidad a preparar</div>
+                            <div class="col text-center">Cantidad del congelador</div>
                             <div class="col"></div>
                         </div>
                         <div class="row text-sm" v-for="comidaNueva in comidasNuevas" :key="comidaNueva.id" :value="comidaNueva.id">
                             <div class="col">{{comidaNueva.nombre}}</div>
-                            <div class="col">{{comidaNueva.cantidadNormal}}</div>
-                            <div class="col">{{comidaNueva.cantidadCongelador}}</div>
-                            <div class="col">
+                            <div class="col text-center">{{comidaNueva.cantidadNormal}}</div>
+                            <div class="col text-center">{{comidaNueva.cantidadCongelador}}</div>
+                            <div class="col text-center">
                                 <button type="button btn-sm" class="btn btn-sm btn-outline-danger" @click="removeComida(comidaNueva.id)">
                                    x
                                 </button>
@@ -105,10 +108,16 @@
                         </div>
                     </div>
                     <button type="button btn-sm" class="btn btn-sm btn-outline-primary" @click="finalizar()">
-                        Finalizar
+                        Finalizar relevamiento
                     </button>
                 </div>
             </div>
+        </div>
+        <div class="card" v-if="listErrores">
+                <h5 class="text-danger">Errores:</h5>
+                <ul v-for="error in listErrores" :key="error.id">
+                    <li class="text-danger">No posee {{error.cantidadNormal}} porciones de {{error.nombre}}</li>
+                </ul>
         </div>
         <!-- Modal para ver las tandas enviadas -->
         <div class="modal fade" id="modalTandasEnviadas" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">

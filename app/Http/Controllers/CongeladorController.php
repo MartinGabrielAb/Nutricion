@@ -15,12 +15,11 @@ class CongeladorController extends Controller
                         ->where('c.Porciones','>',0)
                         ->join('comida as com','com.ComidaId','c.ComidaId')
                         ->get();
-            if($congelador){
             return datatables()->of($congelador)
                         ->addColumn('btn','congelador/actions')
                         ->rawColumns(['btn'])
                         ->toJson();
-            }
+        
         }
         # Ejecuta si la petición NO es a través de AJAX.
         $comidas = DB::table('comida as c')
@@ -36,7 +35,7 @@ class CongeladorController extends Controller
 
     public function store(Request $request)
     {
-        
+
     }
     public function show($id, Request $request)
     {   

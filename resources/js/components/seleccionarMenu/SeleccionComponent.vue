@@ -35,6 +35,7 @@
                         </div>
                         <div class="col text-center">
                             {{detalle.cantidad}}
+                            <!-- <input type="number" value="" id="cantidades[]">                              -->
                         </div>
                     </div>
                 </div>
@@ -73,7 +74,7 @@
                             </div>
                             <div class="row text-center">
                                 <div class="col">
-                                    <button type="button"  @click="finalizar()" class="btn btn-primary mt-3">Finalizar selección (Falta controlar stock)</button>
+                                    <button type="button"  @click="finalizar()" class="btn btn-primary mt-3">Finalizar selección</button>
 
                                 </div>
                             </div>
@@ -84,7 +85,7 @@
             </div>
             <div class="card" v-if="listErrores">
                 <h5 class="text-danger">Errores:</h5>
-                <ul v-for="error in listErrores" :key="error[0].ComidaId">
+                <ul v-for="error in listErrores" :key="error.ComidaId">
                     <li class="text-danger">No posee {{error[1]}} porciones de {{error[0].ComidaNombre}}</li>
                 </ul>
             </div>

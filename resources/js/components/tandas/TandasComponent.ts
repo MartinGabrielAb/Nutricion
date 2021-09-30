@@ -4,7 +4,7 @@ export default {
     props : ['id'],
     data:function(){ 
         return {
-            
+            listErrores :[],
             comidasRelevadas:[],
             comidasEnProgreso:[],
             comidasAux:[],
@@ -38,9 +38,14 @@ export default {
                         comidas : this.comidasNuevas,
                     }
                 }).then(response =>{
-                    this.actualizarComidas();
-                    this.comidasNuevas = [];
-                    alert('Tanda agregada correctamente');
+                    if(response.data.error){
+                        this.listErrores = response.data.error;
+                    }
+                    else{
+                        this.actualizarComidas();
+                        this.comidasNuevas = [];
+                        alert('Tanda agregada correctamente');
+                    }
                 })
                 .catch(error => { console.log("Error comidas relevadas");})
             }
