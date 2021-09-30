@@ -4,7 +4,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\UnidadMedida;
+use App\Alimento;
+use App\AlimentoPorProveedor;
 
+use App\HistorialDetalleComida;
+use App\HistorialDetalleAlimento;
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
@@ -36,25 +40,32 @@ Route::get('/getRelevamientoPorMenu/{id}', function ($id) {
 						->get();
 	$relevamiento[0] = ['id' => 0,'nombre' => "Acompañantes",'cantidad' => 0];
 	foreach ($tiposPaciente as $tipoPaciente){
-		$relevamiento[$tipoPaciente->TipoPacienteId] = [
-			'id' => $tipoPaciente->TipoPacienteId,
-			'nombre' => $tipoPaciente->TipoPacienteNombre,
-			'cantidad' => 0
-		];
+		//No creo los individuales
+		if($tipoPaciente->TipoPacienteNombre != 'Individual'){
+			$relevamiento[$tipoPaciente->TipoPacienteId] = [
+				'id' => $tipoPaciente->TipoPacienteId,
+				'nombre' => $tipoPaciente->TipoPacienteNombre,
+				'cantidad' => 0
+			];
+		}
 	}
 	$relevamientosPorSala = DB::table('relevamientoporsala')
 							->where('RelevamientoId',$id)
 							->where('RelevamientoPorSalaEstado',1)
 							->get();
 	foreach ($relevamientosPorSala as $relevamientoPorSala){
-		$detallesRelevamiento = DB::table('detallerelevamiento')
+		$detallesRelevamiento = DB::table('detallerelevamiento as dr')
 								->where('RelevamientoPorSalaId',$relevamientoPorSala->RelevamientoPorSalaId)
 								->where('DetalleRelevamientoEstado',1)
+								->join('tipopaciente as tp','tp.TipoPacienteId','dr.TipoPacienteId')
 								->get();
 		foreach($detallesRelevamiento as $detalle){
 			//agrego si tiene acompañante y sumo el tipo de paciente
 			$relevamiento[0]['cantidad'] += $detalle->DetalleRelevamientoAcompaniante;
-			$relevamiento[$detalle->TipoPacienteId]['cantidad'] += 1 ;
+			//Los individuales no los sumo
+			if($detalle->TipoPacienteNombre != 'Individual'){
+				$relevamiento[$detalle->TipoPacienteId]['cantidad'] += 1 ;
+			}
 		}
 	}
 	return response($relevamiento);
@@ -230,95 +241,13 @@ Route::get('/getTandasRelevamiento/{id}', function ($id) {
 	return response($tandas);
 });
 
-Route::post('/saveTanda/{id}', function ($id, Request $request) {
-	$observacion = $request['params']['observacion'];
-	$comidas = $request['params']['comidas'];
-	$temp_relev = DB::table('temp_relevamiento')
-						->where('RelevamientoId',$id)
-						->first();
-	$temp_tanda = DB::table('temp_tanda')
-					->where('TempRelevamientoId',$temp_relev->TempRelevamientoId)
-					->orderBy('TandaNumero','desc')->first();
-	$num_tanda = $temp_tanda->TandaNumero+1;
-	$id_tanda = DB::table('temp_tanda')->insertGetId(
-		[
-			'TempRelevamientoId' => $temp_relev->TempRelevamientoId,
-			'TandaNumero' => $num_tanda,
-			'TandaObservacion' => $observacion,
-		]
-	);
-	foreach ($comidas as $comida){
-		//FALTA: DESCONTAR STOCK y congelador------------------------------------------------------
-		DB::table('temp_comida')->insert(
-			[
-				'TempTandaId' => $id_tanda,
-				'ComidaId' => $comida['id'],
-				'CantidadNormal'=>$comida['cantidadNormal'],
-				'CantidadCongelada'=>$comida['cantidadCongelador']
-			]
-		);
-	}
-	return true;
-	
-});
-
-Route::post('/saveCongelador',function(Request $request){
-	
+Route::post('/saveCongelador',function(Request $request){	
 });
 Route::post('/finalizar/{id}',function($id){
-	$comidas = array();
-	$temp_relev = DB::table('temp_relevamiento as tr')
-					->where('tr.RelevamientoId',$id)
-					->first();
-	$temp_tanda = DB::table('temp_tanda')
-					->where('TempRelevamientoId',$temp_relev->TempRelevamientoId)
-					->get();
-
-	foreach($temp_tanda as $tanda){
-		$temp_comidas = DB::table('temp_comida as tc')
-							->where('TempTandaId',$tanda->TempTandaId)
-							->join('comida as c','c.ComidaId','tc.ComidaId')
-							->get();
-		foreach($temp_comidas as $temp_comida){
-				$encontrado = -1;
-				foreach($comidas as $index => $comida){
-					if($temp_comida->ComidaId == $comida['id']){
-						$encontrado = $index;
-						break;
-					}
-				}
-				if($encontrado==-1){
-					array_push($comidas,[
-						'id' => $temp_comida->ComidaId,
-						'nombre' => $temp_comida->ComidaNombre,
-						'cantidadNormal' => $temp_comida->CantidadNormal,
-						'cantidadCongelada' => $temp_comida->CantidadCongelada
-					]);
-				}else{
-					$comidas[$encontrado]['cantidadNormal'] += $temp_comida->CantidadNormal;
-					$comidas[$encontrado]['cantidadCongelada'] += $temp_comida->CantidadCongelada;
-				}
-		}
-	}
-	$historialId = DB::table('historial')->insertGetId(
-		[	
-			'RelevamientoId' => $id,
-			'HistorialEstado'=>1
-		]
-	);
-	foreach($comidas as $comida){
-		DB::table('historialdetallecomida')->insert(
-			[	
-				'HistorialId' => $historialId,
-				'ComidaNombre'=>$comida['nombre'],
-				'Porciones' => $comida['cantidadNormal'],
-				'Congelador' => $comida['cantidadCongelada']
-			]
-		);
-	}
 	DB::table('relevamiento')->where('RelevamientoId',$id)
 							->update(['RelevamientoControlado' => 1]);
-	return $historialId;
+	$historial = DB::table('historial')->where('RelevamientoId',$id)->first();
+	return $historial->HistorialId;
 });
 
 Route::get('/getRelevamientosSinMenuAsignado', function () {
@@ -521,9 +450,15 @@ Route::post('seleccionarMenu',function(Request $request){
 		$relevamientoAnt = $request['params']['relevamientoAnt'];
 		$relevamientoNuevo = $request['params']['relevamientoNuevo'];
 		$menuId = $request['params']['menu'];
-		$relevamiento = DB::table('relevamiento')
-							->where('RelevamientoId',$relevamientoNuevo)
-							->update(['RelevamientoMenu' => $menuId]);
+		DB::beginTransaction();
+		$noHabiaStock = array();
+		//creo el nuevo historial
+		$historialId = DB::table('historial')->insertGetId(
+			['RelevamientoId' => $relevamientoNuevo]
+		);
+		DB::table('relevamiento')
+				->where('RelevamientoId',$relevamientoNuevo)
+				->update(['RelevamientoMenu' => $menuId]);
 		$relevamiento =  DB::table('relevamiento')
 								->where('RelevamientoId',$relevamientoNuevo)
 								->first();
@@ -541,6 +476,7 @@ Route::post('seleccionarMenu',function(Request $request){
 					$tipoNormal = DB::table('tipopaciente')
 											->where('TipoPacienteNombre','Normal')
 											->first();
+					$tipoPaciente['nombre'] = $tipoNormal->TipoPacienteNombre;
 					$tipoPaciente['id'] = $tipoNormal->TipoPacienteId;
 				}
 				$detalle = DB::table('detallemenutipopaciente')
@@ -551,54 +487,160 @@ Route::post('seleccionarMenu',function(Request $request){
 					//HARDCODE TIPOSCOMIDA
 					//SI ES RELEVAMIENTO DE LA MAÑANA TOMA SOLO LOS PRIMEROS TIPOS DE COMIDA
 					if($relevamiento->RelevamientoTurno == 'Mañana'){
-						$comidas = DB::table('comidaportipopaciente')
+						$comidas = DB::table('comidaportipopaciente as ctp')
 						->where('DetalleMenuTipoPacienteId',$detalle->DetalleMenuTipoPacienteId)
+						->join('comida as com','ctp.ComidaId','com.ComidaId')
 						->where('ComidaPorTipoPacientePrincipal',1)
-						->where('TipoComidaId',1)
-						->orWhere('TipoComidaId',2)
-						->orWhere('TipoComidaId',3)
-						->orWhere('TipoComidaId',4)
+						->where(function($q)  {
+                            $q->where('TipoComidaId', 1)
+                            ->orWhere('TipoComidaId', 2)
+							->orWhere('TipoComidaId', 3)
+							->orWhere('TipoComidaId', 4);
+                     		})
 						->get();
 					}else{
 					//SI ES RELEVAMIENTO DE LA TARDE TOMA LOS OTROS TIPOS DE COMIDA(LA COLACION NO ES CONTEMPLADA)
-						$comidas = DB::table('comidaportipopaciente')
+						$comidas = DB::table('comidaportipopaciente as ctp')
 						->where('DetalleMenuTipoPacienteId',$detalle->DetalleMenuTipoPacienteId)
 						->where('ComidaPorTipoPacientePrincipal',1)
-						->where('TipoComidaId',5)
-						->orWhere('TipoComidaId',6)
-						->orWhere('TipoComidaId',7)
-						->orWhere('TipoComidaId',8)
+						->join('comida as com','ctp.ComidaId','com.ComidaId')
+						->where(function($q)  {
+                            $q->where('TipoComidaId', 5)
+                            ->orWhere('TipoComidaId', 6)
+							->orWhere('TipoComidaId', 7)
+							->orWhere('TipoComidaId', 8);
+                     		})
 						->get();
 					}
 					foreach($comidas as $comida){
-						$tempComida = DB::table('temp_comida')
-										->where('TempTandaId',$tempTandaId)
-										->where('ComidaId',$comida->ComidaId)
-										->first();
-						if($tempComida==null){
-							DB::table('temp_comida')->insert(
-								[
-									'TempTandaId' => $tempTandaId,
-									'ComidaId' => $comida->ComidaId,
-									'CantidadNormal'=>$tipoPaciente['cantidad']
-								]
-							);
+						$historialDetComida = DB::table('historialdetallecomida')
+								->where('HistorialId',$historialId)
+								->where('ComidaId', $comida->ComidaId)
+								->first();
+						if($historialDetComida){
+							DB::table('historialdetallecomida')
+												->where('HistorialId',$historialId)
+												->where('ComidaId',$comida->ComidaId)
+												->increment('Porciones',$tipoPaciente['cantidad']);
+							$historialDetComida = DB::table('historialdetallecomida')
+												->where('HistorialId',$historialId)
+												->where('ComidaId',$comida->ComidaId)
+												->first();
 						}else{
-							DB::table('temp_comida')
-									->where('TempTandaId', $tempTandaId)
+							$historialDetComida = new HistorialDetalleComida();
+							$historialDetComida->HistorialId = $historialId;
+							$historialDetComida->ComidaId = $comida->ComidaId; 
+							$historialDetComida->ComidaNombre = $comida->ComidaNombre; 
+							$historialDetComida->Porciones = $tipoPaciente['cantidad'];
+							$historialDetComida->save();
+						}	
+						$alcanzo = descontarStock($comida->ComidaId,$tipoPaciente['cantidad'],$historialDetComida->HistorialDetalleComidaId);
+						if(!$alcanzo) {
+							array_push($noHabiaStock,$tipoPaciente);
+							break;
+						}else{
+							$tempComida = DB::table('temp_comida')
+									->where('TempTandaId',$tempTandaId)
 									->where('ComidaId',$comida->ComidaId)
-									->increment('CantidadNormal', $tipoPaciente['cantidad']);
+									->first();
+							if(!$tempComida){
+								DB::table('temp_comida')->insert([
+										'TempTandaId' => $tempTandaId,
+										'ComidaId' => $comida->ComidaId,
+										'CantidadNormal'=>$tipoPaciente['cantidad']
+									]
+								);
+							}else{
+								DB::table('temp_comida')
+										->where('TempTandaId', $tempTandaId)
+										->where('ComidaId',$comida->ComidaId)
+										->increment('CantidadNormal', $tipoPaciente['cantidad']);
+							}
 						}
 					}
 				}
 			}
 		}
-		return true;
+		if(count($noHabiaStock) == 0){
+			DB::commit();
+			return true;							
+		}else{
+			DB::rollback();
+			return response()->json(['error'=>$noHabiaStock]);;
+		}
 	} catch (Exception $e) {
 		return $e;
 	}
 });
-
+Route::post('/saveTanda/{id}', function ($id, Request $request) {
+	$observacion = $request['params']['observacion'];
+	$comidas = $request['params']['comidas'];
+	DB::beginTransaction();
+	$noHabiaStock = array();
+	$historial = DB::table('historial')
+					->where('RelevamientoId',$id)
+					->first();
+	$temp_relev = DB::table('temp_relevamiento')
+						->where('RelevamientoId',$id)
+						->first();
+	$temp_tanda = DB::table('temp_tanda')
+					->where('TempRelevamientoId',$temp_relev->TempRelevamientoId)
+					->orderBy('TandaNumero','desc')->first();
+	$num_tanda = $temp_tanda->TandaNumero+1;
+	$id_tanda = DB::table('temp_tanda')->insertGetId([
+			'TempRelevamientoId' => $temp_relev->TempRelevamientoId,
+			'TandaNumero' => $num_tanda,
+			'TandaObservacion' => $observacion,
+		]
+	);
+	
+	foreach ($comidas as $comida){
+		$comida_aux = DB::table('comida')->where('ComidaId',$comida['id'])->first();
+		$comida['nombre'] = $comida_aux->ComidaNombre;
+		$historialDetComida = DB::table('historialdetallecomida')
+								->where('HistorialId',$historial->HistorialId)
+								->where('ComidaId',$comida['id'])
+								->first();
+		if($historialDetComida){
+			DB::table('historialdetallecomida')
+								->where('HistorialId',$historial->HistorialId)
+								->where('ComidaId',$comida['id'])
+								->increment('Porciones', $comida['cantidadNormal']);
+			$historialDetComida = DB::table('historialdetallecomida')
+								->where('HistorialId',$historial->HistorialId)
+								->where('ComidaId',$comida['id'])
+								->first();
+			
+		}else{
+			$historialDetComida = new HistorialDetalleComida();
+			$historialDetComida->HistorialId = $historial->HistorialId;
+			$historialDetComida->ComidaId = $comida_aux->ComidaId; 
+			$historialDetComida->ComidaNombre = $comida_aux->ComidaNombre; 
+			$historialDetComida->Porciones = $comida['cantidadNormal'];
+			$historialDetComida->save();
+		}
+		$alcanzo = descontarStock($comida_aux->ComidaId,$comida['cantidadNormal'],$historialDetComida->HistorialDetalleComidaId);
+		//controlar del congelador!!!!!!!!
+		if(!$alcanzo){
+			array_push($noHabiaStock,$comida);
+		}else{
+			DB::table('temp_comida')->insert([
+				'TempTandaId' => $id_tanda,
+				'ComidaId' => $comida['id'],
+				'CantidadNormal'=>$comida['cantidadNormal'],
+				'CantidadCongelada'=>$comida['cantidadCongelador']
+			]);
+		}
+	}
+	if(count($noHabiaStock) == 0){
+		DB::commit();
+		return true;							
+	}else{
+		DB::rollback();
+		return response()->json(['error'=>$noHabiaStock]);;
+	}
+	
+});
 Route::get('getMenu/{id}',function($id){
 	$menu = DB::table('menu')
 				->where('MenuId',$id)	
@@ -606,3 +648,69 @@ Route::get('getMenu/{id}',function($id){
 				->first();
 	return response(array($menu));
 });
+
+ //retorna true si el stock alcanzo para esa comida
+function descontarStock($comidaId , $porciones,$historialDetComidaId){
+	$alimentosPorComida = DB::table('alimentoporcomida as apc')
+				->where('ComidaId',$comidaId)
+				->join('alimento as a','a.AlimentoId','apc.AlimentoId')
+				->join('unidadmedida as u','u.UnidadMedidaId','apc.UnidadMedidaId')
+				->where('AlimentoPorComidaEstado',1)
+				->get();
+	foreach($alimentosPorComida as $alimentoPorComida){
+		$historialDetAlimento = new HistorialDetalleAlimento();
+		$historialDetAlimento->HistorialDetalleComidaId = $historialDetComidaId;
+		$historialDetAlimento->AlimentoNombre = $alimentoPorComida->AlimentoNombre;
+		$historialDetAlimento->UnidadMedida = $alimentoPorComida->UnidadMedidaNombre;
+		$historialDetAlimento->Cantidad = $alimentoPorComida->AlimentoPorComidaCantidadNeto;
+		$alimento = Alimento::where('AlimentoId',$alimentoPorComida->AlimentoId)
+						->where('AlimentoEstado',1)
+						->first();
+		//Controlo la unidad de medida
+		if($alimentoPorComida->UnidadMedidaId == $alimento->UnidadMedidaId ){
+			$cantidad = $alimentoPorComida->AlimentoPorComidaCantidadNeto * $porciones;
+		}else{
+			$cantidad = $alimentoPorComida->AlimentoPorComidaCantidadNeto/1000 * $porciones;
+		}
+		//Si no alcanza pongo el stock en 0 (para que las comidas siguientes no cuenten con este alimento,el rollback lo va a volver a su estado anterior)
+		if($cantidad > $alimento->AlimentoCantidadTotal){                                           
+			$alimento->AlimentoCantidadTotal = 0; 
+			$alimento->update();                    
+			return false;
+		}//Si alcanza hago la logica para restar de manera correcta de alimentoporproveedor
+		else{
+			$alimentoPorProveedor = AlimentoPorProveedor::where('AlimentoId',$alimento->AlimentoId)
+										->orderBy('AlimentoPorProveedorVencimiento','ASC')
+										->get();
+			$costo = 0;
+			foreach($alimentoPorProveedor as $alimentoPorProveedor){
+				if($cantidad == 0){
+
+					break;
+				}
+				$disponible = $alimentoPorProveedor->AlimentoPorProveedorCantidad-$alimentoPorProveedor->AlimentoPorProveedorCantidadUsada;
+				$diferencia = $cantidad - $disponible;
+				//Si es mayor a 0 es porque no me alcanzo lo de ese proveedor
+				if($diferencia>=0){
+					$costo += $disponible * $alimento->AlimentoPorProveedorCosto;
+					$alimento->AlimentoCantidadTotal -= $disponible;
+					$cantidad = $diferencia;
+					$alimentoPorProveedor->AlimentoPorProveedorCantidadUsada += $disponible;
+					$alimentoPorProveedor->AlimentoPorProveedorEstado = 0;
+				}else{
+					$costo += $cantidad * $alimento->AlimentoPorProveedorCosto;
+					$alimento->AlimentoCantidadTotal -=$cantidad;
+					$alimentoPorProveedor->AlimentoPorProveedorCantidadUsada += $cantidad;
+					$cantidad = 0;
+				}
+			   
+				$alimentoPorProveedor->update();
+				$alimento->update();
+			}
+			$historialDetAlimento->CostoTotal = $costo;
+			$historialDetAlimento->save();
+			
+			return true;
+		}
+	} 
+}

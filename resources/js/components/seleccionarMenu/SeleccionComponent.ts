@@ -27,6 +27,10 @@ export default {
             }).catch(error => { console.log("Error menues");})
     },
     methods :{
+            // inputChange(){
+            // let inputValue = (document.getElementById(`detalle${this.relevamientoAnterior[0].id}`) as HTMLInputElement);
+            // },
+
             getRelevamiento(){
                 axios.get('/api/getRelevamientoPorMenu/'+this.relevamientoAnteriorId)
                 .then(response =>{
@@ -37,7 +41,21 @@ export default {
         
 
             finalizar(){
-               if(window.confirm("Una vez terminado no podra hacer cambios. ¿Desea finalizar?")){
+                // var aux_anterior = {};
+                // for (const property in this.relevamientoAnterior) {
+                //     console.log(`${property}: ${this.relevamientoAnterior[property].cantidad}`);
+                //     let input = document.getElementsByName(`detalle${this.relevamientoAnterior[property].id}`);
+                //     console.log();
+                //     aux_anterior[`${property}`] = {
+                //         id : `${this.relevamientoAnterior[property].id}`,
+                //         cantidad : document.getElementById(`detalle${this.relevamientoAnterior[property].id}`),
+                //         nombre : `${this.relevamientoAnterior[property].nombre}`
+                //     }
+                // }
+                  
+                // console.log(this.relevamientoAnterior);
+                // return;
+                if(window.confirm("Una vez terminado no podra hacer cambios. ¿Desea finalizar?")){
                 axios.post('/api/seleccionarMenu',{params:{
                     relevamientoAnt : this.relevamientoAnterior,
                     relevamientoNuevo: this.relevamientoSelected,
