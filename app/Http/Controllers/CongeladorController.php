@@ -12,7 +12,7 @@ class CongeladorController extends Controller
         if($request->ajax()){
             # Ejecuta si la petición es a través de AJAX.
             $congelador = DB::table('congelador as c')
-                        ->where('Porciones','>',0)
+                        ->where('c.Porciones','>',0)
                         ->join('comida as com','com.ComidaId','c.ComidaId')
                         ->get();
             if($congelador){
@@ -23,7 +23,10 @@ class CongeladorController extends Controller
             }
         }
         # Ejecuta si la petición NO es a través de AJAX.
-        return view('congelador.principal');
+        $comidas = DB::table('comida as c')
+                     ->where('c.ComidaEstado',1)
+                     ->get();
+        return view('congelador.principal',compact('comidas'));
     }
 
     public function create($id)
@@ -32,7 +35,9 @@ class CongeladorController extends Controller
     }
 
     public function store(Request $request)
-    {}
+    {
+        
+    }
     public function show($id, Request $request)
     {   
         

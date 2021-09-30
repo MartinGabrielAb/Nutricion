@@ -25,6 +25,7 @@ class DetalleRelevamientoController extends Controller
 
     public function store(Request $request)//request: relevamientoPorSalaId,paciente_modo_carga , paciente, paciente_nombre, paciente_apellido, paciente_dni, cama, diagnostico, observaciones, menu, tipopaciente, acompaniante, vajilladescartable, user, comidas[], colacion
     {
+        $this->verificar_existencia_paciente($request->get('paciente'));
         if($request->get('paciente_modo_carga') == 'add_new'){
             $this->set_paciente_nuevo($request->get('paciente_nombre'), $request->get('paciente_apellido'), $request->get('paciente_dni'));
         }
@@ -89,7 +90,6 @@ class DetalleRelevamientoController extends Controller
             ->join('relevamientoporsala as rps','rps.RelevamientoPorSalaId','dr.RelevamientoPorSalaId')
             ->where('dr.CamaId',$request->get('camaId'))
             ->where('dr.RelevamientoPorSalaId',$request->get('relevamientoPorSalaId'))
-            ->where('dr.DetalleRelevamientoEstado','=',1)
             ->select('dr.DetalleRelevamientoId',
                     DB::raw('DATE_FORMAT(dr.updated_at, "%H:%i:%s") as DetalleRelevamientoHora'),'dr.RelevamientoPorSalaId',
                     'dr.DetalleRelevamientoDiagnostico',
@@ -116,7 +116,6 @@ class DetalleRelevamientoController extends Controller
                 ->join('menu as m','m.MenuId','dr.MenuId')
                 ->join('relevamientoporsala as rps','rps.RelevamientoPorSalaId','dr.RelevamientoPorSalaId')
                 ->where('dr.CamaId',$request->get('camaId'))
-                ->where('dr.DetalleRelevamientoEstado','=',1)
                 ->select('dr.DetalleRelevamientoId',
                         DB::raw('DATE_FORMAT(dr.updated_at, "%H:%i:%s") as DetalleRelevamientoHora'),'dr.RelevamientoPorSalaId',
                         'dr.DetalleRelevamientoDiagnostico',
@@ -216,12 +215,6 @@ class DetalleRelevamientoController extends Controller
         $detalleRelevamiento = DetalleRelevamiento::findOrFail($id);
         if($detalleRelevamiento->DetalleRelevamientoEstado == 1){
             $detalleRelevamiento->DetalleRelevamientoEstado = 0;
-            $detallesRelevamientoPorComida = DetRelevamientoPorComida::where('DetalleRelevamientoId',$detalleRelevamiento->DetalleRelevamientoId)->get();
-            if($detallesRelevamientoPorComida){
-                foreach ($detallesRelevamientoPorComida as $detalleRelevamientoPorComida) {
-                    $detalleRelevamientoPorComida->delete();
-                }
-            }
             $detalleRelevamiento->update();
         }
         //seteo el nuevo detalle de relevamiento
@@ -373,4 +366,18 @@ class DetalleRelevamientoController extends Controller
         $paciente->save();
         sleep(1); // tiempo para que se cree el paciente correctamente
     }
+
+    private function verificar_existencia_paciente($paciente_cuil){
+        $paciente = DB::table('paciente')
+                      ->where('PacienteCuil',$paciente_cuil)
+                      ->where('PacienteEstado',1)
+                      ->first();
+        if($paciente){
+            $detalle_existente = DB::table('detallerelevamiento')
+                                   ->where('PacienteId',$paciente->PacienteId)
+                                   ->where('DetalleRelevamientoEstado',1)
+                                   ->update(['DetalleRelevamientoEstado' => 0]);
+        }
+    }
+
 }

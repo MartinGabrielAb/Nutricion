@@ -71,6 +71,7 @@ $(document).ready( function () {
       menuId = $("#menu").val();
       tipopacienteId = $("#tipoPacienteId").val();
       menuportipopaciente(menuId,tipopacienteId,detallerelevamiento.DetalleRelevamientoId);
+      seleccionar_comidas();
     }else if($(this).attr('id') == 'showcomidas'){
       $("#tituloModal").text("Comidas del paciente");
       $('#modal-body').addClass('d-none');
@@ -145,7 +146,6 @@ function guardar(e){
   if(comidas.length == 0){
     comidas = null;
   }
-  console.log(comidas);
   if(id == 0){
     $.ajax({
       type:'POST',
@@ -407,7 +407,10 @@ function getDetallerelevamiento(camaid){
             </div>
           </li>
           <li class="list-group-item text-center">
-            ${(detallerelevamiento.RelevamientoPorSalaId == relevamientoPorSalaId) ? '<h5 class="text-success m-0">Revisado</h5>' : '<h5 class="text-warning m-0">Info del último relevamiento</h5>'}
+            ${(detallerelevamiento.RelevamientoPorSalaId == relevamientoPorSalaId) && (detallerelevamiento.DetalleRelevamientoEstado == 1) && (detallerelevamiento.DetalleRelevamientoControlado != 1)? '<h5 class="text-success m-0">Relevamiento Activo</h5>' : ''}
+            ${(detallerelevamiento.RelevamientoPorSalaId == relevamientoPorSalaId) && (detallerelevamiento.DetalleRelevamientoEstado == 1) && (detallerelevamiento.DetalleRelevamientoControlado == 1)? '<h5 class="text-success m-0">Relevamiento Finalizado</h5>' : ''}
+            ${(detallerelevamiento.RelevamientoPorSalaId == relevamientoPorSalaId) && (detallerelevamiento.DetalleRelevamientoEstado == 0) ? '<h5 class="text-danger m-0">Relevamiento Inactivo</h5>' : ''}
+            ${(detallerelevamiento.RelevamientoPorSalaId != relevamientoPorSalaId) ? '<h5 class="text-info m-0">Último relevamiento a esta cama</h5>' : ''}
           </li>
           <li class="list-group-item text-center">
             <h6>Paciente</h6>
@@ -483,7 +486,8 @@ function getUltimoDetRelevamiento(camaid, paciente = null){
         $('#diagnosticoId').val(detallerelevamiento.DetalleRelevamientoDiagnostico);
         $('#observacionesId').val(detallerelevamiento.DetalleRelevamientoObservaciones);
         $('#tipoPacienteId').val(detallerelevamiento.TipoPacienteId).trigger('change');
-        $('#comidas').addClass('d-none');
+        // $('#comidas').addClass('d-none');
+        seleccionar_comidas();
         if(detallerelevamiento.DetalleRelevamientoAcompaniante == 1){
           $( "#acompanianteId" ).prop( "checked", true );
         }else{

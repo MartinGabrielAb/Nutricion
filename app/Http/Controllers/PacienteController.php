@@ -60,7 +60,8 @@ class PacienteController extends Controller
             try{
                 $detallesRelevamiento = 
                     DB::table('detallerelevamiento as dr')
-                    ->join('relevamiento as re','re.RelevamientoId','dr.RelevamientoId')
+                    ->join('relevamientoporsala as rps','rps.RelevamientoPorSalaId','dr.RelevamientoPorSalaId')
+                    ->join('relevamiento as re','re.RelevamientoId','rps.RelevamientoId')
                     ->join('paciente as pa','pa.PacienteId','dr.PacienteId')
                     ->join('tipopaciente as tp','tp.TipoPacienteId','dr.TipoPacienteId')
                     ->join('cama as c','c.CamaId','dr.CamaId')
