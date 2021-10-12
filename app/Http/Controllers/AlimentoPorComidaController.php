@@ -2,33 +2,37 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\AlimentoPorComida;
 use App\Comida;
-use App\UnidadMedida;
 use App\Alimento;
-use App\ComidaPorTipoPaciente;
-use App\DetalleMenuTipoPaciente;
-use App\Menu;
+use App\UnidadMedida;
+use App\AlimentoPorComida;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\AlimentoPorComidaRequest;
-use DB;
 class AlimentoPorComidaController extends Controller
 {
 
- 
-    public function index()
-    {    }
+    #Utilizo el index para devolver unidad de medida bruta de un alimento
+    public function index(Request $request)
+    {  
+        $unidad_medida = null;
+        $alimento = Alimento::findorfail($request->get('alimento_id'));
+        if($alimento){
+            $unidad_medida = UnidadMedida::findorfail($alimento->UnidadMedidaId);
+        }
+        return $unidad_medida;
+    }
     public function create()
     {   }
 
     public function store(AlimentoPorComidaRequest $request)
     {
         $datos = $request->all();
-        $comida = Comida::FindOrFail($datos['comidaId']);
         $detalle = new AlimentoPorComida();
         $detalle->ComidaId = $datos['comidaId'];
         $detalle->AlimentoId = $datos['alimentoId'];
         $detalle->AlimentoPorComidaCantidadNeto = $datos['cantidadNeto'];
+        $detalle->AlimentoPorComidaCantidadBruta = $datos['cantidad_bruta'];
         $nombreUnidad = $datos['unidadMedida'];
         $alimento = DB::table('alimento as a')
                             ->where('AlimentoId',$detalle->AlimentoId)

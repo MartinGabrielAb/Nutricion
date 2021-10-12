@@ -662,15 +662,15 @@ function descontarStock($comidaId , $porciones,$historialDetComidaId){
 		$historialDetAlimento->HistorialDetalleComidaId = $historialDetComidaId;
 		$historialDetAlimento->AlimentoNombre = $alimentoPorComida->AlimentoNombre;
 		$historialDetAlimento->UnidadMedida = $alimentoPorComida->UnidadMedidaNombre;
-		$historialDetAlimento->Cantidad = $alimentoPorComida->AlimentoPorComidaCantidadNeto;
+		$historialDetAlimento->Cantidad = $alimentoPorComida->AlimentoPorComidaCantidadBruta;
 		$alimento = Alimento::where('AlimentoId',$alimentoPorComida->AlimentoId)
 						->where('AlimentoEstado',1)
 						->first();
 		//Controlo la unidad de medida
 		if($alimentoPorComida->UnidadMedidaId == $alimento->UnidadMedidaId ){
-			$cantidad = $alimentoPorComida->AlimentoPorComidaCantidadNeto * $porciones;
+			$cantidad = $alimentoPorComida->AlimentoPorComidaCantidadBruta * $porciones;
 		}else{
-			$cantidad = $alimentoPorComida->AlimentoPorComidaCantidadNeto/1000 * $porciones;
+			$cantidad = $alimentoPorComida->AlimentoPorComidaCantidadBruta/1000 * $porciones;
 		}
 		//Si no alcanza pongo el stock en 0 (para que las comidas siguientes no cuenten con este alimento,el rollback lo va a volver a su estado anterior)
 		if($cantidad > $alimento->AlimentoCantidadTotal){                                           

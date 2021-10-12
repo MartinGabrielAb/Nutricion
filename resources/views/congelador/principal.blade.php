@@ -75,13 +75,17 @@
         </div>    
         <div class="modal-body">
           <input type="hidden" id="id" name="id">
-          <select name="comida_id" id="comida_id">
+          <label for="comida_id">Comida</label>
+          <select class="form-control" style="width: 100%" name="comida_id" id="comida_id" required>
+            <option value="-1"></option>
             @foreach ($comidas as $comida)
               <option value="{{$comida->ComidaId}}">
                 {{$comida->ComidaNombre}}
               </option>
             @endforeach
           </select>
+          <label for="cantidad_id">Cantidad de porciones</label>
+          <input class="form-control" type="number" name="cantidad_id" id="cantidad_id" required>
         </div>
         <div class="modal-footer">
           <div class="container-fluid">

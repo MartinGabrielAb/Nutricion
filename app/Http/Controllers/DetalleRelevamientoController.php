@@ -37,14 +37,7 @@ class DetalleRelevamientoController extends Controller
         //seteo el detalle de relevamiento.
         $detalleRelevamiento = $this->setDetalleRelevamiento($request->all());
         
-        //obtengo las comidas de el menu y el regímen de este paciente.
-        $tipoPaciente = DB::table('tipopaciente')->where('TipoPacienteId',$request->get('tipopaciente'))->first();
-        if($tipoPaciente->TipoPacienteNombre != 'Individual'){
-            $comidas = $this->get_comidas_por_menu_paciente($detalleRelevamiento->MenuId,$tipoPaciente->TipoPacienteId,$relevamiento->RelevamientoTurno);
-        }else{
-            //si es Individual uso las comidas seleccionadas en el crud.
-            $comidas = $request->get('comidas');
-        }
+        $comidas = $request->get('comidas');
         
         //sumo y seteo cantidad de comidas en el relevamiento actual.
         foreach ($comidas as $comida) {
@@ -225,14 +218,7 @@ class DetalleRelevamientoController extends Controller
         $detalleRelevamiento->updated_at = date("m/d/Y h:i:s a", time() + 1);
         $detalleRelevamiento->update();
 
-        //obtengo las comidas de el menu y el regímen de este paciente.
-        $tipoPaciente = DB::table('tipopaciente')->where('TipoPacienteId',$request->get('tipopaciente'))->first();
-        if($tipoPaciente->TipoPacienteNombre != 'Individual'){
-            $comidas = $this->get_comidas_por_menu_paciente($detalleRelevamiento->MenuId,$tipoPaciente->TipoPacienteId,$relevamiento->RelevamientoTurno);
-        }else{
-            //si es Individual uso las comidas seleccionadas en el crud.
-            $comidas = $request->get('comidas');
-        }
+        $comidas = $request->get('comidas');
         //sumo y seteo cantidad de comidas en el relevamiento actual.
         foreach ($comidas as $comida) {
             $this->setComidaPorRelevamiento($comida,$detalleRelevamiento->DetalleRelevamientoId,$relevamientoPorSala->RelevamientoPorSalaId,$para_acompaniante);

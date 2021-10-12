@@ -2061,6 +2061,9 @@ __webpack_require__.r(__webpack_exports__);
     });
   },
   methods: {
+    // inputChange(){
+    // let inputValue = (document.getElementById(`detalle${this.relevamientoAnterior[0].id}`) as HTMLInputElement);
+    // },
     getRelevamiento: function getRelevamiento() {
       var _this2 = this;
 
@@ -2073,6 +2076,19 @@ __webpack_require__.r(__webpack_exports__);
     finalizar: function finalizar() {
       var _this3 = this;
 
+      // var aux_anterior = {};
+      // for (const property in this.relevamientoAnterior) {
+      //     console.log(`${property}: ${this.relevamientoAnterior[property].cantidad}`);
+      //     let input = document.getElementsByName(`detalle${this.relevamientoAnterior[property].id}`);
+      //     console.log();
+      //     aux_anterior[`${property}`] = {
+      //         id : `${this.relevamientoAnterior[property].id}`,
+      //         cantidad : document.getElementById(`detalle${this.relevamientoAnterior[property].id}`),
+      //         nombre : `${this.relevamientoAnterior[property].nombre}`
+      //     }
+      // }
+      // console.log(this.relevamientoAnterior);
+      // return;
       if (window.confirm("Una vez terminado no podra hacer cambios. ¿Desea finalizar?")) {
         axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/seleccionarMenu', {
           params: {
@@ -2194,6 +2210,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   props: ['id'],
   data: function data() {
     return {
+      listErrores: [],
       comidasRelevadas: [],
       comidasEnProgreso: [],
       comidasAux: [],
@@ -2239,10 +2256,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     comidas: _this.comidasNuevas
                   }
                 }).then(function (response) {
-                  _this.actualizarComidas();
+                  if (response.data.error) {
+                    _this.listErrores = response.data.error;
+                  } else {
+                    _this.actualizarComidas();
 
-                  _this.comidasNuevas = [];
-                  alert('Tanda agregada correctamente');
+                    _this.comidasNuevas = [];
+                    alert('Tanda agregada correctamente');
+                  }
                 })["catch"](function (error) {
                   console.log("Error comidas relevadas");
                 });
@@ -2445,7 +2466,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 _context8.next = 4;
                 return axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/api/finalizar/' + _this9.id).then(function (response) {
-                  console.log(response.data);
+                  window.location.href = "/historial/" + response.data;
                 })["catch"](function (error) {
                   console.log("Error getFinalizar");
                 });
@@ -4073,7 +4094,7 @@ var render = function() {
                             _vm._v(
                               "\r\n                            " +
                                 _vm._s(detalle.cantidad) +
-                                "\r\n                        "
+                                "\r\n                            "
                             )
                           ])
                         ]
@@ -4230,11 +4251,7 @@ var render = function() {
                                           }
                                         }
                                       },
-                                      [
-                                        _vm._v(
-                                          "Finalizar selección (Falta controlar stock)"
-                                        )
-                                      ]
+                                      [_vm._v("Finalizar selección")]
                                     )
                                   ])
                                 ])
@@ -4257,7 +4274,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _vm._l(_vm.listErrores, function(error) {
-                        return _c("ul", { key: error[0].ComidaId }, [
+                        return _c("ul", { key: error.ComidaId }, [
                           _c("li", { staticClass: "text-danger" }, [
                             _vm._v(
                               "No posee " +
@@ -4862,16 +4879,40 @@ var render = function() {
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-lg-12" }, [
+      _c("div", { staticClass: "col" }, [
         _c("div", { staticClass: "card" }, [
           _c(
             "div",
             { staticClass: "card-body" },
             [
-              _c("div", { staticClass: "row text-sm mb-4" }, [
+              _c("div", { staticClass: "row text-sm mb-3" }, [
                 _c("div", { staticClass: "col" }, [_vm._v("Nueva tanda")]),
                 _vm._v(" "),
-                _c("div", { staticClass: "col" }, [
+                _c("div", { staticClass: "col " }, [
+                  _c("textarea", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.observacion,
+                        expression: "observacion"
+                      }
+                    ],
+                    staticClass: "w-100",
+                    attrs: { rows: "1", placeholder: "Observaciones" },
+                    domProps: { value: _vm.observacion },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.observacion = $event.target.value
+                      }
+                    }
+                  })
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col text-right" }, [
                   _c(
                     "button",
                     {
@@ -4892,33 +4933,14 @@ var render = function() {
                         "\n                                Ver congelador\n                            "
                       )
                     ]
-                  ),
-                  _vm._v(" "),
-                  _c("textarea", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.observacion,
-                        expression: "observacion"
-                      }
-                    ],
-                    attrs: { placeholder: "Observaciones" },
-                    domProps: { value: _vm.observacion },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.observacion = $event.target.value
-                      }
-                    }
-                  })
+                  )
                 ])
               ]),
               _vm._v(" "),
-              _c("div", { staticClass: "row text-sm" }, [
-                _c("div", { staticClass: "col" }, [
+              _c("hr"),
+              _vm._v(" "),
+              _c("div", { staticClass: "row text-sm " }, [
+                _c("div", { staticClass: "col input-group " }, [
                   _c(
                     "select",
                     {
@@ -4964,7 +4986,7 @@ var render = function() {
                   )
                 ]),
                 _vm._v(" "),
-                _c("div", { staticClass: "col" }, [
+                _c("div", { staticClass: "col input-group" }, [
                   _c("input", {
                     directives: [
                       {
@@ -5018,7 +5040,7 @@ var render = function() {
                   _c(
                     "button",
                     {
-                      staticClass: "btn btn-sm btn-outline-primary",
+                      staticClass: " btn btn-sm btn-outline-primary",
                       attrs: { type: "button" },
                       on: {
                         click: function($event) {
@@ -5038,14 +5060,14 @@ var render = function() {
               _c("hr"),
               _vm._v(" "),
               _vm.comidasNuevas.length > 0
-                ? _c("div", { staticClass: "row" }, [
+                ? _c("div", { staticClass: "row " }, [
                     _c("div", { staticClass: "col" }, [_vm._v("Comida")]),
                     _vm._v(" "),
-                    _c("div", { staticClass: "col" }, [
+                    _c("div", { staticClass: "col text-center" }, [
                       _vm._v("Cantidad a preparar")
                     ]),
                     _vm._v(" "),
-                    _c("div", { staticClass: "col" }, [
+                    _c("div", { staticClass: "col text-center" }, [
                       _vm._v("Cantidad del congelador")
                     ]),
                     _vm._v(" "),
@@ -5066,15 +5088,15 @@ var render = function() {
                       _vm._v(_vm._s(comidaNueva.nombre))
                     ]),
                     _vm._v(" "),
-                    _c("div", { staticClass: "col" }, [
+                    _c("div", { staticClass: "col text-center" }, [
                       _vm._v(_vm._s(comidaNueva.cantidadNormal))
                     ]),
                     _vm._v(" "),
-                    _c("div", { staticClass: "col" }, [
+                    _c("div", { staticClass: "col text-center" }, [
                       _vm._v(_vm._s(comidaNueva.cantidadCongelador))
                     ]),
                     _vm._v(" "),
-                    _c("div", { staticClass: "col" }, [
+                    _c("div", { staticClass: "col text-center" }, [
                       _c(
                         "button",
                         {
@@ -5135,11 +5157,39 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("\n                    Finalizar\n                ")]
+            [
+              _vm._v(
+                "\n                    Finalizar relevamiento\n                "
+              )
+            ]
           )
         ])
       ])
     ]),
+    _vm._v(" "),
+    _vm.listErrores
+      ? _c(
+          "div",
+          { staticClass: "card" },
+          [
+            _c("h5", { staticClass: "text-danger" }, [_vm._v("Errores:")]),
+            _vm._v(" "),
+            _vm._l(_vm.listErrores, function(error) {
+              return _c("ul", { key: error.id }, [
+                _c("li", { staticClass: "text-danger" }, [
+                  _vm._v(
+                    "No posee " +
+                      _vm._s(error.cantidadNormal) +
+                      " porciones de " +
+                      _vm._s(error.nombre)
+                  )
+                ])
+              ])
+            })
+          ],
+          2
+        )
+      : _vm._e(),
     _vm._v(" "),
     _c(
       "div",
@@ -30579,9 +30629,9 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\pablo\Documents\Proyectos\Nutricion\resources\js\vue.js */"./resources/js/vue.js");
-__webpack_require__(/*! C:\Users\pablo\Documents\Proyectos\Nutricion\resources\js\axios.js */"./resources/js/axios.js");
-module.exports = __webpack_require__(/*! C:\Users\pablo\Documents\Proyectos\Nutricion\resources\js\app.js */"./resources/js/app.js");
+__webpack_require__(/*! F:\Laravel\tesis9\hsb\resources\js\vue.js */"./resources/js/vue.js");
+__webpack_require__(/*! F:\Laravel\tesis9\hsb\resources\js\axios.js */"./resources/js/axios.js");
+module.exports = __webpack_require__(/*! F:\Laravel\tesis9\hsb\resources\js\app.js */"./resources/js/app.js");
 
 
 /***/ })

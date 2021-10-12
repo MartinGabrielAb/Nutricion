@@ -124,9 +124,9 @@ function guardar(e){
     clsComidas = $('.clsComidas');
     clsComidas.each(function(index, item) {
       var $comidaid = $(item).val();
-      $comidaid = {
-        'ComidaId' : $comidaid,
-      }
+        $comidaid = {
+          'ComidaId' : $comidaid,
+        }
       if($comidaid != null){
         comidas.push($comidaid);
       }
@@ -135,11 +135,11 @@ function guardar(e){
     comidas_no_individuales = $('.comidas_no_individuales');
     comidas_no_individuales.each(function(index, item) {
       var $comidaid = $(item).val();
-      $comidaid = {
-        'ComidaId' : $comidaid,
-      }
-      if($comidaid != null){
-        comidas.push($comidaid);
+      if ($(item).is(':checked')) {
+        $comidaid = {
+          'ComidaId' : $comidaid,
+        }
+        comidas.push($comidaid); 
       }
     });
   }

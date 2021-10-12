@@ -4,11 +4,10 @@
   @if ($RelevamientoControlado == 0 && $RelevamientoMenu != null)
     <a href="{{route('seleccionarMenu.show',$RelevamientoId)}}" class="btn btn-sm btn-default ml-1 mr-1 pl-3 pr-3"><small>Administrar tandas</small></a>  
   @endif
-  @if ($RelevamientoControlado != 1)
-    @if ($RelevamientoMenu != null)
+  @if ($RelevamientoMenu != null)
     <a href="{{route('relevamientos.show',$RelevamientoId)}}" class="btn btn-sm btn-default ml-1 mr-1 pl-3 pr-3"><i class="fas fa-clipboard-list" style="color: black"></i></a>    
-    @endif
-    
+  @endif
+  @if ($RelevamientoControlado != 1)
     <button type="button" class="btn btn-sm btn-default ml-1 mr-1 pl-3 pr-3" data-toggle="modal"  data-target="#modal" >
       <i class="fas fa-edit"></i>
     </button>

@@ -139,6 +139,10 @@ class RelevamientoController extends Controller
             foreach ($relevamientosPorSala as $relevamientoPorSala) {
                 $detallesRelevamiento = DetalleRelevamiento::where("RelevamientoPorSalaId",$relevamientoPorSala->RelevamientoPorSalaId)->get();
                 foreach ($detallesRelevamiento as $detalleRelevamiento){
+                    $detallesRelevamientoPorComida = DB::table('detrelevamientocomida')->where('DetalleRelevamientoId',$detalleRelevamiento->DetalleRelevamientoId)->get();
+                    foreach ($detallesRelevamientoPorComida as $detalleRelevamientoPorComida) {
+                        $detalleRelevamientoPorComida->delete();
+                    }
                     $detalleRelevamiento->delete();
                 }
                 $relevamientoPorSala->delete();

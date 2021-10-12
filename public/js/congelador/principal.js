@@ -15,22 +15,25 @@ $(document).ready( function () {
     
     $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
     
-    // /*------Funcion para llenar los campos cuando selecciono una fila -----*/ 
-    // $('#tableCongelador tbody').on( 'click', 'button', function () {
-    //   $("#tituloModal").text("Editar comida");
-    //   $("#btnGuardar span").text("Editar");
-    //   vaciarCampos();
-    //   var data = table.row( $(this).parents('tr') ).data();
-    //   $("#id").val(data['EmpleadoId']);
-    //   $("#apellido").val(data['EmpleadoApellido']);
-    //   $("#nombre").val(data['EmpleadoNombre']);
-    //   $("#cuil").val(data['EmpleadoCuil']);
-    //   $("#direccion").val(data['EmpleadoDireccion']);
-    //   $("#email").val(data['EmpleadoEmail']);
-    //   $("#telefono").val(data['EmpleadoTelefono']);
-    //   $("#estado").val(data['EmpleadoEstado']);
-
-    // });
+    /*------Funcion para llenar los campos cuando selecciono una fila -----*/ 
+    $('#tableCongelador tbody').on( 'click', 'button', function () {
+      $("#tituloModal").text("Editar comida");
+      $("#btnGuardar span").text("Editar");
+      vaciarCampos();
+      var data = table.row( $(this).parents('tr') ).data();
+      $("#id").val(data['CongeladorId']);
+      $("#comida_id").val(data['ComidaId']).trigger('change');
+      $("#cantidad_id").val(data['Porciones']);
+    });
+    
+    $('#comida_id').select2({
+      width: 'resolve',
+      theme: "classic",
+      placeholder: {
+        id: '-1', 
+        text: 'Buscar por Comida',
+      },
+  });
 
   });
   
@@ -46,6 +49,7 @@ $(document).ready( function () {
         dataType:"json",
         data:{
           comida_id: $('#comida_id').val(),
+          cantidad: $('#cantidad_id').val(),
         },
         success: function(response){
             $('#modal').modal('hide');
@@ -54,10 +58,7 @@ $(document).ready( function () {
             table.draw();
         },
         error:function(response){
-          var errors =  response.responseJSON.errors;
-          for (var campo in errors) {
-            $("#listaErrores").append('<li type="square">'+errors[campo]+'</li>');
-          }       
+          $("#listaErrores").append('<li type="square">Registro ya existente</li>');
         }
       });
     }else{
@@ -75,12 +76,13 @@ $(document).ready( function () {
       data:{
         id :id,
         comida_id: $('#comida_id').val(),
+        cantidad: $('#cantidad_id').val(),
       },
       success: function(response){
         $('#modal').modal('hide');
-            mostrarCartel('Registro editado correctamente.','alert-success');
-            var table = $('#tableCongelador').DataTable();
-            table.draw();
+        mostrarCartel('Registro editado correctamente.','alert-success');
+        var table = $('#tableCongelador').DataTable();
+        table.draw();
       },
       error:function(response){
         var errors =  response.responseJSON.errors;
@@ -113,7 +115,8 @@ $(document).ready( function () {
   
   //funciones auxiliares
   function vaciarCampos(){
-    $("#comida_id").val("");
+    $("#comida_id").val("").trigger("change");
+    $("#cantidad_id").val("");
     $("#listaErrores").empty();
   }
   
