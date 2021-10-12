@@ -47,8 +47,7 @@ class DetalleRelevamientoController extends Controller
         //acompañante
         if($detalleRelevamiento->DetalleRelevamientoAcompaniante == 1){
             $para_acompaniante = 1;
-            $tipoPacienteNormal = DB::table('tipopaciente')->where('TipoPacienteNombre','Normal')->first();
-            $comidas = $this->get_comidas_por_menu_paciente($detalleRelevamiento->MenuId,$tipoPacienteNormal->TipoPacienteId,$relevamiento->RelevamientoTurno);
+            $comidas = $request->get('comidas');
             //sumo y seteo cantidad de comidas del acompañante en el relevamiento actual.
             foreach ($comidas as $comida) {
                 $this->setComidaPorRelevamiento($comida,$detalleRelevamiento->DetalleRelevamientoId,$relevamientoPorSala->RelevamientoId,$para_acompaniante);
@@ -196,6 +195,7 @@ class DetalleRelevamientoController extends Controller
 
     public function update(Request $request, $id)//request: relevamiento, paciente, cama, diagnostico, observaciones, menu, tipopaciente, acompaniante, vajilladescartable, user, comidas[], colacion
     {
+        
         if($request->get('paciente_modo_carga') == 'add_new'){
             $this->set_paciente_nuevo($request->get('paciente_nombre'), $request->get('paciente_apellido'), $request->get('paciente_dni'));
         }
@@ -227,11 +227,10 @@ class DetalleRelevamientoController extends Controller
         //acompañante
         if($detalleRelevamiento->DetalleRelevamientoAcompaniante == 1){
             $para_acompaniante = 1;
-            $tipoPacienteNormal = DB::table('tipopaciente')->where('TipoPacienteNombre','Normal')->first();
-            $comidas = $this->get_comidas_por_menu_paciente($detalleRelevamiento->MenuId,$tipoPacienteNormal->TipoPacienteId,$relevamiento->RelevamientoTurno);
+            $comidas = $request->get('comidas');
             //sumo y seteo cantidad de comidas del acompañante en el relevamiento actual.
             foreach ($comidas as $comida) {
-                $this->setComidaPorRelevamiento($comida,$detalleRelevamiento->DetalleRelevamientoId,$relevamientoPorSala->RelevamientoPorSalaId,$para_acompaniante);
+                $this->setComidaPorRelevamiento($comida,$detalleRelevamiento->DetalleRelevamientoId,$relevamientoPorSala->RelevamientoId,$para_acompaniante);
             }
         }
 
@@ -242,7 +241,6 @@ class DetalleRelevamientoController extends Controller
             //sumo y seteo la colacion en el relevamiento actual.
             $this->setComidaPorRelevamiento($comida,$detalleRelevamiento->DetalleRelevamientoId,$relevamientoPorSala->RelevamientoPorSalaId,$para_acompaniante);
         }
-
         if ($detalleRelevamiento) {
             return response()->json(['success'=>$request->get('cama')]);
         }else{
