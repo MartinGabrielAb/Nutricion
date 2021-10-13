@@ -658,7 +658,7 @@ function descontarStock($comidaId,$porciones){
 		if($alimentoPorComida->UnidadMedidaId == $alimento->UnidadMedidaId || $alimento->UnidadMedidaNombre == 'Unidad'){
 			$cantidad = $alimentoPorComida->AlimentoPorComidaCantidadNeto * $porciones;
 		}else{
-			$cantidad = $alimentoPorComida->AlimentoPorComidaCantidadNeto/1000 * $porciones;
+			$cantidad = $alimentoPorComida->AlimentoPorComidaCantidadBruta/1000 * $porciones;
 		}
 		//Si no alcanza pongo el stock en 0 (para que las comidas siguientes no cuenten con este alimento,el rollback lo va a volver a su estado anterior)
 		if($cantidad > $alimento->AlimentoCantidadTotal){                                           

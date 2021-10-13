@@ -46,8 +46,9 @@
                     <tr>
                         <th>#</th>
                         <th>Alimento</th>
-                        <th>Cantidad</th>
-                        <th>Unidad de Medida</th>
+                        <th>Cantidad Neta</th>
+                        <th>Cantidad Bruta</th>
+                        {{-- <th>Unidad de Medida</th> --}}
                         <th width="10%">Acciones</th>
                     </tr>
                   </thead>
@@ -107,14 +108,18 @@
             <input type="hidden" id="id" name="id" value="">
 
             <label for="alimento">Alimentos</label>
-            <select class="form-control" id="alimento" name="alimento" >
+            <select class="form-control" style="width: 100%" id="alimento" name="alimento" required>
+              <option value="-1"></option>
                 @foreach($alimentos as $alimento)
-                <option value="{{$alimento->AlimentoId}}" >{{$alimento->AlimentoNombre}}</option>
+                  <option value="{{$alimento->AlimentoId}}" >{{$alimento->AlimentoNombre}}</option>
                 @endforeach
             </select>
-            <label for="cantidad">Cantidad neto</label> <small>(en gramos o cm3)<small>
-            <input type="number" id ="cantidad" name="cantidad" class="form-control" >
+            <label for="cantidad">Cantidad neto</label> <small>(en gramos o cm3)</small>
+            <input type="number" id ="cantidad" name="cantidad" class="form-control" required>
             <input type="hidden" value="Gramo" id="unidadMedida" name="unidadMedida">
+            <label for="cantidad_bruta">Cantidad bruta</label> <small id="un_medida_bruta"></small>
+            <input type="number" id ="cantidad_bruta" name="cantidad_bruta" class="form-control" required>
+            <input type="hidden" value="" id="un_medida_bruta_id" name="un_medida_bruta_id">
         </div>
         <div class="modal-footer">
           <div class="container-fluid">

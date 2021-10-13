@@ -29,12 +29,12 @@
                   </div> 
               </div>
               <div class="col">
-                  <p class="text-right">
-                    <button type="button" class="btn btn-sm btn-outline-primary" id="btnAgregar" onClick="agregar()" data-toggle="modal"  data-target="#modal">
-                      Agregar comida
-                    </button>
-                  </p>	
-              </div>
+                <p class="text-right">
+                  <button type="button"  class="btn btn-sm btn-outline-primary" id="btnAgregar" onClick="agregar()" data-toggle="modal"  data-target="#modal">
+                    Agregar comida
+                  </button>
+                </p>	
+            </div>
             </div>
               <!--------------TABLA PRINCIPAL-------------->
             <div class="row">
@@ -61,6 +61,7 @@
   </div>
 </div>
 
+<!-- Modal para agregar y editar  -->
 
 <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -74,15 +75,17 @@
         </div>    
         <div class="modal-body">
           <input type="hidden" id="id" name="id">
-          <label for="comida">Comida</label>
-          <select class="form-control" id="comida" name="comida" >
-              @foreach($comidas as $comida)
-              <option value="{{$comida->ComidaId}}" >{{$comida->ComidaNombre}}</option>
-              @endforeach
+          <label for="comida_id">Comida</label>
+          <select class="form-control" style="width: 100%" name="comida_id" id="comida_id" required>
+            <option value="-1"></option>
+            @foreach ($comidas as $comida)
+              <option value="{{$comida->ComidaId}}">
+                {{$comida->ComidaNombre}}
+              </option>
+            @endforeach
           </select>
-          <label for="porciones">Porciones</label>
-          <input type="number" class="form-control" id="porciones" placeholder="Cantidad de porciones">
-
+          <label for="cantidad_id">Cantidad de porciones</label>
+          <input class="form-control" type="number" name="cantidad_id" id="cantidad_id" required>
         </div>
         <div class="modal-footer">
           <div class="container-fluid">
@@ -93,7 +96,7 @@
             </div>
             <div class="row">
               <div class="col">
-               <button type="button" class="btn btn-sm btn-secondary w-100" data-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>
+              <button type="button" class="btn btn-sm btn-secondary w-100" data-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>
               </div>
             </div>
             <div class="row">

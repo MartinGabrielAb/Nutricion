@@ -71,6 +71,7 @@ $(document).ready( function () {
       menuId = $("#menu").val();
       tipopacienteId = $("#tipoPacienteId").val();
       menuportipopaciente(menuId,tipopacienteId,detallerelevamiento.DetalleRelevamientoId);
+      seleccionar_comidas(detallerelevamiento.DetalleRelevamientoId);
     }else if($(this).attr('id') == 'showcomidas'){
       $("#tituloModal").text("Comidas del paciente");
       $('#modal-body').addClass('d-none');
@@ -123,9 +124,9 @@ function guardar(e){
     clsComidas = $('.clsComidas');
     clsComidas.each(function(index, item) {
       var $comidaid = $(item).val();
-      $comidaid = {
-        'ComidaId' : $comidaid,
-      }
+        $comidaid = {
+          'ComidaId' : $comidaid,
+        }
       if($comidaid != null){
         comidas.push($comidaid);
       }
@@ -134,18 +135,17 @@ function guardar(e){
     comidas_no_individuales = $('.comidas_no_individuales');
     comidas_no_individuales.each(function(index, item) {
       var $comidaid = $(item).val();
-      $comidaid = {
-        'ComidaId' : $comidaid,
-      }
-      if($comidaid != null){
-        comidas.push($comidaid);
+      if ($(item).is(':checked')) {
+        $comidaid = {
+          'ComidaId' : $comidaid,
+        }
+        comidas.push($comidaid); 
       }
     });
   }
   if(comidas.length == 0){
     comidas = null;
   }
-  console.log(comidas);
   if(id == 0){
     $.ajax({
       type:'POST',
@@ -213,9 +213,10 @@ function editar(id,comidas){
       paciente_dni: $('#paciente_dni').val(),
     },
     success: function(response){
-      camaid = response.success[0];
+      camaid = response.success;
       $('#modal').modal('hide');
       mostrarCartel('Registro editado correctamente.','alert-success');
+      console.log(camaid);
       getDetallerelevamiento(camaid);
     },
     error:function(response){
@@ -320,7 +321,11 @@ function llenarselectcomidas(comidasmenuportipopaciente,comidasDelRelevamiento){
   if(comidasDelRelevamiento != null && comidasDelRelevamiento.length>0){
     comidasDelRelevamiento.forEach(comidadelrelevamiento => {
       $("#comidaid"+comidadelrelevamiento.TipoComidaId).val(comidadelrelevamiento.ComidaId).trigger('change');
-      $('#modal-body-comidas dl').append('<dt class="list-group-item">'+comidadelrelevamiento.TipoComidaNombre+'</dt>');
+      if(comidadelrelevamiento.para_acompaniante != 1){
+        $('#modal-body-comidas dl').append('<dt class="list-group-item">'+comidadelrelevamiento.TipoComidaNombre +'</dt>');
+      }else{
+        $('#modal-body-comidas dl').append('<dt class="list-group-item">'+comidadelrelevamiento.TipoComidaNombre+'(Acompañante) </dt>');
+      }
       $('#modal-body-comidas dl').append('<dd class="list-group-item">'+comidadelrelevamiento.ComidaNombre+'</dd>');
     });
   }
@@ -407,7 +412,10 @@ function getDetallerelevamiento(camaid){
             </div>
           </li>
           <li class="list-group-item text-center">
-            ${(detallerelevamiento.RelevamientoPorSalaId == relevamientoPorSalaId) ? '<h5 class="text-success m-0">Revisado</h5>' : '<h5 class="text-warning m-0">Info del último relevamiento</h5>'}
+            ${(detallerelevamiento.RelevamientoPorSalaId == relevamientoPorSalaId) && (detallerelevamiento.DetalleRelevamientoEstado == 1) && (detallerelevamiento.DetalleRelevamientoControlado != 1)? '<h5 class="text-success m-0">Relevamiento Activo</h5>' : ''}
+            ${(detallerelevamiento.RelevamientoPorSalaId == relevamientoPorSalaId) && (detallerelevamiento.DetalleRelevamientoEstado == 1) && (detallerelevamiento.DetalleRelevamientoControlado == 1)? '<h5 class="text-success m-0">Relevamiento Finalizado</h5>' : ''}
+            ${(detallerelevamiento.RelevamientoPorSalaId == relevamientoPorSalaId) && (detallerelevamiento.DetalleRelevamientoEstado == 0) ? '<h5 class="text-danger m-0">Relevamiento Inactivo</h5>' : ''}
+            ${(detallerelevamiento.RelevamientoPorSalaId != relevamientoPorSalaId) ? '<h5 class="text-info m-0">Último relevamiento a esta cama</h5>' : ''}
           </li>
           <li class="list-group-item text-center">
             <h6>Paciente</h6>
@@ -483,7 +491,8 @@ function getUltimoDetRelevamiento(camaid, paciente = null){
         $('#diagnosticoId').val(detallerelevamiento.DetalleRelevamientoDiagnostico);
         $('#observacionesId').val(detallerelevamiento.DetalleRelevamientoObservaciones);
         $('#tipoPacienteId').val(detallerelevamiento.TipoPacienteId).trigger('change');
-        $('#comidas').addClass('d-none');
+        // $('#comidas').addClass('d-none');
+        seleccionar_comidas();
         if(detallerelevamiento.DetalleRelevamientoAcompaniante == 1){
           $( "#acompanianteId" ).prop( "checked", true );
         }else{
@@ -541,13 +550,13 @@ function pantalla_select_paciente(){
   $('#paciente_apellido').val('').attr('required', false);
   $('#paciente_dni').val('').attr('required', false);
 }
-function seleccionar_comidas(){
+function seleccionar_comidas(detallerelevamientoid){
   $('#seleccionar_comidas_no_individuales').empty();
   if($('#tipoPacienteId option:selected').text() != ''){
     if($('#tipoPacienteId option:selected').text() != 'Individual'){
       $('#comidas').removeClass('d-none');
       $('#seleccionar_comidas_individuales').addClass('d-none');
-      $('#seleccionar_comidas_no_individuales').removeClass('d-none');  
+      $('#seleccionar_comidas_no_individuales').removeClass('d-none');
       menu = $('#menu').val();
       tipopaciente = $('#tipoPacienteId').val();
       $.ajax({
@@ -559,7 +568,7 @@ function seleccionar_comidas(){
         },
         success: function(response) {
           menuportipopacienteComidas = response.success;
-          mostrar_checkbox_comidas(menuportipopacienteComidas);
+          mostrar_checkbox_comidas(menuportipopacienteComidas,detallerelevamientoid);
         },
         error:function(){
           mostrarCartel('Error al obtener comidas.','alert-danger');
@@ -568,30 +577,74 @@ function seleccionar_comidas(){
     }
   }
 }
-function mostrar_checkbox_comidas(comidas) {
+function mostrar_checkbox_comidas(comidas,detallerelevamientoid) {
+  detalleRelevamientoComidas = $.ajax({
+    type:"GET",
+    url: "../detrelevamientoporcomida/"+detallerelevamientoid,
+    async: false,
+    cache: false,
+    success: function(response) {
+      detalleRelevamientoComidas = response.success;
+      return detalleRelevamientoComidas;
+    },
+    error:function(){
+      mostrarCartel('Error al eliminar el registro.','alert-danger');
+    }
+  }).responseJSON;
+  
   comidas.forEach(comida => {
+    detalleRelevamientoComidas.success.forEach(element => {
+      if(element.ComidaId == comida.ComidaId){
+        check = 'checked';
+      }else{
+        check = null;
+      }
+    });
     if ($('#turno').val() == 'Mañana') {
       if(comida.TipoComidaNombre == 'Almuerzo' || comida.TipoComidaNombre == 'Sopa Almuerzo' || comida.TipoComidaNombre == 'Postre Almuerzo' || comida.TipoComidaNombre == 'Merienda'){
-        html = `
-        <div class="form-check">
-          <input class="form-check-input comidas_no_individuales" checked type="checkbox" value="${comida.ComidaId}" id="comida_id_${comida.ComidaId}" name="comida_id_${comida.ComidaId}">
-          <label class="form-check-label" for="comida_id_${comida.ComidaId}">
-            ${comida.TipoComidaNombre} - ${comida.ComidaNombre}
-          </label>
-        </div>
-        `;
+        if (check == null) {
+          html = `
+            <div class="form-check">
+              <input class="form-check-input comidas_no_individuales" type="checkbox" value="${comida.ComidaId}" id="comida_id_${comida.ComidaId}" name="comida_id_${comida.ComidaId}">
+              <label class="form-check-label" for="comida_id_${comida.ComidaId}">
+                ${comida.TipoComidaNombre} - ${comida.ComidaNombre}
+              </label>
+            </div>
+            `;  
+        }else{
+          html = `
+            <div class="form-check">
+              <input class="form-check-input comidas_no_individuales" checked type="checkbox" value="${comida.ComidaId}" id="comida_id_${comida.ComidaId}" name="comida_id_${comida.ComidaId}">
+              <label class="form-check-label" for="comida_id_${comida.ComidaId}">
+                ${comida.TipoComidaNombre} - ${comida.ComidaNombre}
+              </label>
+            </div>
+            `;
+        }
+        
         $('#seleccionar_comidas_no_individuales').append(html);
       }
     }else if($('#turno').val() == 'Tarde'){
       if(comida.TipoComidaNombre == 'Cena' || comida.TipoComidaNombre == 'Sopa Cena' || comida.TipoComidaNombre == 'Postre Cena' || comida.TipoComidaNombre == 'Desayuno'){
-        html = `
-        <div class="form-check">
-          <input class="form-check-input comidas_no_individuales" checked type="checkbox" value="${comida.ComidaId}" id="comida_id_${comida.ComidaId}" name="comida_id_${comida.ComidaId}">
-          <label class="form-check-label" for="comida_id_${comida.ComidaId}">
-            ${comida.TipoComidaNombre} - ${comida.ComidaNombre}
-          </label>
-        </div>
-        `;
+        if (check == null) {
+          html = `
+            <div class="form-check">
+              <input class="form-check-input comidas_no_individuales" type="checkbox" value="${comida.ComidaId}" id="comida_id_${comida.ComidaId}" name="comida_id_${comida.ComidaId}">
+              <label class="form-check-label" for="comida_id_${comida.ComidaId}">
+                ${comida.TipoComidaNombre} - ${comida.ComidaNombre}
+              </label>
+            </div>
+            `;  
+        }else{
+          html = `
+            <div class="form-check">
+              <input class="form-check-input comidas_no_individuales" checked type="checkbox" value="${comida.ComidaId}" id="comida_id_${comida.ComidaId}" name="comida_id_${comida.ComidaId}">
+              <label class="form-check-label" for="comida_id_${comida.ComidaId}">
+                ${comida.TipoComidaNombre} - ${comida.ComidaNombre}
+              </label>
+            </div>
+            `;
+        }
         $('#seleccionar_comidas_no_individuales').append(html);
       }
     }

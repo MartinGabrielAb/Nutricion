@@ -31,31 +31,26 @@
                 </div>
             </div>
             <div class="row form-group">
-                <label for="dni" class="col-xl-2 col-lg-2 col-sm-12 col-md-12 col-form-label text-center">DNI</label>
-                <div class="col-auto">
-                    <input type="number" class="form-control" id="dni" placeholder="DNI del paciente">
-                </div>
+                <label for="dni" class="col-form-label text-center">DNI</label>
+                <input type="number" class="form-control" id="dni" placeholder="DNI del paciente">
             </div>
             <div class="row form-group">
-                <label for="fecha_desde" class="col-xl-2 col-lg-2 col-sm-12 col-md-12 col-form-label text-center">Desde</label>
-                <div class="col-auto">
-                    <input type="date" class="form-control" id="fecha_desde">
-                </div>
-                <label for="fecha_hasta" class="col-xl-2 col-lg-2 col-sm-12 col-md-12 col-form-label text-center">Hasta</label>
-                <div class="col-auto">
-                    <input type="date" class="form-control" id="fecha_hasta">
-                </div>
+                <label for="fecha_desde" class="col-form-label text-center">Desde</label>
+
+                  <input type="date" class="form-control" id="fecha_desde">
+                <label for="fecha_hasta" class="col-form-label text-center">Hasta</label>
+
+                  <input type="date" class="form-control" id="fecha_hasta">
+
             </div>
             <div class="row form-group">
-                <label for="sala" class="col-xl-2 col-lg-2 col-sm-12 col-md-12 col-form-label text-center">Sala</label>
-                <div class="col-auto">
-                    <select class="form-control" id="sala">
-                        <option value="-1"></option>
-                        @foreach ($salas as $sala)
-                            <option value="{{$sala->SalaId}}">{{$sala->SalaNombre}}</option>
-                        @endforeach
-                    </select>
-                </div>
+                <label for="sala" class="col-form-label text-center">Sala</label>
+                  <select class="form-control" id="sala" style="width: 100%">
+                      <option value="-1"></option>
+                      @foreach ($salas as $sala)
+                          <option value="{{$sala->SalaId}}">{{$sala->SalaNombre}}</option>
+                      @endforeach
+                  </select>
             </div>
             <div class="form-group row justify-content-md-center mb-0">
                 <div class="col-auto mr-auto ml-auto">

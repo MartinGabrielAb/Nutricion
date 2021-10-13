@@ -63,6 +63,13 @@ class ComidaController extends Controller
 								->where('apc.ComidaId',$id)
 								->where('apc.AlimentoPorComidaEstado',1)
                                 ->get();
+            foreach ($alimentosPorComida as $alimentoPorComida) {
+                $alimento = Alimento::findorfail($alimentoPorComida->AlimentoId);
+                if($alimento){
+                    $unidad_medida = UnidadMedida::findorfail($alimento->UnidadMedidaId);
+                    $alimentoPorComida->UnidadMedidaBruta = $unidad_medida->UnidadMedidaNombre;
+                }
+            }
 	        return DataTables::of($alimentosPorComida)
 						->addColumn('btn','alimentosporcomida/actions')
 						->rawColumns(['AlimentoPorComidaEstado','btn'])

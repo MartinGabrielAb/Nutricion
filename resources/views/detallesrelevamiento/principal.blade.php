@@ -8,63 +8,71 @@
     <div class="row">
     <div class="col-lg-12">
         <div class="card">
-        <div class="card-body">
-            <div class="row">
-                
-            </div>
-            <div class="row ">
-                <div class="col border d-flex justify-content-center">
-                    <label class="m-3">Piezas: </label>
-                    @foreach ($piezas as $pieza)
-                        <button type="button" id="btnPiezaid{{$pieza->PiezaId}}" class="btn btn-sm btn-default clsPiezas m-2 pl-3 pr-3" onclick="getcamas({{$pieza->PiezaId}})">
-                            {{$pieza->PiezaPseudonimo}}
-                        </button>
-                    @endforeach
-                </div>
-            </div>
-            <div class="row">
-                <div id="divCamas" class="col border d-none justify-content-center">
-                    <label class="m-3">Camas: </label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <div id="divMensaje" class="alert text-center p-0">
-                        <!-- Mensaje de exito/error -->
+            {{-- Cuerpo del Modo Vista --}}
+            <div class="card-body d-none" id="modo_vista">
+                <div class="row">
+                    <div class="col">
+                        <!--------------TABLA PRINCIPAL-------------->
+                        <div class="row">
+                            <div class="col">
+                                <table id="tableDetallesRelevamiento" class="table table-sm table-striped table-bordered table-hover display nowrap" style="width:100%" cellspacing="0">
+                                <!------Cabecera de la tabla------>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Fecha</th>
+                                        <th scope="col">Paciente</th>
+                                        <th scope="col">Menú</th>
+                                        <th scope="col">Regímen</th>
+                                        <th scope="col">Acompañante</th>
+                                        <th scope="col">VD</th>
+                                        <th scope="col">P/C</th>
+                                        <th scope="col">Diagnóstico</th>
+                                        <th scope="col">Obs.</th>
+                                        <th scope="col">Hora</th>
+                                        <th scope="col">Estado</th>
+                                        <th scope="col">Relevador</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div id="divDetalleRelevamiento" class="row d-none">
-
-            </div>
-            <!--------------TABLA PRINCIPAL-------------->
-            {{-- <div class="row">
-                <div class="col">
-                    <table id="tableDetallesRelevamiento" class="table table-sm table-striped table-bordered table-hover display nowrap" style="width:100%" cellspacing="0">
-                    <!------Cabecera de la tabla------>
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Paciente</th>
-                            <th scope="col">Menú</th>
-                            <th scope="col">Regímen</th>
-                            <th scope="col">Acompañante</th>
-                            <th scope="col">VD</th>
-                            <th scope="col">P/C</th>
-                            <th scope="col">Diagnóstico</th>
-                            <th scope="col">Obs.</th>
-                            <th scope="col">Hora</th>
-                            <th scope="col">Estado</th>
-                            <th scope="col">Relevador</th>
-                            <th scope="col" width="5%">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                    </table>
+            {{-- Cuerpo del Modo Editar --}}
+            <div class="card-body" id="modo_editar">
+                <div class="row">
+                    
                 </div>
-            </div> --}}
-        </div>
+                <div class="row ">
+                    <div class="col border d-flex justify-content-center">
+                        <label class="m-3">Piezas: </label>
+                        @foreach ($piezas as $pieza)
+                            <button type="button" id="btnPiezaid{{$pieza->PiezaId}}" class="btn btn-sm btn-default clsPiezas m-2 pl-3 pr-3" onclick="getcamas({{$pieza->PiezaId}})">
+                                {{$pieza->PiezaPseudonimo}}
+                            </button>
+                        @endforeach
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="divCamas" class="col border d-none justify-content-center">
+                        <label class="m-3">Camas: </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div id="divMensaje" class="alert text-center p-0">
+                            <!-- Mensaje de exito/error -->
+                        </div>
+                    </div>
+                </div>
+                <div id="divDetalleRelevamiento" class="row d-none">
+
+                </div>
+            </div>
         </div>
     </div>
     <!-- /.col-md-6 -->
