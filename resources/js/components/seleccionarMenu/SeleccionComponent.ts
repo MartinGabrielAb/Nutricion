@@ -53,8 +53,6 @@ export default {
                 //     }
                 // }
                   
-                // console.log(this.relevamientoAnterior);
-                // return;
                 if(window.confirm("Una vez terminado no podra hacer cambios. ¿Desea finalizar?")){
                 axios.post('/api/seleccionarMenu',{params:{
                     relevamientoAnt : this.relevamientoAnterior,
