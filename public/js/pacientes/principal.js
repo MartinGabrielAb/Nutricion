@@ -5,7 +5,7 @@ $(document).ready( function () {
     "serverSide":true,
     "processing": true,
 
-    "ajax": "/pacientes",
+    "ajax": "pacientes",
       rowId: "PacienteId",
     "columns": [
       {data: "PacienteApellido"},
@@ -54,7 +54,7 @@ $(document).ready( function () {
   var tableShow = $('#tableHistorialPaciente').DataTable({
     responsive: true,
     "serverSide":true,
-    "ajax": "/pacientes/"+id,
+    "ajax": "pacientes/"+id,
     rowId: "DetalleRelevamientoId",
     "columns": [
       {data: 'DetalleRelevamientoId'},

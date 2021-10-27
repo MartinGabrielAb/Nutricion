@@ -2,7 +2,7 @@ $(document).ready( function () {
     var table = $('#tableCongelador').DataTable({
       responsive: true,
       "serverSide":true,
-      "ajax": "/congelador",
+      "ajax": "congelador",
         rowId: "CongeladorId",
       "columns": [
         {data: 'CongeladorId'},

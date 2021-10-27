@@ -3,7 +3,7 @@ $(document).ready( function () {
       responsive: true,
       "serverSide":true,
       "processing": true,
-      "ajax": "/empleados",
+      "ajax": "empleados",
         rowId: "EmpleadoId",
       "columns": [
         {data: "EmpleadoApellido"},

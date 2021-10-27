@@ -2,7 +2,7 @@ $(document).ready( function () {
     var table = $('#tableRoles').DataTable({
       responsive: true,
       "serverSide":true,
-      "ajax": "/roles",
+      "ajax": "roles",
         rowId: "id",
       "columns": [
         {data: "id"},

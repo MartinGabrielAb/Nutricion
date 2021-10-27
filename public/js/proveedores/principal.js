@@ -3,7 +3,7 @@ $(document).ready( function () {
     responsive: true,
     "serverSide":true,
     "processing": true,
-    "ajax": "/proveedores",
+    "ajax": "proveedores",
       rowId: "ProveedorId",
     "columns": [
       {data: "ProveedorNombre"},
