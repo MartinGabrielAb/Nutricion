@@ -162,7 +162,8 @@
                         <div id="seleccionar_comidas_individuales">
                             @if ($relevamiento_por_salas->RelevamientoTurno == 'Mañana')
                                 @foreach ($tiposcomida as $tipocomida)
-                                    @if ($tipocomida->TipoComidaNombre == 'Almuerzo' || $tipocomida->TipoComidaNombre == 'Sopa Almuerzo' || $tipocomida->TipoComidaNombre == 'Merienda' || $tipocomida->TipoComidaNombre == 'Postre Almuerzo')
+                                    @if ($tipocomida->TipoComidaTurno == 0)
+                                    {{-- @if ($tipocomida->TipoComidaNombre == 'Almuerzo' || $tipocomida->TipoComidaNombre == 'Sopa Almuerzo' || $tipocomida->TipoComidaNombre == 'Merienda' || $tipocomida->TipoComidaNombre == 'Postre Almuerzo' || $tipocomida->TipoComidaNombre == 'Colación Tarde') --}}
                                         <div class="form-inline">
                                             <label for="comidaid{{$tipocomida->TipoComidaId}}">{{$tipocomida->TipoComidaNombre}}</label>
                                             <select class="form-control clsComidas" id="comidaid{{$tipocomida->TipoComidaId}}" name="comidas[]"  style="width: 100%">
@@ -175,7 +176,8 @@
                                 @endforeach    
                             @elseif(($relevamiento_por_salas->RelevamientoTurno == 'Tarde'))
                                 @foreach ($tiposcomida as $tipocomida)
-                                    @if ($tipocomida->TipoComidaNombre == 'Cena' || $tipocomida->TipoComidaNombre == 'Sopa Cena' || $tipocomida->TipoComidaNombre == 'Desayuno' || $tipocomida->TipoComidaNombre == 'Postre Cena')
+                                    @if ($tipocomida->TipoComidaTurno == 1)
+                                    {{-- @if ($tipocomida->TipoComidaNombre == 'Cena' || $tipocomida->TipoComidaNombre == 'Sopa Cena' || $tipocomida->TipoComidaNombre == 'Desayuno' || $tipocomida->TipoComidaNombre == 'Postre Cena' || $tipocomida->TipoComidaNombre == 'Colación Mañana') --}}
                                         <div class="form-inline">
                                             <label for="comidaid{{$tipocomida->TipoComidaId}}">{{$tipocomida->TipoComidaNombre}}</label>
                                             <select class="form-control clsComidas" id="comidaid{{$tipocomida->TipoComidaId}}" name="comidas[]"  style="width: 100%">
