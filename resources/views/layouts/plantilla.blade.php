@@ -8,11 +8,11 @@
     <link rel="icon" type="image/png" href="{{asset('dist/img/logoHSB.png')}}">
 
     <title>Programa de Nutrición</title>
-
+    
     <link href="{{asset('plugins/fontawesome-free/css/all.min.css')}}" rel="stylesheet">
     <link href="{{asset('dist/css/adminlte.min.css')}}" rel="stylesheet">
     <link href="{{asset('datatables.min.css')}}" rel="stylesheet">
-    <link href="{{asset('css/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
+    <link href="/public/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     <link href="{{asset('css/responsive.dataTables.min.css')}}" rel="stylesheet">
     <link href="{{asset('css/select2.min.css')}}" rel="stylesheet">
 
