@@ -12,7 +12,7 @@ export default {
     },
     mounted () {
        
-        axios.get('/nutrientes').then(response =>{
+        axios.get('../nutrientes').then(response =>{
                 this.nutrientes = response.data;
             }).catch(error => { console.log("errorr");
         });
