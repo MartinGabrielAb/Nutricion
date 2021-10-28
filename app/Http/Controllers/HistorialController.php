@@ -60,8 +60,14 @@ class HistorialController extends Controller
                                     ->first();
             $detallesComidas = DB::table('historialdetallecomida')
                                 ->where('HistorialId',$historial->HistorialId)
+                                ->where('ParaPersonal',0)
+                                ->get();
+            $detallesComidasEmpleados = DB::table('historialdetallecomida')
+                                ->where('HistorialId',$historial->HistorialId)
+                                ->where('ParaPersonal',1)
                                 ->get();
             $comidas = Array();
+            $comidasEmpleados = Array();
             foreach($detallesComidas as $detalleComida){
                 $alimentos = DB::table('historialdetallealimento')
                                 ->where('HistorialDetalleComidaId',$detalleComida->HistorialDetalleComidaId)
@@ -74,10 +80,22 @@ class HistorialController extends Controller
                 );
                 array_push($comidas,$detalle);
             }
-                                
+            foreach($detallesComidasEmpleados as $detalleComida){
+                $alimentos = DB::table('historialdetallealimento')
+                                ->where('HistorialDetalleComidaId',$detalleComida->HistorialDetalleComidaId)
+                                ->get();
+                $detalle = Array(
+                    'id' => $detalleComida->HistorialDetalleComidaId,
+                    'comida' => $detalleComida->ComidaNombre,
+                    'porciones'=> $detalleComida->Porciones,
+                    'alimentos' => $alimentos
+                );
+                array_push($comidasEmpleados,$detalle);
+            }                   
             $data = Array(
                 'historial'=> $historial,
                 'detalles'=> $comidas,
+                'detallesEmpleados' =>$comidasEmpleados
             );      
             return response()->json($data);
         }

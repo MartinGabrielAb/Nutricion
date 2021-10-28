@@ -9,6 +9,9 @@
                 <button type="button" class="btn btn-sm btn-outline-primary" @click="getTandas()" data-toggle="modal"  data-target="#modalTandasEnviadas">
                     Tandas enviadas
                 </button>
+                <button type="button" class="btn btn-sm btn-outline-danger" @click="finalizar()">
+                        Finalizar relevamiento
+                </button>
             </div>
         </div>
         <!-- Tabla de cantidades -->
@@ -17,32 +20,43 @@
                 <div class="card" >
                     <div class="card-body">
                         <div class="row text-sm text-center">
-                            <div class="col-lg-6 col-md-3 col-sm-3 col-xs-2"> 
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"> 
                                 Comida
                             </div>
-                            <div class="col-lg-2 col-md-3 col-sm-3 col-xs-2">
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
                                 En preparación
                             </div>
-                            <div class="col-lg-2 col-md-3 col-sm-3 col-xs-2">
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
                                 Cantidad del congelador
                             </div>
-                            <div class="col-lg-2 col-md-3 col-sm-3 col-xs-2">
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
                                 Cantidad relevada
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                Diferencia
                             </div>
                         </div>
                         <hr>
                         <div class="row text-sm  text-center" v-for="comida in comidas" :key="comida.id">
-                            <div class="col-lg-6 col-md-3 col-sm-3 col-xs-2">
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
                                 {{comida.nombre}}
                             </div>
-                            <div class="col-lg-2 col-md-3 col-sm-3 col-xs-2">
-                                {{comida.cantidadNormal ? comida.cantidadNormal : 0}}
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                {{comida.cantidadNormal }}
                             </div>
-                            <div class="col-lg-2 col-md-3 col-sm-3 col-xs-2">
-                                {{comida.cantidadCongelada ? comida.cantidadCongelada : 0}}
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                {{comida.cantidadCongelada}}
                             </div>
-                            <div class="col-lg-2 col-md-3 col-sm-3 col-xs-2">
-                                {{comida.cantidad ? comida.cantidad :0 }}
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                {{comida.cantidad}}
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                <div class="text-success" v-if="(comida.cantidadNormal + comida.cantidadCongelada - comida.cantidad) > 0">
+                                    + {{comida.cantidadNormal + comida.cantidadCongelada - comida.cantidad}}
+                                </div>
+                                <div v-else class="text-warning">
+                                    - {{comida.cantidadNormal + comida.cantidadCongelada - comida.cantidad}}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -56,6 +70,9 @@
                     <div class="card-body">
                         <div class="row text-sm mb-3">
                             <div class="col">Nueva tanda</div>
+                            <div class="col">
+                                <label><input type="checkbox" id="checkPersonal" v-model="checkPersonal"> ¿Para personal?</label><br>
+                            </div>
                             <div class="col ">
                                 <textarea class="w-100" rows="1"  v-model="observacion" placeholder="Observaciones"></textarea>
                             </div>
@@ -107,13 +124,10 @@
                             </div>
                         </div>
                     </div>
-                    <button type="button btn-sm" class="btn btn-sm btn-outline-primary" @click="finalizar()">
-                        Finalizar relevamiento
-                    </button>
                 </div>
             </div>
         </div>
-        <div class="card" v-if="listErrores">
+        <div class="card" v-if="listErrores.lenght>0">
                 <h5 class="text-danger">Errores:</h5>
                 <ul v-for="error in listErrores" :key="error.id">
                     <li class="text-danger">No posee {{error.cantidadNormal}} porciones de {{error.nombre}}</li>
@@ -132,23 +146,24 @@
                     <div class="modal-body">
                         <template v-for="tanda in tandas">
                             <div class="row" :key="tanda.numero">
-                                <div class="col"><span>Tanda:{{tanda.numero}}</span></div>
+                                <div class="col font-weight-bold"><span>Tanda:{{tanda.numero}}</span></div>
+                                <div class="col text-right">Hora:{{tanda.hora}}</div>
                             </div>
-                            <div class="row" :key="tanda.observacion">
-                                <div class="col">Observaciones: {{tanda.observaciones}}</div>
-                                <div class="col">Hora:{{tanda.hora}}</div>
+                            <div class="row mt-2" :key="tanda.observacion">
+                                <div class="col">Observaciones: {{tanda.observacion}}</div>
+                                
                             </div>
-                            <div class="row">
-                                <div class="col">Comida</div>
-                                <div class="col">Cantidad normal</div>
+                            <div class="row text-center mt-2 font-weight-bold" :key="'tandaNumero'+tanda.numero">
+                                <div class="col  ">Comida</div>
+                                <div class="col ">Cantidad normal</div>
                                 <div class="col">Cantidad congelada</div>
                             </div>
-                            <div class="row" v-for="comida in tanda.comidas" :key="comida.id">
+                            <div class="row text-center" v-for="comida in tanda.comidas" :key="comida.id">
                                 <div class="col">{{comida.nombre}}</div>
                                 <div class="col">{{comida.cantidadNormal}}</div>
                                 <div class="col">{{comida.cantidadCongelada}}</div>
                             </div>
-                            <hr>
+                            <hr :key="'hrNumero'+tanda.numero">
                         </template>
                         <div class="text-center">
                             <button type="button" class="btn btn-sm btn-outline-primary" data-dismiss="modal" >

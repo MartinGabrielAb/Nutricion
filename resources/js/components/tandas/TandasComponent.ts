@@ -4,6 +4,7 @@ export default {
     props : ['id'],
     data:function(){ 
         return {
+            checkPersonal :false,
             listErrores :[],
             comidasRelevadas:[],
             comidasEnProgreso:[],
@@ -36,6 +37,7 @@ export default {
                     params:{
                         observacion: this.observacion,
                         comidas : this.comidasNuevas,
+                        paraPersonal : this.checkPersonal,
                     }
                 }).then(response =>{
                     if(response.data.error){
@@ -76,6 +78,7 @@ export default {
                     nombre:a.nombre,
                     cantidadNormal : a.cantidadNormal,
                     cantidadCongelada : a.cantidadCongelada,
+                    cantidad : 0,
                 })
             });
             this.comidasRelevadas.forEach(b => {
@@ -86,6 +89,8 @@ export default {
                     this.comidas.push({
                         id : b.id,
                         nombre:b.nombre,
+                        cantidadNormal : 0,
+                        cantidadCongelada : 0,
                         cantidad : b.cantidad,
                     })
                 }
