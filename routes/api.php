@@ -485,19 +485,14 @@ Route::post('seleccionarMenu',function(Request $request){
 								->where('TipoPacienteId',$tipoPaciente['id'])
 								->first();
 				if($detalle != null){
-					//HARDCODE TIPOSCOMIDA
 					//SI ES RELEVAMIENTO DE LA MAÑANA TOMA SOLO LOS PRIMEROS TIPOS DE COMIDA
 					if($relevamiento->RelevamientoTurno == 'Mañana'){
 						$comidas = DB::table('comidaportipopaciente as ctp')
 						->where('DetalleMenuTipoPacienteId',$detalle->DetalleMenuTipoPacienteId)
 						->join('comida as com','ctp.ComidaId','com.ComidaId')
+						->join('tipocomida as tc','tc.TipoComidaId','com.TipoComidaId')
 						->where('ComidaPorTipoPacientePrincipal',1)
-						->where(function($q)  {
-                            $q->where('TipoComidaId', 1)
-                            ->orWhere('TipoComidaId', 2)
-							->orWhere('TipoComidaId', 3)
-							->orWhere('TipoComidaId', 4);
-                     		})
+						->where('com.TipoComidaTurno',0)
 						->get();
 					}else{
 					//SI ES RELEVAMIENTO DE LA TARDE TOMA LOS OTROS TIPOS DE COMIDA(LA COLACION NO ES CONTEMPLADA)
@@ -505,12 +500,8 @@ Route::post('seleccionarMenu',function(Request $request){
 							->where('DetalleMenuTipoPacienteId',$detalle->DetalleMenuTipoPacienteId)
 							->where('ComidaPorTipoPacientePrincipal',1)
 							->join('comida as com','ctp.ComidaId','com.ComidaId')
-							->where(function($q)  {
-								$q->where('TipoComidaId', 5)
-								->orWhere('TipoComidaId', 6)
-								->orWhere('TipoComidaId', 7)
-								->orWhere('TipoComidaId', 8);
-								})
+							->join('tipocomida as tc','tc.TipoComidaId','com.TipoComidaId')
+							->where('com.TipoComidaTurno',1)
 							->get();
 					}
 					foreach($comidas as $comida){	
@@ -537,6 +528,8 @@ Route::post('seleccionarMenu',function(Request $request){
 Route::post('/saveTanda/{id}', function ($id, Request $request) {
 	$observacion = $request['params']['observacion'];
 	$comidas = $request['params']['comidas'];
+	$paraPersonal = $request['params']['paraPersonal'];
+	if($paraPersonal) $observacion = '(PARA PERSONAL)'.$observacion;
 	DB::beginTransaction();
 	$noHabiaStock = array();
 	$historial = DB::table('historial')
@@ -558,7 +551,7 @@ Route::post('/saveTanda/{id}', function ($id, Request $request) {
 	foreach ($comidas as $comida){
 		$comida_aux = DB::table('comida')->where('ComidaId',$comida['id'])->first();
 		$comida['nombre'] = $comida_aux->ComidaNombre;
-		$alcanzo = guardarComida($comida_aux,$comida['cantidadNormal'],$historial->HistorialId,$id_tanda);
+		$alcanzo = guardarComida($comida_aux,$comida['cantidadNormal'],$historial->HistorialId,$id_tanda,$paraPersonal);
 		if(!$alcanzo) {
 			array_push($noHabiaStock,$comida);
 			break;
@@ -571,8 +564,8 @@ Route::post('/saveTanda/{id}', function ($id, Request $request) {
 		DB::rollback();
 		return response()->json(['error'=>$noHabiaStock]);;
 	}
-	
 });
+
 Route::get('getMenu/{id}',function($id){
 	$menu = DB::table('menu')
 				->where('MenuId',$id)	
@@ -582,45 +575,46 @@ Route::get('getMenu/{id}',function($id){
 });
 
  //retorna true si se pudo guardar y el stock alcanzaba
-function guardarComida($comida , $porciones,$historialId,$tempTandaId){
+function guardarComida($comida , $porciones,$historialId,$tempTandaId,$paraPersonal){
+	$bitPersonal = 0;
+	if($paraPersonal) $bitPersonal = 1;
 	$alimentos = descontarStock($comida->ComidaId,$porciones);
 	if($alimentos == false) return false;
-	//Si se pudo guardar correctamente lo guardo en el historial
-
+	//Si se pudo descontarStock correctamente lo guardo en el historial
 	$historialDetComida = DB::table('historialdetallecomida')
-								->where('HistorialId',$historialId)
-								->where('ComidaId', $comida->ComidaId)
-								->first();
-	//Si ya existe solamente incremento las porciones,descuento el stock y
-	//no guardo los alimentos xq estos se guardan una sola vez pero si aumento los costos xq son distintos
-	//cada vez que descuento del stock
+			->where('HistorialId',$historialId)
+			->where('ComidaId', $comida->ComidaId)
+			->where('ParaPersonal',$bitPersonal)
+			->first();
 	if($historialDetComida){
-			DB::table('historialdetallecomida')
-					->where('HistorialId',$historialId)
+		DB::table('historialdetallecomida')
+				->where('HistorialId',$historialId)
+				->where('ComidaId',$comida->ComidaId)
+				->where('ParaPersonal',$bitPersonal)
+				->increment('Porciones',$porciones);
+		$tempComida = DB::table('temp_comida')
+					->where('TempTandaId',$tempTandaId)
 					->where('ComidaId',$comida->ComidaId)
-					->increment('Porciones',$porciones);
-			$tempComida = DB::table('temp_comida')
-						->where('TempTandaId',$tempTandaId)
-						->where('ComidaId',$comida->ComidaId)
-						->first();
-			DB::table('temp_comida')
-					->where('TempTandaId', $tempTandaId)
-					->where('ComidaId',$comida->ComidaId)
-					->increment('CantidadNormal', $porciones);
-			foreach($alimentos as $alimento){
-					$historialDetAlimento = HistorialDetalleAlimento::
-											where('HistorialDetalleComidaId',$historialDetComida->HistorialDetalleComidaId)
-											->where('AlimentoId', $alimento['id'])
-											->first();
-					$historialDetAlimento->CostoTotal += $alimento['costo'];
-					$historialDetAlimento->update();
-			}
+					->first();
+		DB::table('temp_comida')
+				->where('TempTandaId', $tempTandaId)
+				->where('ComidaId',$comida->ComidaId)
+				->increment('CantidadNormal', $porciones);
+		foreach($alimentos as $alimento){
+				$historialDetAlimento = HistorialDetalleAlimento::
+										where('HistorialDetalleComidaId',$historialDetComida->HistorialDetalleComidaId)
+										->where('AlimentoId', $alimento['id'])
+										->first();
+				$historialDetAlimento->CostoTotal += $alimento['costo'];
+				$historialDetAlimento->update();
+		}
 	}else{
 		$historialDetComida = new HistorialDetalleComida();
 		$historialDetComida->HistorialId = $historialId;
 		$historialDetComida->ComidaId = $comida->ComidaId; 
 		$historialDetComida->ComidaNombre = $comida->ComidaNombre; 
 		$historialDetComida->Porciones = $porciones;
+		$historialDetComida->ParaPersonal = $bitPersonal;
 		$historialDetComida->save();
 		$temp_comida = DB::table('temp_comida')->insertGetId([
 			'TempTandaId' => $tempTandaId,
@@ -638,6 +632,11 @@ function guardarComida($comida , $porciones,$historialId,$tempTandaId){
 			$historialDetAlimento->save();
 		}
 	}
+
+
+	//Si ya existe solamente incremento las porciones,descuento el stock y
+	//no guardo los alimentos xq estos se guardan una sola vez pero si aumento los costos xq son distintos
+	//cada vez que descuento del stock
 	return true;	
 }
 //retorna false si no alcanzo el stock, sino devuelve un array de con los alimentos y sus costos
