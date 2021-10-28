@@ -2135,7 +2135,7 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this = this;
 
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/../nutrientes').then(function (response) {
+    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/Nutricion/nutrientes').then(function (response) {
       _this.nutrientes = response.data;
     })["catch"](function (error) {
       console.log("errorr");
@@ -2146,7 +2146,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       this.comidas = [];
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/comidaportipopaciente/' + this.id).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/Nutricion/comidaportipopaciente/' + this.id).then(function (response) {
         _this2.comidas = response.data;
       })["catch"](function (error) {
         console.log("errorr");
@@ -2168,7 +2168,7 @@ __webpack_require__.r(__webpack_exports__);
 
       $('#modalElegir').modal('hide');
       this.listNutrientes = [];
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/comidaportipopaciente/' + this.id + "/edit", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/Nutricion/comidaportipopaciente/' + this.id + "/edit", {
         params: {
           comidas: this.listComidasToSimulate
         }
