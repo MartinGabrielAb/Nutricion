@@ -2087,8 +2087,6 @@ __webpack_require__.r(__webpack_exports__);
       //         nombre : `${this.relevamientoAnterior[property].nombre}`
       //     }
       // }
-      // console.log(this.relevamientoAnterior);
-      // return;
       if (window.confirm("Una vez terminado no podra hacer cambios. ¿Desea finalizar?")) {
         axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/seleccionarMenu', {
           params: {
@@ -2137,7 +2135,7 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this = this;
 
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/nutrientes').then(function (response) {
+    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/../nutrientes').then(function (response) {
       _this.nutrientes = response.data;
     })["catch"](function (error) {
       console.log("errorr");
