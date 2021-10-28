@@ -325,22 +325,6 @@ class DetalleRelevamientoController extends Controller
         return $detalleRelevamiento;
     }
 
-    private function get_comidas_por_menu_paciente($menu_id,$tipo_paciente_id,$turno){
-
-        $menuPorTipoPaciente = 
-            DB::table('detallemenutipopaciente')
-            ->where('MenuId',$menu_id)
-            ->where('TipoPacienteId',$tipo_paciente_id)
-            ->first();
-        if($turno == 'Mañana'){
-            $comidas = $this->getComidasPorTurno($menuPorTipoPaciente->DetalleMenuTipoPacienteId,['Merienda','Cena','Postre Cena','Sopa Cena']);
-        }else{
-            $comidas = $this->getComidasPorTurno($menuPorTipoPaciente->DetalleMenuTipoPacienteId,['Desayuno','Almuerzo','Postre Almuerzo','Sopa Almuerzo']);
-        }
-        
-        return $comidas;
-    }
-
     private function set_paciente_nuevo($nombre,$apellido,$dni){
         $paciente = new Paciente;
         $paciente->PacienteNombre = $nombre;

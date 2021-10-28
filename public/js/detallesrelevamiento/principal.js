@@ -591,18 +591,17 @@ function mostrar_checkbox_comidas(comidas,detallerelevamientoid) {
       mostrarCartel('Error al eliminar el registro.','alert-danger');
     }
   }).responseJSON;
-  
+
   comidas.forEach(comida => {
+    comida.check = null;
     detalleRelevamientoComidas.success.forEach(element => {
       if(element.ComidaId == comida.ComidaId){
-        check = 'checked';
-      }else{
-        check = null;
+        comida.check = 1;
       }
     });
     if ($('#turno').val() == 'Mañana') {
-      if(comida.TipoComidaNombre == 'Almuerzo' || comida.TipoComidaNombre == 'Sopa Almuerzo' || comida.TipoComidaNombre == 'Postre Almuerzo' || comida.TipoComidaNombre == 'Merienda'){
-        if (check == null) {
+      if (comida.TipoComidaTurno == 0){
+        if (comida.check == null) {
           html = `
             <div class="form-check">
               <input class="form-check-input comidas_no_individuales" type="checkbox" value="${comida.ComidaId}" id="comida_id_${comida.ComidaId}" name="comida_id_${comida.ComidaId}">
@@ -625,8 +624,8 @@ function mostrar_checkbox_comidas(comidas,detallerelevamientoid) {
         $('#seleccionar_comidas_no_individuales').append(html);
       }
     }else if($('#turno').val() == 'Tarde'){
-      if(comida.TipoComidaNombre == 'Cena' || comida.TipoComidaNombre == 'Sopa Cena' || comida.TipoComidaNombre == 'Postre Cena' || comida.TipoComidaNombre == 'Desayuno'){
-        if (check == null) {
+      if (comida.TipoComidaTurno == 1){
+        if (comida.check == null) {
           html = `
             <div class="form-check">
               <input class="form-check-input comidas_no_individuales" type="checkbox" value="${comida.ComidaId}" id="comida_id_${comida.ComidaId}" name="comida_id_${comida.ComidaId}">
