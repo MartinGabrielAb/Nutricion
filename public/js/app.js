@@ -2067,7 +2067,7 @@ __webpack_require__.r(__webpack_exports__);
     getRelevamiento: function getRelevamiento() {
       var _this2 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/getRelevamientoPorMenu/' + this.relevamientoAnteriorId).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/Nutricion/api/getRelevamientoPorMenu/' + this.relevamientoAnteriorId).then(function (response) {
         _this2.relevamientoAnterior = response.data;
       })["catch"](function (error) {
         console.log("Error getRelevamiento");
@@ -2088,7 +2088,7 @@ __webpack_require__.r(__webpack_exports__);
       //     }
       // }
       if (window.confirm("Una vez terminado no podra hacer cambios. ¿Desea finalizar?")) {
-        axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/seleccionarMenu', {
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/Nutricion/api/seleccionarMenu', {
           params: {
             relevamientoAnt: this.relevamientoAnterior,
             relevamientoNuevo: this.relevamientoSelected,
@@ -2098,7 +2098,7 @@ __webpack_require__.r(__webpack_exports__);
           if (response.data.error) {
             _this3.listErrores = response.data.error;
           } else {
-            window.location.href = "/seleccionarMenu/" + _this3.relevamientoSelected;
+            window.location.href = "/Nutricion/seleccionarMenu/" + _this3.relevamientoSelected;
           }
         })["catch"](function (error) {
           console.log("Error finalizar");
