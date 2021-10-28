@@ -2,7 +2,7 @@ $(document).ready( function () {
   table = $('#tableRelevamientos').DataTable({
     responsive: true,
     "serverSide":true,
-    "ajax": "/relevamientos",
+    "ajax": "/Nutricion/relevamientos",
     rowId: "RelevamientoId",
     "columns": [
       {data: "RelevamientoId", name:"r.RelevamientoId"},
@@ -43,7 +43,7 @@ $(document).ready( function () {
       },
       {data:'btn',orderable:false,sercheable:false},
     ],
-    "language": { "url": "../JSON/Spanish_dataTables.json"},
+    "language": { "url": "Nutricion/public/JSON/Spanish_dataTables.json"},
     "order": [[ 0, "desc" ]],
   });
 

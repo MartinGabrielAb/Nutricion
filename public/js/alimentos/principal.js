@@ -2,7 +2,7 @@ $(document).ready( function () {
   var table = $('#tableAlimentos').DataTable({
     responsive: true,
     "serverSide":true,
-    "ajax": "/alimentos",
+    "ajax": "alimentos",
       rowId: "AlimentoId",
     "columns": [
       {data: 'AlimentoId'},

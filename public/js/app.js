@@ -1981,7 +1981,7 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this = this;
 
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/historial/' + this.id, {
+    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/Nutricion/historial/' + this.id, {
       headers: {
         "Content-Type": "application/json",
         "X-Requested-With": "XMLHttpRequest"
@@ -2067,7 +2067,7 @@ __webpack_require__.r(__webpack_exports__);
     getRelevamiento: function getRelevamiento() {
       var _this2 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/getRelevamientoPorMenu/' + this.relevamientoAnteriorId).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/Nutricion/api/getRelevamientoPorMenu/' + this.relevamientoAnteriorId).then(function (response) {
         _this2.relevamientoAnterior = response.data;
       })["catch"](function (error) {
         console.log("Error getRelevamiento");
@@ -2087,10 +2087,8 @@ __webpack_require__.r(__webpack_exports__);
       //         nombre : `${this.relevamientoAnterior[property].nombre}`
       //     }
       // }
-      // console.log(this.relevamientoAnterior);
-      // return;
       if (window.confirm("Una vez terminado no podra hacer cambios. ¿Desea finalizar?")) {
-        axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/seleccionarMenu', {
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/Nutricion/api/seleccionarMenu', {
           params: {
             relevamientoAnt: this.relevamientoAnterior,
             relevamientoNuevo: this.relevamientoSelected,
@@ -2100,7 +2098,7 @@ __webpack_require__.r(__webpack_exports__);
           if (response.data.error) {
             _this3.listErrores = response.data.error;
           } else {
-            window.location.href = "/seleccionarMenu/" + _this3.relevamientoSelected;
+            window.location.href = "/Nutricion/seleccionarMenu/" + _this3.relevamientoSelected;
           }
         })["catch"](function (error) {
           console.log("Error finalizar");
@@ -2137,7 +2135,7 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this = this;
 
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/nutrientes').then(function (response) {
+    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/Nutricion/nutrientes').then(function (response) {
       _this.nutrientes = response.data;
     })["catch"](function (error) {
       console.log("errorr");
@@ -2148,7 +2146,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       this.comidas = [];
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/comidaportipopaciente/' + this.id).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/Nutricion/comidaportipopaciente/' + this.id).then(function (response) {
         _this2.comidas = response.data;
       })["catch"](function (error) {
         console.log("errorr");
@@ -2170,7 +2168,7 @@ __webpack_require__.r(__webpack_exports__);
 
       $('#modalElegir').modal('hide');
       this.listNutrientes = [];
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/comidaportipopaciente/' + this.id + "/edit", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/Nutricion/comidaportipopaciente/' + this.id + "/edit", {
         params: {
           comidas: this.listComidasToSimulate
         }

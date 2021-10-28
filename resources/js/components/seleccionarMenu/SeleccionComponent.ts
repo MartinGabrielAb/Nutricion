@@ -32,7 +32,7 @@ export default {
             // },
 
             getRelevamiento(){
-                axios.get('/api/getRelevamientoPorMenu/'+this.relevamientoAnteriorId)
+                axios.get('/Nutricion/api/getRelevamientoPorMenu/'+this.relevamientoAnteriorId)
                 .then(response =>{
                     this.relevamientoAnterior = response.data;
                 })
@@ -54,7 +54,7 @@ export default {
                 // }
                   
                 if(window.confirm("Una vez terminado no podra hacer cambios. ¿Desea finalizar?")){
-                axios.post('/api/seleccionarMenu',{params:{
+                axios.post('/Nutricion/api/seleccionarMenu',{params:{
                     relevamientoAnt : this.relevamientoAnterior,
                     relevamientoNuevo: this.relevamientoSelected,
                     menu: this.menuSelected,
@@ -63,7 +63,7 @@ export default {
                             this.listErrores = response.data.error;
                         }
                         else{
-                            window.location.href = "/seleccionarMenu/" + this.relevamientoSelected;
+                            window.location.href = "/Nutricion/seleccionarMenu/" + this.relevamientoSelected;
                         }
                     })
                 .catch(error => { console.log("Error finalizar");})

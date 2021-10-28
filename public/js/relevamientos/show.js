@@ -3,7 +3,7 @@ $(document).ready( function () {
     table = $('#salas_por_relevamiento').DataTable({
       responsive: true,
       "serverSide":true,
-      "ajax": "/relevamientos/"+relevamiento_id,
+      "ajax": "relevamientos/"+relevamiento_id,
       rowId: "SalaId",
       "columns": [
         {data: "SalaId"},

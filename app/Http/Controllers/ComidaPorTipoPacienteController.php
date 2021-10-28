@@ -94,7 +94,7 @@ class ComidaPorTipoPacienteController extends Controller
         foreach ($listaComidas as $comidaId) {
             $comida = DB::table('comida as c')
                                 ->where('ComidaId',$comidaId)
-                                ->join('tipoComida as tc','tc.TipoComidaId','c.TipoComidaId')
+                                ->join('tipocomida as tc','tc.TipoComidaId','c.TipoComidaId')
                                 ->first();
             $comidaArray = array();
             $alimentosPorComida = DB::table('alimentoporcomida as apc')
