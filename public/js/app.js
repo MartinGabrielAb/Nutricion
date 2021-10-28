@@ -1981,7 +1981,7 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this = this;
 
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/historial/' + this.id, {
+    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/Nutricion/historial/' + this.id, {
       headers: {
         "Content-Type": "application/json",
         "X-Requested-With": "XMLHttpRequest"

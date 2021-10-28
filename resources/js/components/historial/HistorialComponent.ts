@@ -9,7 +9,7 @@ export default {
         }
     },
     mounted(){
-        axios.get('/historial/'+this.id,{
+        axios.get('/Nutricion/historial/'+this.id,{
             headers: { "Content-Type" : "application/json",
                 "X-Requested-With": "XMLHttpRequest" }})
             .then(response =>{
