@@ -115,11 +115,11 @@
                 @endforeach
             </select>
             <label for="cantidad">Cantidad neto</label> <small>(en gramos o cm3)</small>
-            <input type="number" id ="cantidad" name="cantidad" class="form-control" required>
+            <input type="number" id ="cantidad" name="cantidad" class="form-control" required step="0.01">
             <input type="hidden" value="Gramo" id="unidadMedida" name="unidadMedida">
             <label for="cantidad_bruta">Cantidad bruta</label> <small id="un_medida_bruta"></small>
-            <input type="number" id ="cantidad_bruta" name="cantidad_bruta" class="form-control" required>
-            <input type="hidden" value="" id="un_medida_bruta_id" name="un_medida_bruta_id">
+            <input type="number" id ="cantidad_bruta" name="cantidad_bruta"   class="form-control" required step="0.01">
+            <input type="hidden" value="" id="un_medida_bruta_id" name="un_medida_bruta_id" >
         </div>
         <div class="modal-footer">
           <div class="container-fluid">
