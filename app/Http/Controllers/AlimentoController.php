@@ -77,6 +77,9 @@ class AlimentoController extends Controller
 								->get();
                 foreach ($alimentosPorProveedor as $alimentoPorProveedor) {
                     $alimentoPorProveedor->AlimentoPorProveedorCostoTotal = $alimentoPorProveedor->AlimentoPorProveedorCosto * $alimentoPorProveedor->AlimentoPorProveedorCantidad;
+                    $alimentoPorProveedor->AlimentoPorProveedorCostoTotal = '$' . round($alimentoPorProveedor->AlimentoPorProveedorCostoTotal,2);
+                    $alimentoPorProveedor->AlimentoPorProveedorCosto = '$' . $alimentoPorProveedor->AlimentoPorProveedorCosto;
+//aca me quedé
                 }
                 return DataTables::of($alimentosPorProveedor)
                                 ->addColumn('btn','alimentosporproveedor/actions')
