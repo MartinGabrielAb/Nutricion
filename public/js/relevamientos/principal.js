@@ -2,7 +2,7 @@ $(document).ready( function () {
   table = $('#tableRelevamientos').DataTable({
     responsive: true,
     "serverSide":true,
-    "ajax": "/relevamientos",
+    "ajax": "relevamientos",
     rowId: "RelevamientoId",
     "columns": [
       {data: "RelevamientoId", name:"r.RelevamientoId"},
