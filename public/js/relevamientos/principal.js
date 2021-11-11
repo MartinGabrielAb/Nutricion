@@ -43,7 +43,7 @@ $(document).ready( function () {
       },
       {data:'btn',orderable:false,sercheable:false},
     ],
-    "language": { "url": "public/JSON/Spanish_dataTables.json"},
+    "language": { "url": "../JSON/Spanish_dataTables.json"},
     "order": [[ 0, "desc" ]],
   });
 
