@@ -3,7 +3,7 @@ $(document).ready( function () {
     var table = $('#tableMenuesPorTipoPaciente').DataTable({
       responsive: true,
       "serverSide":true,
-      "ajax": "menu/"+menuId,
+      "ajax": menuId,
         rowId: "DetalleMenuTipoPacienteId",
       "columns": [
         {data: "TipoPacienteNombre"},
@@ -11,7 +11,7 @@ $(document).ready( function () {
       ],
       "language": { "url": "../JSON/Spanish_dataTables.json"},
     });
-  
+
     $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
     
     /*------Funcion para llenar los campos cuando selecciono una fila -----*/ 
