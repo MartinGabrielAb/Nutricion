@@ -9,12 +9,12 @@
 
     <title>Programa de Nutrición</title>
     
-    <link href="{{asset('../plugins/fontawesome-free/css/all.min.css')}}" rel="stylesheet">
-    <link href="{{asset('../dist/css/adminlte.min.css')}}" rel="stylesheet">
-    <link href="{{asset('../datatables.min.css')}}" rel="stylesheet">
-    <link href="{{asset('../css/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
-    <link href="{{asset('../css/responsive.dataTables.min.css')}}" rel="stylesheet">
-    <link href="{{asset('../css/select2.min.css')}}" rel="stylesheet">
+    <link href="{{asset('plugins/fontawesome-free/css/all.min.css')}}" rel="stylesheet">
+    <link href="{{asset('dist/css/adminlte.min.css')}}" rel="stylesheet">
+    <link href="{{asset('datatables.min.css')}}" rel="stylesheet">
+    <link href="{{asset('css/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
+    <link href="{{asset('css/responsive.dataTables.min.css')}}" rel="stylesheet">
+    <link href="{{asset('css/select2.min.css')}}" rel="stylesheet">
 
   </head>
   <body class="hold-transition sidebar-mini">
@@ -25,13 +25,13 @@
       @include('layouts.footer') 
     <!-- REQUIRED SCRIPTS -->
   </div>
-    <script src="{{asset('../plugins/jquery/jquery.min.js')}}"></script>
-    <script src="{{asset('../plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-    <script src="{{asset('../dist/js/adminlte.min.js')}}"></script>
-    <script src="{{asset('../datatables.min.js')}}"></script>
-    <script  src="{{asset('../js/dataTables.responsive.min.js')}}"></script>
-    <script  src="{{asset('../js/select2.min.js')}}"></script>
+    <script src="{{asset('plugins/jquery/jquery.min.js')}}"></script>
+    <script src="{{asset('plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{asset('dist/js/adminlte.min.js')}}"></script>
+    <script src="{{asset('datatables.min.js')}}"></script>
+    <script  src="{{asset('js/dataTables.responsive.min.js')}}"></script>
+    <script  src="{{asset('js/select2.min.js')}}"></script>
     @stack('custom-scripts')
-    <script src="{{asset('../js/app.js')}}"></script> 
+    <script src="{{asset('js/app.js')}}"></script> 
   </body>
 </html>
