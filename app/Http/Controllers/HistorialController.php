@@ -51,7 +51,6 @@ class HistorialController extends Controller
     {}
     public function show($id, Request $request)
     {   
-        
         if($request->ajax()){
             $historial = DB::table('historial as h')
                                     ->where('HistorialId',$id)
@@ -62,6 +61,8 @@ class HistorialController extends Controller
                                 ->where('HistorialId',$historial->HistorialId)
                                 ->where('ParaPersonal',0)
                                 ->get();
+                               
+
             $detallesComidasEmpleados = DB::table('historialdetallecomida')
                                 ->where('HistorialId',$historial->HistorialId)
                                 ->where('ParaPersonal',1)
@@ -98,8 +99,8 @@ class HistorialController extends Controller
                 'detallesEmpleados' =>$comidasEmpleados
             );      
             return response()->json($data);
-        }
 
+        }
         return view('historial.show',compact('id'));
 
     }

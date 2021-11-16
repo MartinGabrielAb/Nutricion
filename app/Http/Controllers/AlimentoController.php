@@ -53,6 +53,7 @@ class AlimentoController extends Controller
         $alimento =new Alimento();
         $alimento->AlimentoNombre = $datos['nombre'];
         $alimento->UnidadMedidaId = $unidadMedida->UnidadMedidaId;
+        $alimento->AlimentoPesoPorUnidad = $datos['peso_x_unidad']; 
      
         $alimento->AlimentoEstado = 1;
         $alimento->AlimentoCantidadTotal = 0;

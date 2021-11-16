@@ -87,11 +87,10 @@ class ComidaPorTipoPacienteController extends Controller
     public function edit(Request $request,$id)
     {   
         
-        $listaComidas = $request['comidas'];
         $respuesta = array();
         $valoresTotales=array();
         $comidasArray = array();
-        foreach ($listaComidas as $comidaId) {
+        foreach ($request['comidas'] as $comidaId) {
             $comida = DB::table('comida as c')
                                 ->where('ComidaId',$comidaId)
                                 ->join('tipocomida as tc','tc.TipoComidaId','c.TipoComidaId')
@@ -114,13 +113,13 @@ class ComidaPorTipoPacienteController extends Controller
                 if($alimentoPorComida->UnidadMedidaNombre == 'Unidad' ) {
                     foreach ($nutrientes as $nutriente) {
                         array_push($nutrientesArray,[
-                            "cantidad" =>  round($cantidad * $nutriente->NutrientePorAlimentoValor,2),
+                            "cantidad" =>  round($cantidad * (($nutriente->NutrientePorAlimentoValor*$alimentosPorComida->AlimentoPesoPorUnidad)/100),2),
                             "id" => $nutriente->NutrienteId,  
                         ]);
                         if(!empty($valoresTotales[$cont])){
-                            $valoresTotales[$cont] = $valoresTotales[$cont] + round($cantidad * $nutriente->NutrientePorAlimentoValor,2);
+                            $valoresTotales[$cont] = $valoresTotales[$cont] + round($cantidad *(($nutriente->NutrientePorAlimentoValor*$alimentosPorComida->AlimentoPesoPorUnidad)/100),2);
                         }else{
-                            $valoresTotales[$cont] =$cantidad * round($nutriente->NutrientePorAlimentoValor,2);
+                            $valoresTotales[$cont] =$cantidad * round((($nutriente->NutrientePorAlimentoValor*$alimentosPorComida->AlimentoPesoPorUnidad)/100),2);
     
                         }
                         $cont = $cont +1 ; 

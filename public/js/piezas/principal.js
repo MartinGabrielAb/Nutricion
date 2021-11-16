@@ -3,7 +3,7 @@ $(document).ready( function () {
     var table = $('#tablePiezas').DataTable({
       responsive: true,
       "serverSide":true,
-      "ajax": "salas/"+SalaId,
+      "ajax": "../salas/"+SalaId,
         rowId: "PiezaId",
       "columns": [
         {data: "PiezaId"},
