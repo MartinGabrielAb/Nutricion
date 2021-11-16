@@ -29,6 +29,17 @@ $(document).ready( function () {
   //     $('#divEquivalencia').hide();
   //   }
   // });
+  $('#cantidad_x_un').hide();
+  $('#lbl_cantidad_x_un').hide();
+  $('select').on('change', function() {
+    $('#cantidad_x_un').hide();
+    $('#lbl_cantidad_x_un').hide();
+    $('#cantidad_x_un').empty();
+    if (this.value == 3) {//cuando es unidad
+      $('#cantidad_x_un').show(); 
+      $('#lbl_cantidad_x_un').show();
+    }
+  });
 });
 
 function vaciarCampos(){
@@ -48,6 +59,12 @@ function agregar(){
 function guardar(e){
   $("#listaErrores").empty();
   e.preventDefault();
+  var peso_x_unidad;
+  if ($('#cantidad_x_un').val() == undefined) {
+    peso_x_unidad = null;
+  }else{
+    peso_x_unidad = $('#cantidad_x_un').val();
+  }
   $.ajax({
     type:'POST',
     url:"/alimentos",
@@ -55,6 +72,7 @@ function guardar(e){
     data:{
       nombre: $('#nombre').val(),
       unidad : $('#unidad').val(),
+      peso_x_unidad: peso_x_unidad,
     },
     success: function(response){
       $('#modal').modal('hide');

@@ -86,15 +86,17 @@
                     <option value="{{$proveedor->ProveedorId}}">{{$proveedor->ProveedorNombre}}</option>  
                 @endforeach
             </select>
-            <label for="costo">Costo por {{$alimento->UnidadMedidaNombre}}</label>
+            <label for="costo">Costo Total</label>
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
                     <span class="input-group-text">$</span>
                 </div>
                 <input type="number" class="form-control" id="costo" required step="0.01">
             </div>
-            <label for='cantidad'>Cantidad</label>
+            <label for='cantidad'>Cantidad de unidades</label>
             <input class="form-control" type="number" id="cantidad" name="cantidad" required step="0.01">
+            <label for='cantidad_x_unidad'>Contenido de unidad <small>(equivalente en {{$alimento->UnidadMedidaNombre}})</small></label>
+            <input class="form-control" type="number" id="cantidad_x_unidad" name="cantidad_x_unidad" required step="0.01">
             <label for='vencimiento' >Vencimiento</label>
             <input class="form-control" type="date" id="vencimiento" name="vencimiento" required>
 

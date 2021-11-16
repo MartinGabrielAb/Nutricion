@@ -84,6 +84,8 @@
               @endif
             @endforeach
           </select>
+          <label id="lbl_cantidad_x_un" for='cantidad_x_un'>Cantidad por unidad <small>(gramo o cm3)</small></label>
+          <input class="form-control" type="number" id="cantidad_x_un" name="cantidad_x_un" required step="0.01">
         </div>
         <div class="modal-footer">
           <div class="container-fluid">

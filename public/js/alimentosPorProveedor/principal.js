@@ -44,6 +44,11 @@ function agregar(){
 function guardar(e){
   $("#listaErrores").empty();
   e.preventDefault();
+  if ($('#cantidad_x_unidad').val() == undefined) {
+    $('#cantidad_x_unidad').val(1)
+  }
+  var cantidad = ( $('#cantidad').val() * $('#cantidad_x_unidad').val()).toFixed(2);
+  var costo = $('#costo').val() / cantidad;
   $.ajax({
     type:'POST',
     url:"../alimentosporproveedor",
@@ -51,8 +56,8 @@ function guardar(e){
     data:{
       alimentoId :$('#alimentoId').val(),
       proveedor: $('#proveedor').val(),
-      costo : $('#costo').val(),
-      cantidad: $('#cantidad').val(),
+      costo : costo,
+      cantidad: cantidad,
       vencimiento: $('#vencimiento').val(),
 
     },
