@@ -3,7 +3,7 @@ $(document).ready( function () {
     var table = $('#tableMenuesPorTipoPaciente').DataTable({
       responsive: true,
       "serverSide":true,
-      "ajax": "menu/"+menuId,
+      "ajax": "../menu/"+menuId,
         rowId: "DetalleMenuTipoPacienteId",
       "columns": [
         {data: "TipoPacienteNombre"},
