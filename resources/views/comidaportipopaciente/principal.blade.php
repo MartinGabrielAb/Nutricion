@@ -10,6 +10,7 @@
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="/menu/{{$menu->MenuId}}">Menúes por tipo</a></li>
+            <li class="breadcrumb-item"><a href="{{route('menu.show',$menu->MenuId)}}">Menúes por tipo 2</a></li>
             <li class="breadcrumb-item active">Comidas</li>
           </ol>
         </div>

@@ -19,8 +19,7 @@
   </head>
   <body class="hold-transition sidebar-mini">
   <div id="app">
-    
-        <?php $user = Auth::user() ?>
+      <?php $user = Auth::user() ?>
       @include('layouts.navbar')
       @yield('contenido')
       @include('layouts.footer') 

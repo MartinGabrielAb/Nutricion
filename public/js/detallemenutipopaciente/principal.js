@@ -11,7 +11,7 @@ $(document).ready( function () {
       ],
       "language": { "url": "../JSON/Spanish_dataTables.json"},
     });
-  
+
     $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
     
     /*------Funcion para llenar los campos cuando selecciono una fila -----*/ 
