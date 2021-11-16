@@ -3,7 +3,7 @@ $(document).ready( function () {
   var table = $('#tableAlimentosPorProveedor').DataTable({
     responsive: true,
     "serverSide":true,
-    "ajax": "/alimentos/"+alimentoId,
+    "ajax": "../alimentos/"+alimentoId,
       rowId: "AlimentoPorProveedorId",
     "columns": [
           {data: 'ProveedorNombre'},

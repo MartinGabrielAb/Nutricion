@@ -95,8 +95,10 @@
             </div>
             <label for='cantidad'>Cantidad de unidades</label>
             <input class="form-control" type="number" id="cantidad" name="cantidad" required step="0.01">
+            @if($alimento->UnidadMedidaNombre != 'Unidad')
             <label for='cantidad_x_unidad'>Contenido de unidad <small>(equivalente en {{$alimento->UnidadMedidaNombre}})</small></label>
             <input class="form-control" type="number" id="cantidad_x_unidad" name="cantidad_x_unidad" required step="0.01">
+            @endif
             <label for='vencimiento' >Vencimiento</label>
             <input class="form-control" type="date" id="vencimiento" name="vencimiento" required>
 
