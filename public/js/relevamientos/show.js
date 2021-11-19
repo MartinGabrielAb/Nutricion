@@ -10,7 +10,7 @@ $(document).ready( function () {
         {data: "SalaNombre"},
         {data:'btn',orderable:false,sercheable:false},
       ],
-      "language": { "url": "../JSON/Spanish_dataTables.json"},
+      "language": { "url": "../public/JSON/Spanish_dataTables.json"},
       "order": [[ 0, "desc" ]],
     });
   

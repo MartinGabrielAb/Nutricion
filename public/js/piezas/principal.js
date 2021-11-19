@@ -11,7 +11,7 @@ $(document).ready( function () {
         {data: "PiezaPseudonimo"},
         {data:'btn',orderable:false,sercheable:false},
       ],
-      "language": { "url": "../JSON/Spanish_dataTables.json"
+      "language": { "url": "../public/JSON/Spanish_dataTables.json"
     }});
   
     $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
