@@ -130,7 +130,7 @@
 </div>
 
 @push('custom-scripts')
-<script type="text/javascript" src="{{asset('js/alimentosPorProveedor/principal.js')}}"></script>
+<script type="text/javascript" src="{{asset('js/alimentosporproveedor/principal.js')}}"></script>
 
 @endpush
 
