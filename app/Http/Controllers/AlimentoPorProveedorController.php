@@ -53,7 +53,26 @@ class AlimentoPorProveedorController extends Controller
 
     public function update(Request $request, $id)
     { 
- 
+        $datos = $request->all();
+        $alimento = Alimento::FindOrFail($datos['alimentoId']);
+        $alimentoPorProveedor =AlimentoPorProveedor::findOrFail($id);
+        $alimentoPorProveedor->ProveedorId = $datos['proveedor'];
+        $alimentoPorProveedor->AlimentoId = $datos['alimentoId'];
+        $alimentoPorProveedor->AlimentoPorProveedorVencimiento=$datos['vencimiento'];
+        // Actualizar costo total de despensa
+        $alimento->AlimentoCantidadTotal -= $alimentoPorProveedor->AlimentoPorProveedorCantidad;
+        $alimentoPorProveedor->AlimentoPorProveedorCantidad = $datos['cantidad'];
+        $alimentoPorProveedor->AlimentoPorProveedorCosto = $datos['costo'];
+        $alimentoPorProveedor->AlimentoPorProveedorEstado = 1;
+        $resultado = $alimentoPorProveedor->update();
+        // Actualizar costo total de despensa
+        $alimento->AlimentoCantidadTotal += $alimentoPorProveedor->AlimentoPorProveedorCantidad;
+        $resultado = $alimento->update();
+        if ($resultado) {
+            return response()->json(['success' => 'true']);
+        }else{
+            return response()->json(['success'=>'false']);
+        }
     }
 
 

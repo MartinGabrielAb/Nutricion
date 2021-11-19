@@ -114,10 +114,10 @@
                   <option value="{{$alimento->AlimentoId}}" >{{$alimento->AlimentoNombre}}</option>
                 @endforeach
             </select>
-            <label for="cantidad">Cantidad neto</label> <small>(en gramos o cm3)</small>
+            <label for="cantidad">Cantidad neto</label> <small class="un_medida"></small>
             <input type="number" id ="cantidad" name="cantidad" class="form-control" required step="0.01">
             <input type="hidden" value="Gramo" id="unidadMedida" name="unidadMedida">
-            <label for="cantidad_bruta">Cantidad bruta</label> <small id="un_medida_bruta"></small>
+            <label for="cantidad_bruta">Cantidad bruta <small class="un_medida"></small></label>
             <input type="number" id ="cantidad_bruta" name="cantidad_bruta"   class="form-control" required step="0.01">
             <input type="hidden" value="" id="un_medida_bruta_id" name="un_medida_bruta_id" >
         </div>

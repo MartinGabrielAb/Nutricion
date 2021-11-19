@@ -90,6 +90,27 @@ class AlimentoPorComidaController extends Controller
   
     public function update(Request $request, $id)
     {
+        $datos = $request->all();
+        $detalle = AlimentoPorComida::FindOrFail($id);
+        $detalle->ComidaId = $datos['comidaId'];
+        $detalle->AlimentoId = $datos['alimentoId'];
+        $detalle->AlimentoPorComidaCantidadNeto = $datos['cantidadNeto'];
+        $detalle->AlimentoPorComidaCantidadBruta = $datos['cantidad_bruta'];
+        $nombreUnidad = $datos['unidadMedida'];
+        $alimento = DB::table('alimento as a')
+                            ->where('AlimentoId',$detalle->AlimentoId)
+                            ->join('unidadmedida as u','u.UnidadMedidaId','a.UnidadMedidaId')    
+                            ->first();
+        if($alimento->UnidadMedidaNombre == 'Litro') $nombreUnidad = 'cm3';
+        $unidadMedida = UnidadMedida::where('UnidadMedidaNombre','=',$nombreUnidad)->first(); 
+        $detalle->UnidadMedidaId = $unidadMedida->UnidadMedidaId;
+        $detalle->AlimentoPorComidaEstado = 1;
+        $resultado = $detalle->update();
+        if ($resultado) {
+            return response()->json(['success' => 'true']);
+        }else{
+            return response()->json(['success'=>'false']);
+        }
     }
 
     public function destroy($id)

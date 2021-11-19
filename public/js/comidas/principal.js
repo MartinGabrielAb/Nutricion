@@ -10,7 +10,7 @@ $(document).ready( function () {
       {data: 'TipoComidaNombre'},
       {data: 'btn',orderable:false,sercheable:false},
     ],
-    "language": { "url": "../JSON/Spanish_dataTables.json"},
+    "language": { "url": "public/JSON/Spanish_dataTables.json"},
   });
 
   $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
@@ -23,6 +23,7 @@ $(document).ready( function () {
     var data = table.row( $(this).parents('tr') ).data();
     $("#id").val(data['ComidaId']);
     $("#nombre").val(data['ComidaNombre']);
+    $("#tipo").val(data['TipoComidaId']).trigger('change');
   });
 });
 

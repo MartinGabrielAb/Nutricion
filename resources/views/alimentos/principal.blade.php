@@ -65,7 +65,7 @@
 
 <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog" role="document">
-    <form onSubmit="guardar(event)">
+    <form novalidate onSubmit="guardar(event)">
       <div class="modal-content">
         <div class="modal-header">
           <span class="modal-title" id="tituloModal"></span>
@@ -74,6 +74,7 @@
           </button>
         </div>    
         <div class="modal-body">
+          <input type="hidden" id="id" name="id" value="">
           <label for='nombre' id="labelNombre">Nombre</label>
           <input class="form-control" type="text" id="nombre" name="nombre" required autocomplete="off">
           <label for="unidad">Unidad de medida:</label>

@@ -29,7 +29,6 @@
                   </div> 
               </div>
               <div class="col">
-                    <input type="hidden" id="alimentoId" value="{{$alimento->AlimentoId}}">
                     <p class="text-right">
                         <button type="button" class="btn btn-sm btn-outline-primary" id="btnAgregar" onClick="agregar()" data-toggle="modal"  data-target="#modal">
                         Agregar alimento
@@ -80,6 +79,8 @@
           </button>
         </div>    
         <div class="modal-body">
+            <input type="hidden" id="id" name="id" value="">
+            <input type="hidden" id="alimentoId" value="{{$alimento->AlimentoId}}">
             <label for='proveedor' id="labelProveedor">Proveedor</label>
             <select class="form-control" id="proveedor" name="proveedor" required >
                 @foreach($proveedores as $proveedor)

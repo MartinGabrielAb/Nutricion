@@ -72,15 +72,13 @@ class AlimentoController extends Controller
             try{
                 $alimentosPorProveedor = DB::table('alimentoporproveedor as app')
 								->join('alimento as a','a.AlimentoId','app.AlimentoId')
+                                ->join('unidadmedida as um', 'um.UnidadMedidaId', 'a.UnidadMedidaId')
 								->join('proveedor as p','p.ProveedorId','app.ProveedorId')
 								->where('app.AlimentoId',$id)
                                 ->where('app.AlimentoPorProveedorEstado',1)
 								->get();
                 foreach ($alimentosPorProveedor as $alimentoPorProveedor) {
                     $alimentoPorProveedor->AlimentoPorProveedorCostoTotal = $alimentoPorProveedor->AlimentoPorProveedorCosto * $alimentoPorProveedor->AlimentoPorProveedorCantidad;
-                    $alimentoPorProveedor->AlimentoPorProveedorCostoTotal = '$' . round($alimentoPorProveedor->AlimentoPorProveedorCostoTotal,2);
-                    $alimentoPorProveedor->AlimentoPorProveedorCosto = '$' . $alimentoPorProveedor->AlimentoPorProveedorCosto;
-//aca me quedé
                 }
                 return DataTables::of($alimentosPorProveedor)
                                 ->addColumn('btn','alimentosporproveedor/actions')
@@ -103,7 +101,23 @@ class AlimentoController extends Controller
     public function edit($id)
     {    }
     public function update(Request $request, $id)
-    {    }
+    {  
+        
+        $datos = $request->all();
+        $unidadMedida = UnidadMedida::findOrFail($datos['unidad']);
+        $alimento = Alimento::FindOrFail($id);
+        $alimento->AlimentoNombre = $datos['nombre'];
+        $alimento->UnidadMedidaId = $unidadMedida->UnidadMedidaId;
+        $alimento->AlimentoPesoPorUnidad = $datos['peso_x_unidad']; 
+     
+        $alimento->AlimentoEstado = 1;
+        $resultado = $alimento->update();
+        if ($resultado) {
+            return response()->json(['success' => 'true']);
+        }else{
+            return response()->json(['success'=>'false']);
+        }
+    }
 
     public function destroy($id)
     {
