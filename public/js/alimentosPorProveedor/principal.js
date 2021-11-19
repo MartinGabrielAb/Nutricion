@@ -34,7 +34,7 @@ $(document).ready( function () {
           }},
          {data: 'btn',orderable:false,sercheable:false},
     ],
-    "language": { "url": "public/JSON/Spanish_dataTables.json"},
+    "language": { "url": "../public/JSON/Spanish_dataTables.json"},
     "columnDefs": [
       { responsivePriority: 1, targets: 0 },
       { responsivePriority: 2, targets: 7 },
