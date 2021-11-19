@@ -1,4 +1,4 @@
-
+ 
 function llenarNutrientes(id){
     $('#bodyNutrientes').empty();
     $.ajax({
