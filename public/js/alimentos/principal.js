@@ -31,15 +31,15 @@ $(document).ready( function () {
 
   $('#cantidad_x_un').hide();
   $('#lbl_cantidad_x_un').hide();
-  $('select').on('change', function() {
-    $('#cantidad_x_un').hide();
-    $('#lbl_cantidad_x_un').hide();
-    $('#cantidad_x_un').empty();
-    if (this.value == 3) {//cuando es unidad
-      $('#cantidad_x_un').show(); 
-      $('#lbl_cantidad_x_un').show();
-    }
-  });
+  // $('select').on('change', function() {
+  //   $('#cantidad_x_un').hide();
+  //   $('#lbl_cantidad_x_un').hide();
+  //   $('#cantidad_x_un').empty();
+  //   if (this.value == 3) {//cuando es unidad
+  //     $('#cantidad_x_un').show(); 
+  //     $('#lbl_cantidad_x_un').show();
+  //   }
+  // });
 });
 
 function vaciarCampos(){
