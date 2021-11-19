@@ -77,7 +77,7 @@ $(document).ready( function () {
   });
 
 });
-  
+    
   function vaciarCampos(){
     $("#alimento").val("").trigger('change');
     $("#cantidad").val("");
