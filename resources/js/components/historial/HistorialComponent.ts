@@ -10,17 +10,19 @@ export default {
         }
     },
     mounted(){
-        axios.get('/historialPacientes/'+this.id,{
+        axios.get('./'+this.id,{
             headers: { "Content-Type" : "application/json",
-                "X-Requested-With": "XMLHttpRequest" }})
+                "X-Requested-With": "XMLHttpRequest" }
+            })
             .then(response =>{
                 this.historial = response.data.historial;
                 this.historial.total = 0;
                 this.historial.porciones = 0;
                 this.historial.totalEmpleados = 0;
-                this.historia.porcionesEmpleados = 0;
+                this.historial.porcionesEmpleados = 0;
                 this.detalles = response.data.detalles;
                 this.detallesEmpleados = response.data.detallesEmpleados;
+
                 this.detalles.forEach(detalle => {
                     detalle.subtotal = 0;
                     detalle.alimentos.forEach(alimento => {

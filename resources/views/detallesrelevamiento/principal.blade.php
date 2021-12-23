@@ -191,14 +191,16 @@
                             @endif
                         </div>
                     </div>
-                    <div class="form-inline border-bottom border-top pb-2 pt-2">
+
+                    <!-- DESCOMENTAR LINEA 322 DE DETALLE RELEVAMIENTO CONTROLLER -->
+                    <!-- <div class="form-inline border-bottom border-top pb-2 pt-2">
                         <label for="colacion">Colación</label>
                         <select class="form-control" id="colacion" name="colacion" style="width: 100%">
                             @foreach ($colaciones as $colacion)
                                 <option value="{{$colacion->ComidaId}}">{{$colacion->ComidaNombre}}</option>
                             @endforeach
                         </select>
-                    </div>
+                    </div> -->
                     <div class="form-check mt-3">
                         <input class="form-check-input" type="checkbox" value="1" id="acompanianteId" name="acompanianteId">
                         <label class="form-check-label" for="acompanianteId">

@@ -46,7 +46,7 @@
                         <th>Proveedor</th>
                         <th>Comprada</th>
                         <th>Usado</th>
-                        <th>Costo Unitario</th>
+                        <th>Costo por {{$alimento->UnidadMedidaNombre}}</th>
                         <th>Costo Total</th>
                         <th>Ingreso</th>
                         <th>Vencimiento</th>
@@ -99,6 +99,8 @@
             @if($alimento->UnidadMedidaNombre != 'Unidad')
             <label for='cantidad_x_unidad'>Contenido de unidad <small>(equivalente en {{$alimento->UnidadMedidaNombre}})</small></label>
             <input class="form-control" type="number" id="cantidad_x_unidad" name="cantidad_x_unidad" required step="0.01">
+            @else
+            <input class="form-control"  type="hidden" id="cantidad_x_unidad" value="1" name="cantidad_x_unidad" required step="0.01">
             @endif
             <label for='vencimiento' >Vencimiento</label>
             <input class="form-control" type="date" id="vencimiento" name="vencimiento" required>

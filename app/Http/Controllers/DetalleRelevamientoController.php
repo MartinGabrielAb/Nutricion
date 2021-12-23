@@ -319,7 +319,7 @@ class DetalleRelevamientoController extends Controller
             $detalleRelevamiento->DetalleRelevamientoVajillaDescartable = 0;
         }
         $detalleRelevamiento->UserId = $request['user'];
-        $detalleRelevamiento->DetalleRelevamientoColacion = $request['colacion'];
+        //$detalleRelevamiento->DetalleRelevamientoColacion = $request['colacion'];
         $detalleRelevamiento->save();
 
         return $detalleRelevamiento;

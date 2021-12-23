@@ -14,15 +14,15 @@ export default {
         }
     },
     mounted () {
-        axios.get('/api/getRelevamientosAnteriores',{
+        axios.get('api/getRelevamientosAnteriores',{
             headers: { "Content-Type" : "application/json",
                 "X-Requested-With": "XMLHttpRequest" }}).then(response =>{
                 this.relevamientos = response.data;
             }).catch(error => {console.log("Error relevamientos pendientes");});
-        axios.get('/api/getRelevamientosSinMenuAsignado').then(response =>{
+        axios.get('api/getRelevamientosSinMenuAsignado').then(response =>{
                 this.relevamientosSinMenu = response.data    
             }).catch(error => { console.log("Error menues sin asignar");});
-        axios.get('/api/getMenues').then(response =>{
+        axios.get('api/getMenues').then(response =>{
                 this.menues = response.data    
             }).catch(error => { console.log("Error menues");})
     },
@@ -32,7 +32,7 @@ export default {
             // },
 
             getRelevamiento(){
-                axios.get('/Nutricion/api/getRelevamientoPorMenu/'+this.relevamientoAnteriorId)
+                axios.get('api/getRelevamientoPorMenu/'+this.relevamientoAnteriorId)
                 .then(response =>{
                     this.relevamientoAnterior = response.data;
                 })
@@ -54,7 +54,7 @@ export default {
                 // }
                   
                 if(window.confirm("Una vez terminado no podra hacer cambios. ¿Desea finalizar?")){
-                axios.post('/Nutricion/api/seleccionarMenu',{params:{
+                axios.post('api/seleccionarMenu',{params:{
                     relevamientoAnt : this.relevamientoAnterior,
                     relevamientoNuevo: this.relevamientoSelected,
                     menu: this.menuSelected,
@@ -63,7 +63,7 @@ export default {
                             this.listErrores = response.data.error;
                         }
                         else{
-                            window.location.href = "/Nutricion/seleccionarMenu/" + this.relevamientoSelected;
+                            window.location.href = "seleccionarMenu/" + this.relevamientoSelected;
                         }
                     })
                 .catch(error => { console.log("Error finalizar");})

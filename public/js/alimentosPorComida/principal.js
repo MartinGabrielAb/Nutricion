@@ -54,9 +54,10 @@ $(document).ready( function () {
     unidad_medida_bruta = obtener_un_medida_bruta(alimento_id);
     
     if(unidad_medida_bruta){
+      $("#unidadMedida").val(unidad_medida_bruta.UnidadMedidaNombre);
       switch (unidad_medida_bruta.UnidadMedidaNombre) {
         case 'Kilogramo':
-          $('.un_medida').text('gramo(s)');  
+          $('.un_medida').text('gramo(s)');
           break;
         case 'Gramo':
           $('.un_medida').text('gramo(s)');  

@@ -12,7 +12,7 @@ export default {
     },
     mounted () {
        
-        axios.get('/Nutricion/nutrientes').then(response =>{
+        axios.get('../nutrientes').then(response =>{
                 this.nutrientes = response.data;
             }).catch(error => { console.log("errorr");
         });
@@ -24,8 +24,9 @@ export default {
     
     methods :{
         fillComidas(){
+            this.listComidasToSimulate = [];
             this.comidas = [];  
-            axios.get('/Nutricion/comidaportipopaciente/'+this.id).then(response =>{
+            axios.get('../comidaportipopaciente/'+this.id).then(response =>{
                 this.comidas = response.data; 
             }).catch(error => { console.log("errorr"); });
         },
@@ -44,7 +45,7 @@ export default {
         simularNutrientes(){
             $('#modalElegir').modal('hide');
             this.listNutrientes =[];
-            axios.get('/Nutricion/comidaportipopaciente/'+this.id+"/edit",{params:{comidas:this.listComidasToSimulate}}).then(response =>{
+            axios.get('../comidaportipopaciente/'+this.id+"/edit",{params:{comidas:this.listComidasToSimulate}}).then(response =>{
                 this.listNutrientes = response.data;
                 console.log(this.listNutrientes);
             }).catch(error => { console.log("errorr");});

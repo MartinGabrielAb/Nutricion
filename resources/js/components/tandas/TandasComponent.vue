@@ -55,7 +55,7 @@
                                     + {{comida.cantidadNormal + comida.cantidadCongelada - comida.cantidad}}
                                 </div>
                                 <div v-else class="text-warning">
-                                    - {{comida.cantidadNormal + comida.cantidadCongelada - comida.cantidad}}
+                                    {{comida.cantidadNormal + comida.cantidadCongelada - comida.cantidad}}
                                 </div>
                             </div>
                         </div>
@@ -185,14 +185,22 @@
                     </button>
                     </div>    
                     <div class="modal-body">
-                        <table>
-                            <tbody >
-                                <tr v-for="comida in congelador" :key="comida.id">
-                                    <td>{{comida.ComidaNombre}}</td>
-                                    <td>{{comida.Porciones}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="row mb-2 font-weight-bold text-center">
+                            <div class="col">
+                                Comida
+                            </div>
+                            <div class="col">
+                                Porciones congeladas
+                            </div>
+                        </div>
+                        <div v-for="comida in congelador" :key="comida.id" class="row mb-2 text-center">
+                            <div class="col">
+                                {{comida.ComidaNombre}}
+                            </div>
+                            <div class="col">
+                                {{comida.Porciones}}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

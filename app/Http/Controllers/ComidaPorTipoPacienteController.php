@@ -113,13 +113,13 @@ class ComidaPorTipoPacienteController extends Controller
                 if($alimentoPorComida->UnidadMedidaNombre == 'Unidad' ) {
                     foreach ($nutrientes as $nutriente) {
                         array_push($nutrientesArray,[
-                            "cantidad" =>  round($cantidad * (($nutriente->NutrientePorAlimentoValor*$alimentosPorComida->AlimentoPesoPorUnidad)/100),2),
+                            "cantidad" =>  round($cantidad * (($nutriente->NutrientePorAlimentoValor)),2),
                             "id" => $nutriente->NutrienteId,  
                         ]);
                         if(!empty($valoresTotales[$cont])){
-                            $valoresTotales[$cont] = $valoresTotales[$cont] + round($cantidad *(($nutriente->NutrientePorAlimentoValor*$alimentosPorComida->AlimentoPesoPorUnidad)/100),2);
+                            $valoresTotales[$cont] = $valoresTotales[$cont] + round($cantidad *(($nutriente->NutrientePorAlimentoValor)),2);
                         }else{
-                            $valoresTotales[$cont] =$cantidad * round((($nutriente->NutrientePorAlimentoValor*$alimentosPorComida->AlimentoPesoPorUnidad)/100),2);
+                            $valoresTotales[$cont] =$cantidad * round((($nutriente->NutrientePorAlimentoValor)),2);
     
                         }
                         $cont = $cont +1 ; 

@@ -1975,13 +1975,14 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       historial: null,
-      detalles: null
+      detalles: null,
+      detallesEmpleados: null
     };
   },
   mounted: function mounted() {
     var _this = this;
 
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/Nutricion/historial/' + this.id, {
+    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('./' + this.id, {
       headers: {
         "Content-Type": "application/json",
         "X-Requested-With": "XMLHttpRequest"
@@ -1990,7 +1991,10 @@ __webpack_require__.r(__webpack_exports__);
       _this.historial = response.data.historial;
       _this.historial.total = 0;
       _this.historial.porciones = 0;
+      _this.historial.totalEmpleados = 0;
+      _this.historial.porcionesEmpleados = 0;
       _this.detalles = response.data.detalles;
+      _this.detallesEmpleados = response.data.detallesEmpleados;
 
       _this.detalles.forEach(function (detalle) {
         detalle.subtotal = 0;
@@ -2001,8 +2005,14 @@ __webpack_require__.r(__webpack_exports__);
         _this.historial.porciones += detalle.porciones;
       });
 
-      console.log(_this.historial);
-      console.log(_this.detalles);
+      _this.detallesEmpleados.forEach(function (detalle) {
+        detalle.subtotal = 0;
+        detalle.alimentos.forEach(function (alimento) {
+          detalle.subtotal += alimento.CostoTotal;
+        });
+        _this.historial.totalEmpleados += detalle.subtotal;
+        _this.historial.porcionesEmpleados += detalle.porciones;
+      });
     })["catch"](function (error) {
       console.log("Error historial");
     });
@@ -2039,7 +2049,7 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this = this;
 
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/getRelevamientosAnteriores', {
+    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('api/getRelevamientosAnteriores', {
       headers: {
         "Content-Type": "application/json",
         "X-Requested-With": "XMLHttpRequest"
@@ -2049,12 +2059,12 @@ __webpack_require__.r(__webpack_exports__);
     })["catch"](function (error) {
       console.log("Error relevamientos pendientes");
     });
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/getRelevamientosSinMenuAsignado').then(function (response) {
+    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('api/getRelevamientosSinMenuAsignado').then(function (response) {
       _this.relevamientosSinMenu = response.data;
     })["catch"](function (error) {
       console.log("Error menues sin asignar");
     });
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/getMenues').then(function (response) {
+    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('api/getMenues').then(function (response) {
       _this.menues = response.data;
     })["catch"](function (error) {
       console.log("Error menues");
@@ -2067,7 +2077,7 @@ __webpack_require__.r(__webpack_exports__);
     getRelevamiento: function getRelevamiento() {
       var _this2 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/Nutricion/api/getRelevamientoPorMenu/' + this.relevamientoAnteriorId).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('api/getRelevamientoPorMenu/' + this.relevamientoAnteriorId).then(function (response) {
         _this2.relevamientoAnterior = response.data;
       })["catch"](function (error) {
         console.log("Error getRelevamiento");
@@ -2088,7 +2098,7 @@ __webpack_require__.r(__webpack_exports__);
       //     }
       // }
       if (window.confirm("Una vez terminado no podra hacer cambios. ¿Desea finalizar?")) {
-        axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/Nutricion/api/seleccionarMenu', {
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('api/seleccionarMenu', {
           params: {
             relevamientoAnt: this.relevamientoAnterior,
             relevamientoNuevo: this.relevamientoSelected,
@@ -2098,7 +2108,7 @@ __webpack_require__.r(__webpack_exports__);
           if (response.data.error) {
             _this3.listErrores = response.data.error;
           } else {
-            window.location.href = "/Nutricion/seleccionarMenu/" + _this3.relevamientoSelected;
+            window.location.href = "seleccionarMenu/" + _this3.relevamientoSelected;
           }
         })["catch"](function (error) {
           console.log("Error finalizar");
@@ -2135,7 +2145,7 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this = this;
 
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/Nutricion/nutrientes').then(function (response) {
+    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('../nutrientes').then(function (response) {
       _this.nutrientes = response.data;
     })["catch"](function (error) {
       console.log("errorr");
@@ -2145,8 +2155,9 @@ __webpack_require__.r(__webpack_exports__);
     fillComidas: function fillComidas() {
       var _this2 = this;
 
+      this.listComidasToSimulate = [];
       this.comidas = [];
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/Nutricion/comidaportipopaciente/' + this.id).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('../comidaportipopaciente/' + this.id).then(function (response) {
         _this2.comidas = response.data;
       })["catch"](function (error) {
         console.log("errorr");
@@ -2168,7 +2179,7 @@ __webpack_require__.r(__webpack_exports__);
 
       $('#modalElegir').modal('hide');
       this.listNutrientes = [];
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/Nutricion/comidaportipopaciente/' + this.id + "/edit", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('../comidaportipopaciente/' + this.id + "/edit", {
         params: {
           comidas: this.listComidasToSimulate
         }
@@ -2208,6 +2219,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   props: ['id'],
   data: function data() {
     return {
+      checkPersonal: false,
       listErrores: [],
       comidasRelevadas: [],
       comidasEnProgreso: [],
@@ -2251,7 +2263,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 return axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/api/saveTanda/' + _this.id, {
                   params: {
                     observacion: _this.observacion,
-                    comidas: _this.comidasNuevas
+                    comidas: _this.comidasNuevas,
+                    paraPersonal: _this.checkPersonal
                   }
                 }).then(function (response) {
                   if (response.data.error) {
@@ -2355,7 +2368,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           id: a.id,
           nombre: a.nombre,
           cantidadNormal: a.cantidadNormal,
-          cantidadCongelada: a.cantidadCongelada
+          cantidadCongelada: a.cantidadCongelada,
+          cantidad: 0
         });
       });
       this.comidasRelevadas.forEach(function (b) {
@@ -2369,6 +2383,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           _this5.comidas.push({
             id: b.id,
             nombre: b.nombre,
+            cantidadNormal: 0,
+            cantidadCongelada: 0,
             cantidad: b.cantidad
           });
         }
@@ -3790,6 +3806,8 @@ var render = function() {
           [
             _vm._m(0),
             _vm._v(" "),
+            _vm._m(1),
+            _vm._v(" "),
             _vm._l(_vm.detalles, function(detalle) {
               return _c("div", { key: detalle.id, staticClass: "row" }, [
                 _c("div", { staticClass: "col" }, [
@@ -3826,7 +3844,7 @@ var render = function() {
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "col" }, [
-                          _vm._v("$" + _vm._s(detalle.subtotal))
+                          _vm._v("$" + _vm._s(detalle.subtotal.toFixed(2)))
                         ])
                       ])
                     ]
@@ -3843,7 +3861,7 @@ var render = function() {
                         "div",
                         { staticClass: "card card-body" },
                         [
-                          _vm._m(1, true),
+                          _vm._m(2, true),
                           _vm._v(" "),
                           _c("hr"),
                           _vm._v(" "),
@@ -3881,7 +3899,9 @@ var render = function() {
                                 ]),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "col" }, [
-                                  _vm._v("$" + _vm._s(alimento.CostoTotal))
+                                  _vm._v(
+                                    "$" + _vm._s(alimento.CostoTotal.toFixed(2))
+                                  )
                                 ])
                               ]
                             )
@@ -3910,7 +3930,153 @@ var render = function() {
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "col" }, [
-                    _vm._v("Total: $" + _vm._s(_vm.historial.total))
+                    _vm._v("Total: $" + _vm._s(_vm.historial.total.toFixed(2)))
+                  ])
+                ])
+              ]
+            )
+          ],
+          2
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "card-body text-center" },
+          [
+            _vm._m(3),
+            _vm._v(" "),
+            _vm._m(4),
+            _vm._v(" "),
+            _vm._l(_vm.detallesEmpleados, function(detalle) {
+              return _c("div", { key: detalle.id, staticClass: "row" }, [
+                _c("div", { staticClass: "col" }, [
+                  _c(
+                    "div",
+                    {
+                      staticClass:
+                        "list-group-item list-group-item-action list-group-item-secondary",
+                      attrs: {
+                        type: "button",
+                        "data-toggle": "collapse",
+                        "data-target": "#detalleEmpleado" + detalle.id
+                      }
+                    },
+                    [
+                      _c("div", { staticClass: "row" }, [
+                        _c("div", { staticClass: "col" }, [
+                          _vm._v(_vm._s(detalle.comida))
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col" }, [
+                          _vm._v(_vm._s(detalle.porciones))
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col" }, [
+                          _vm._v(
+                            "$" +
+                              _vm._s(
+                                (detalle.subtotal / detalle.porciones).toFixed(
+                                  2
+                                )
+                              )
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col" }, [
+                          _vm._v("$" + _vm._s(detalle.subtotal.toFixed(2)))
+                        ])
+                      ])
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      staticClass: "collapse",
+                      attrs: { id: "detalleEmpleado" + detalle.id }
+                    },
+                    [
+                      _c(
+                        "div",
+                        { staticClass: "card card-body" },
+                        [
+                          _vm._m(5, true),
+                          _vm._v(" "),
+                          _c("hr"),
+                          _vm._v(" "),
+                          _vm._l(detalle.alimentos, function(alimento) {
+                            return _c(
+                              "div",
+                              {
+                                key:
+                                  "detalleEmpleado" +
+                                  alimento.HistorialDetalleAlimentoId,
+                                staticClass: "row"
+                              },
+                              [
+                                _c("div", { staticClass: "col" }, [
+                                  _vm._v(_vm._s(alimento.AlimentoNombre))
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "col" }, [
+                                  _vm._v(
+                                    _vm._s(alimento.Cantidad) +
+                                      " " +
+                                      _vm._s(alimento.UnidadMedida) +
+                                      "(s)"
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "col" }, [
+                                  _vm._v(
+                                    "$" +
+                                      _vm._s(
+                                        (
+                                          alimento.CostoTotal /
+                                          detalle.porciones
+                                        ).toFixed(2)
+                                      )
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "col" }, [
+                                  _vm._v(
+                                    "$" + _vm._s(alimento.CostoTotal.toFixed(2))
+                                  )
+                                ])
+                              ]
+                            )
+                          })
+                        ],
+                        2
+                      )
+                    ]
+                  )
+                ])
+              ])
+            }),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass:
+                  "list-group-item list-group-item-action list-group-item-success"
+              },
+              [
+                _c("div", { staticClass: "row " }, [
+                  _c("div", { staticClass: "col" }, [_vm._v("Resumen")]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col" }, [
+                    _vm._v(
+                      "Porciones:" + _vm._s(_vm.historial.porcionesEmpleados)
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col" }, [
+                    _vm._v(
+                      "Total: $" +
+                        _vm._s(_vm.historial.totalEmpleados.toFixed(2))
+                    )
                   ])
                 ])
               ]
@@ -3922,6 +4088,59 @@ var render = function() {
     : _vm._e()
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col" }, [_vm._v("Pacientes")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass:
+          "list-group-item list-group-item-action list-group-item-action"
+      },
+      [
+        _c("div", { staticClass: "row " }, [
+          _c("div", { staticClass: "col" }, [_vm._v("Comida")]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col" }, [_vm._v("Porciones")]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col" }, [_vm._v("Costo por porción")]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col" }, [_vm._v("Subtotal")])
+        ])
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row " }, [
+      _c("div", { staticClass: "col" }, [_vm._v("Alimento")]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col" }, [_vm._v("Cantidad por porción")]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col" }, [_vm._v("Costo por porción")]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col" }, [_vm._v("Subtotales")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col" }, [_vm._v("Empleados")])
+    ])
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -4369,34 +4588,36 @@ var render = function() {
               },
               [
                 _c("thead", [
-                  _c(
-                    "tr",
-                    [
-                      _vm._m(0),
-                      _vm._v(" "),
-                      _vm._m(1),
-                      _vm._v(" "),
-                      _vm._m(2),
-                      _vm._v(" "),
-                      _vm._m(3),
-                      _vm._v(" "),
-                      _vm._l(_vm.nutrientes, function(nutriente) {
-                        return _c(
-                          "th",
-                          {
-                            key: nutriente.NutrienteId,
-                            staticClass: "text-xs text-center"
-                          },
-                          [
-                            _c("small", [
-                              _vm._v(_vm._s(nutriente.NutrienteNombre))
-                            ])
-                          ]
-                        )
-                      })
-                    ],
-                    2
-                  )
+                  _vm.listNutrientes.totales
+                    ? _c(
+                        "tr",
+                        [
+                          _vm._m(0),
+                          _vm._v(" "),
+                          _vm._m(1),
+                          _vm._v(" "),
+                          _vm._m(2),
+                          _vm._v(" "),
+                          _vm._m(3),
+                          _vm._v(" "),
+                          _vm._l(_vm.nutrientes, function(nutriente) {
+                            return _c(
+                              "th",
+                              {
+                                key: nutriente.NutrienteId,
+                                staticClass: "text-xs text-center"
+                              },
+                              [
+                                _c("small", [
+                                  _vm._v(_vm._s(nutriente.NutrienteNombre))
+                                ])
+                              ]
+                            )
+                          })
+                        ],
+                        2
+                      )
+                    : _vm._e()
                 ]),
                 _vm._v(" "),
                 _c(
@@ -4577,10 +4798,16 @@ var render = function() {
                     _c(
                       "tr",
                       [
-                        _c("td"),
-                        _c("td"),
-                        _c("td"),
-                        _c("td"),
+                        _vm.listNutrientes.totales
+                          ? _c(
+                              "td",
+                              {
+                                staticClass: "text-xs text-center",
+                                attrs: { colspan: "4" }
+                              },
+                              [_c("small", [_vm._v("Totales")])]
+                            )
+                          : _vm._e(),
                         _vm._v(" "),
                         _vm._l(_vm.listNutrientes.totales, function(
                           total,
@@ -4793,6 +5020,20 @@ var render = function() {
             }
           },
           [_vm._v("\n                Tandas enviadas\n            ")]
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-sm btn-outline-danger",
+            attrs: { type: "button" },
+            on: {
+              click: function($event) {
+                return _vm.finalizar()
+              }
+            }
+          },
+          [_vm._v("\n                    Finalizar relevamiento\n            ")]
         )
       ])
     ]),
@@ -4815,7 +5056,7 @@ var render = function() {
                   [
                     _c(
                       "div",
-                      { staticClass: "col-lg-6 col-md-3 col-sm-3 col-xs-2" },
+                      { staticClass: "col-lg-4 col-md-4 col-sm-4 col-xs-4" },
                       [
                         _vm._v(
                           "\n                            " +
@@ -4827,13 +5068,11 @@ var render = function() {
                     _vm._v(" "),
                     _c(
                       "div",
-                      { staticClass: "col-lg-2 col-md-3 col-sm-3 col-xs-2" },
+                      { staticClass: "col-lg-2 col-md-2 col-sm-2 col-xs-2" },
                       [
                         _vm._v(
                           "\n                            " +
-                            _vm._s(
-                              comida.cantidadNormal ? comida.cantidadNormal : 0
-                            ) +
+                            _vm._s(comida.cantidadNormal) +
                             "\n                        "
                         )
                       ]
@@ -4841,15 +5080,11 @@ var render = function() {
                     _vm._v(" "),
                     _c(
                       "div",
-                      { staticClass: "col-lg-2 col-md-3 col-sm-3 col-xs-2" },
+                      { staticClass: "col-lg-2 col-md-2 col-sm-2 col-xs-2" },
                       [
                         _vm._v(
                           "\n                            " +
-                            _vm._s(
-                              comida.cantidadCongelada
-                                ? comida.cantidadCongelada
-                                : 0
-                            ) +
+                            _vm._s(comida.cantidadCongelada) +
                             "\n                        "
                         )
                       ]
@@ -4857,13 +5092,46 @@ var render = function() {
                     _vm._v(" "),
                     _c(
                       "div",
-                      { staticClass: "col-lg-2 col-md-3 col-sm-3 col-xs-2" },
+                      { staticClass: "col-lg-2 col-md-2 col-sm-2 col-xs-2" },
                       [
                         _vm._v(
                           "\n                            " +
-                            _vm._s(comida.cantidad ? comida.cantidad : 0) +
+                            _vm._s(comida.cantidad) +
                             "\n                        "
                         )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "col-lg-2 col-md-2 col-sm-2 col-xs-2" },
+                      [
+                        comida.cantidadNormal +
+                          comida.cantidadCongelada -
+                          comida.cantidad >
+                        0
+                          ? _c("div", { staticClass: "text-success" }, [
+                              _vm._v(
+                                "\n                                + " +
+                                  _vm._s(
+                                    comida.cantidadNormal +
+                                      comida.cantidadCongelada -
+                                      comida.cantidad
+                                  ) +
+                                  "\n                            "
+                              )
+                            ])
+                          : _c("div", { staticClass: "text-warning" }, [
+                              _vm._v(
+                                "\n                                " +
+                                  _vm._s(
+                                    comida.cantidadNormal +
+                                      comida.cantidadCongelada -
+                                      comida.cantidad
+                                  ) +
+                                  "\n                            "
+                              )
+                            ])
                       ]
                     )
                   ]
@@ -4885,6 +5153,50 @@ var render = function() {
             [
               _c("div", { staticClass: "row text-sm mb-3" }, [
                 _c("div", { staticClass: "col" }, [_vm._v("Nueva tanda")]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col" }, [
+                  _c("label", [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.checkPersonal,
+                          expression: "checkPersonal"
+                        }
+                      ],
+                      attrs: { type: "checkbox", id: "checkPersonal" },
+                      domProps: {
+                        checked: Array.isArray(_vm.checkPersonal)
+                          ? _vm._i(_vm.checkPersonal, null) > -1
+                          : _vm.checkPersonal
+                      },
+                      on: {
+                        change: function($event) {
+                          var $$a = _vm.checkPersonal,
+                            $$el = $event.target,
+                            $$c = $$el.checked ? true : false
+                          if (Array.isArray($$a)) {
+                            var $$v = null,
+                              $$i = _vm._i($$a, $$v)
+                            if ($$el.checked) {
+                              $$i < 0 && (_vm.checkPersonal = $$a.concat([$$v]))
+                            } else {
+                              $$i > -1 &&
+                                (_vm.checkPersonal = $$a
+                                  .slice(0, $$i)
+                                  .concat($$a.slice($$i + 1)))
+                            }
+                          } else {
+                            _vm.checkPersonal = $$c
+                          }
+                        }
+                      }
+                    }),
+                    _vm._v(" ¿Para personal?")
+                  ]),
+                  _c("br")
+                ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "col " }, [
                   _c("textarea", {
@@ -5142,30 +5454,12 @@ var render = function() {
                 : _vm._e()
             ],
             2
-          ),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-sm btn-outline-primary",
-              attrs: { type: "button btn-sm" },
-              on: {
-                click: function($event) {
-                  return _vm.finalizar()
-                }
-              }
-            },
-            [
-              _vm._v(
-                "\n                    Finalizar relevamiento\n                "
-              )
-            ]
           )
         ])
       ])
     ]),
     _vm._v(" "),
-    _vm.listErrores
+    _vm.listErrores.lenght > 0
       ? _c(
           "div",
           { staticClass: "card" },
@@ -5216,43 +5510,52 @@ var render = function() {
                   _vm._l(_vm.tandas, function(tanda) {
                     return [
                       _c("div", { key: tanda.numero, staticClass: "row" }, [
-                        _c("div", { staticClass: "col" }, [
+                        _c("div", { staticClass: "col font-weight-bold" }, [
                           _c("span", [_vm._v("Tanda:" + _vm._s(tanda.numero))])
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col text-right" }, [
+                          _vm._v("Hora:" + _vm._s(tanda.hora))
                         ])
                       ]),
                       _vm._v(" "),
                       _c(
                         "div",
-                        { key: tanda.observacion, staticClass: "row" },
+                        { key: tanda.observacion, staticClass: "row mt-2" },
                         [
                           _c("div", { staticClass: "col" }, [
                             _vm._v(
-                              "Observaciones: " + _vm._s(tanda.observaciones)
+                              "Observaciones: " + _vm._s(tanda.observacion)
                             )
-                          ]),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "col" }, [
-                            _vm._v("Hora:" + _vm._s(tanda.hora))
                           ])
                         ]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "row" }, [
-                        _c("div", { staticClass: "col" }, [_vm._v("Comida")]),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "col" }, [
-                          _vm._v("Cantidad normal")
-                        ]),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "col" }, [
-                          _vm._v("Cantidad congelada")
-                        ])
-                      ]),
+                      _c(
+                        "div",
+                        {
+                          key: "tandaNumero" + tanda.numero,
+                          staticClass: "row text-center mt-2 font-weight-bold"
+                        },
+                        [
+                          _c("div", { staticClass: "col  " }, [
+                            _vm._v("Comida")
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col " }, [
+                            _vm._v("Cantidad normal")
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col" }, [
+                            _vm._v("Cantidad congelada")
+                          ])
+                        ]
+                      ),
                       _vm._v(" "),
                       _vm._l(tanda.comidas, function(comida) {
                         return _c(
                           "div",
-                          { key: comida.id, staticClass: "row" },
+                          { key: comida.id, staticClass: "row text-center" },
                           [
                             _c("div", { staticClass: "col" }, [
                               _vm._v(_vm._s(comida.nombre))
@@ -5269,7 +5572,7 @@ var render = function() {
                         )
                       }),
                       _vm._v(" "),
-                      _c("hr")
+                      _c("hr", { key: "hrNumero" + tanda.numero })
                     ]
                   }),
                   _vm._v(" "),
@@ -5303,21 +5606,38 @@ var render = function() {
             _c("div", { staticClass: "modal-content" }, [
               _vm._m(3),
               _vm._v(" "),
-              _c("div", { staticClass: "modal-body" }, [
-                _c("table", [
-                  _c(
-                    "tbody",
-                    _vm._l(_vm.congelador, function(comida) {
-                      return _c("tr", { key: comida.id }, [
-                        _c("td", [_vm._v(_vm._s(comida.ComidaNombre))]),
+              _c(
+                "div",
+                { staticClass: "modal-body" },
+                [
+                  _vm._m(4),
+                  _vm._v(" "),
+                  _vm._l(_vm.congelador, function(comida) {
+                    return _c(
+                      "div",
+                      { key: comida.id, staticClass: "row mb-2 text-center" },
+                      [
+                        _c("div", { staticClass: "col" }, [
+                          _vm._v(
+                            "\n                            " +
+                              _vm._s(comida.ComidaNombre) +
+                              "\n                        "
+                          )
+                        ]),
                         _vm._v(" "),
-                        _c("td", [_vm._v(_vm._s(comida.Porciones))])
-                      ])
-                    }),
-                    0
-                  )
-                ])
-              ])
+                        _c("div", { staticClass: "col" }, [
+                          _vm._v(
+                            "\n                            " +
+                              _vm._s(comida.Porciones) +
+                              "\n                        "
+                          )
+                        ])
+                      ]
+                    )
+                  })
+                ],
+                2
+              )
             ])
           ]
         )
@@ -5331,27 +5651,33 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "row text-sm text-center" }, [
-      _c("div", { staticClass: "col-lg-6 col-md-3 col-sm-3 col-xs-2" }, [
+      _c("div", { staticClass: "col-lg-4 col-md-4 col-sm-4 col-xs-4" }, [
         _vm._v(
           " \n                            Comida\n                        "
         )
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "col-lg-2 col-md-3 col-sm-3 col-xs-2" }, [
+      _c("div", { staticClass: "col-lg-2 col-md-2 col-sm-2 col-xs-2" }, [
         _vm._v(
           "\n                            En preparación\n                        "
         )
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "col-lg-2 col-md-3 col-sm-3 col-xs-2" }, [
+      _c("div", { staticClass: "col-lg-2 col-md-2 col-sm-2 col-xs-2" }, [
         _vm._v(
           "\n                            Cantidad del congelador\n                        "
         )
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "col-lg-2 col-md-3 col-sm-3 col-xs-2" }, [
+      _c("div", { staticClass: "col-lg-2 col-md-2 col-sm-2 col-xs-2" }, [
         _vm._v(
           "\n                            Cantidad relevada\n                        "
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-lg-2 col-md-2 col-sm-2 col-xs-2" }, [
+        _vm._v(
+          "\n                            Diferencia\n                        "
         )
       ])
     ])
@@ -5421,6 +5747,22 @@ var staticRenderFns = [
         },
         [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
       )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row mb-2 font-weight-bold text-center" }, [
+      _c("div", { staticClass: "col" }, [
+        _vm._v("\n                            Comida\n                        ")
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col" }, [
+        _vm._v(
+          "\n                            Porciones congeladas\n                        "
+        )
+      ])
     ])
   }
 ]
@@ -30627,9 +30969,9 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! F:\Laravel\tesis9\hsb\resources\js\vue.js */"./resources/js/vue.js");
-__webpack_require__(/*! F:\Laravel\tesis9\hsb\resources\js\axios.js */"./resources/js/axios.js");
-module.exports = __webpack_require__(/*! F:\Laravel\tesis9\hsb\resources\js\app.js */"./resources/js/app.js");
+__webpack_require__(/*! C:\Users\pablo\Documents\Proyectos\Nutricion\resources\js\vue.js */"./resources/js/vue.js");
+__webpack_require__(/*! C:\Users\pablo\Documents\Proyectos\Nutricion\resources\js\axios.js */"./resources/js/axios.js");
+module.exports = __webpack_require__(/*! C:\Users\pablo\Documents\Proyectos\Nutricion\resources\js\app.js */"./resources/js/app.js");
 
 
 /***/ })

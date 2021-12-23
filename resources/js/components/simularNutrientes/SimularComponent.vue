@@ -9,7 +9,7 @@
             </button>
             <table id="tableNutrientes" class="table table-sm table-striped table-bordered table-hover" style="width:100%" cellspacing="0">
               <thead>
-                <tr>
+                <tr v-if="listNutrientes.totales">
                   <th class="text-xs text-center"><small>Tipo</small></th>
                   <th class="text-xs text-center"><small>Comida</small></th>
                   <th class="text-xs text-center"><small>Alimento</small></th>
@@ -40,8 +40,8 @@
                         </tr>
                       </template> 
                     </template>
-                    <tr>
-                            <td></td><td></td><td></td><td></td>
+                    <tr >
+                            <td v-if="listNutrientes.totales" colspan="4" class="text-xs text-center"><small>Totales</small></td>
                             <td v-for="(total,index) in listNutrientes.totales" :key="index" class="text-xs text-center"><small>{{total.toFixed(2)}}</small></td>
                     </tr>
               </tbody>

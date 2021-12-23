@@ -38,6 +38,7 @@ class AlimentoPorComidaController extends Controller
                             ->where('AlimentoId',$detalle->AlimentoId)
                             ->join('unidadmedida as u','u.UnidadMedidaId','a.UnidadMedidaId')    
                             ->first();
+        if($alimento->UnidadMedidaNombre == 'Kilogramo' ) $nombreUnidad = 'Gramo';
         if($alimento->UnidadMedidaNombre == 'Litro') $nombreUnidad = 'cm3';
         $unidadMedida = UnidadMedida::where('UnidadMedidaNombre','=',$nombreUnidad)->first(); 
         $detalle->UnidadMedidaId = $unidadMedida->UnidadMedidaId;

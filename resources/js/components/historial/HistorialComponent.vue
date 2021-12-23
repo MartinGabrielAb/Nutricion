@@ -24,7 +24,7 @@
                             <div class="col">{{detalle.comida}}</div>
                             <div class="col">{{detalle.porciones}}</div>
                             <div class="col">${{(detalle.subtotal/detalle.porciones).toFixed(2)}}</div>
-                            <div class="col">${{detalle.subtotal}}</div>
+                            <div class="col">${{detalle.subtotal.toFixed(2)}}</div>
                         </div>
                     </div>
                     <div class="collapse" :id="'detalle'+detalle.id">
@@ -40,7 +40,7 @@
                                 <div class="col">{{alimento.AlimentoNombre}}</div>
                                 <div class="col">{{alimento.Cantidad}} {{alimento.UnidadMedida}}(s)</div>
                                 <div class="col">${{(alimento.CostoTotal/detalle.porciones).toFixed(2)}}</div>
-                                <div class="col">${{alimento.CostoTotal}}</div>
+                                <div class="col">${{(alimento.CostoTotal).toFixed(2)}}</div>
                             </div>
                         </div>
                     </div>
@@ -50,7 +50,7 @@
                 <div class="row ">
                     <div class="col">Resumen</div>
                     <div class="col">Porciones:{{historial.porciones}}</div>
-                    <div class="col">Total: ${{historial.total}}</div>
+                    <div class="col">Total: ${{historial.total.toFixed(2)}}</div>
                 </div>
             </div>
         </div>
@@ -66,12 +66,12 @@
             </div>
             <div class="row" v-for="detalle in detallesEmpleados" :key="detalle.id">
                 <div class="col">
-                    <div class="list-group-item list-group-item-action list-group-item-secondary" type="button" data-toggle="collapse" :data-target="'#detalle'+detalle.id">
+                    <div class="list-group-item list-group-item-action list-group-item-secondary" type="button" data-toggle="collapse" :data-target="'#detalleEmpleado'+detalle.id">
                         <div class="row">
                             <div class="col">{{detalle.comida}}</div>
                             <div class="col">{{detalle.porciones}}</div>
                             <div class="col">${{(detalle.subtotal/detalle.porciones).toFixed(2)}}</div>
-                            <div class="col">${{detalle.subtotal}}</div>
+                            <div class="col">${{(detalle.subtotal).toFixed(2)}}</div>
                         </div>
                     </div>
                     <div class="collapse" :id="'detalleEmpleado'+detalle.id">
@@ -87,7 +87,7 @@
                                 <div class="col">{{alimento.AlimentoNombre}}</div>
                                 <div class="col">{{alimento.Cantidad}} {{alimento.UnidadMedida}}(s)</div>
                                 <div class="col">${{(alimento.CostoTotal/detalle.porciones).toFixed(2)}}</div>
-                                <div class="col">${{alimento.CostoTotal}}</div>
+                                <div class="col">${{alimento.CostoTotal.toFixed(2)}}</div>
                             </div>
                         </div>
                     </div>
@@ -97,7 +97,7 @@
                 <div class="row ">
                     <div class="col">Resumen</div>
                     <div class="col">Porciones:{{historial.porcionesEmpleados}}</div>
-                    <div class="col">Total: ${{historial.totalEmpleados}}</div>
+                    <div class="col">Total: ${{historial.totalEmpleados.toFixed(2)}}</div>
                 </div>
             </div>
         </div>

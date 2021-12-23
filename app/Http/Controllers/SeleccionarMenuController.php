@@ -16,10 +16,8 @@ class SeleccionarMenuController extends Controller
  
     public function index(Request $request)
     {
-        if($request->ajax()){
-            
-        }
-        return view('seleccionarmenu.principal');
+ 
+        return view('seleccionarmenu.principal');   
     }
 
     public function create()
@@ -142,19 +140,20 @@ class SeleccionarMenuController extends Controller
     public function show(Request $request ,$id)
     {
         return view('seleccionarmenu.show',compact('id'));
-
     }
 
     public function edit()
-    { }
+    { 
+        
+    }
 
     public function update($id)
     {
-     
+        
     }
 
     public function destroy($id)
     {
-        
+       
     }
 }
