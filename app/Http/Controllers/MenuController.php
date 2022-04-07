@@ -43,11 +43,11 @@ class MenuController extends Controller
     public function show(Request $request,$id)
     {
         if($request->ajax()){
-            $menues = DB::table('detallemenutipopaciente as d')
+            $detallesMenuTipoPaciente = DB::table('detallemenutipopaciente as d')
                                 ->join('tipopaciente as t','t.TipoPacienteId','d.TipoPacienteId')
 								->where('MenuId',$id)
                                 ->get();
-            return DataTables::of($menues)			
+            return DataTables::of($detallesMenuTipoPaciente)			
                                 ->addColumn('btn','detallemenutipopaciente/actions')
                                 ->rawColumns(['btn'])
                                 ->toJson();

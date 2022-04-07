@@ -47,13 +47,6 @@
                     <!-- Mensaje de exito/error -->
                   </div> 
               </div>
-              <div class="col">
-                  <p class="text-right">
-                    <button type="button" class="btn btn-sm btn-default" id="btnAgregar" onClick="agregar()" data-toggle="modal"  data-target="#modal">
-                      Agregar Sala
-                    </button>
-                  </p>	
-              </div>
             </div>
               <!--------------TABLA PRINCIPAL-------------->
             <div class="row">

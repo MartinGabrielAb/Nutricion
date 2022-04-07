@@ -1,6 +1,6 @@
 @php
     $relevamiento = App\Relevamiento::where('RelevamientoId',$relevamiento_por_salas->RelevamientoId)->first();
-    $menuSeleccionado = App\Menu::findOrFail($relevamiento->RelevamientoMenu);
+    // $menuSeleccionado = App\Menu::findOrFail($relevamiento->RelevamientoMenu);
 @endphp
 <!-- Main content -->
 <div class="container-fluid">
@@ -81,7 +81,7 @@
 
 
 <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <form onSubmit="guardar(event)" style="width: 100%">
             <div class="modal-content">
                 <div class="modal-header">
@@ -115,14 +115,14 @@
                         <div class="col-lg-1 col-sm-2 p-1 text-center col_select_paciente">
                             <button type="button" id="ultimoRelevamientoId" onclick="getUltimoDetRelevamientoPaciente()" class="btn btn-sm btn-default w-100 m-1"><i title="Último relevamiento del paciente" class="fas fa-undo-alt"></i></button>
                         </div>
-                        <div class="col-lg-4 col-sm-4 pl-1 pr-1 col_add_paciente">
-                            <input type="text" class="form-control w-100" name="paciente_nombre" id="paciente_nombre" placeholder="Nombre">
-                        </div>
-                        <div class="col-lg-4 col-sm-4 pl-1 pr-1 col_add_paciente">
-                            <input type="text" class="form-control w-100" name="paciente_apellido" id="paciente_apellido" placeholder="Apellido">
-                        </div>
                         <div class="col-lg-3 col-sm-3 p-1 text-center col_add_paciente">
                             <input type="number" id="paciente_dni" name="paciente_dni" minlength="7" maxlength="15" class="form-control w-100" placeholder="DNI">
+                        </div>
+                        <div class="col-lg-4 col-sm-4 pl-1 pr-1 col_add_paciente">
+                            <input type="text" class="form-control w-100" name="paciente_nombre" readonly id="paciente_nombre" placeholder="Nombre">
+                        </div>
+                        <div class="col-lg-4 col-sm-4 pl-1 pr-1 col_add_paciente">
+                            <input type="text" class="form-control w-100" name="paciente_apellido" readonly id="paciente_apellido" placeholder="Apellido">
                         </div>
                         <div class="col-lg-1 col-sm-2 p-1 text-center">
                             <button type="button" id="add_paciente" onclick="pantalla_add_new_paciente()" class="btn btn-sm btn-default w-100 m-1"><i title="Agregar nuevo paciente" class="fas fa-user-plus"></i></button>
@@ -156,27 +156,28 @@
                             </select>
                         </div>
                     </div>
-                    <div id="comidas" class="form-check p-2 border d-none">
-                        <div id="seleccionar_comidas_no_individuales" class="d-none">
-                        </div>
-                        <div id="seleccionar_comidas_individuales">
+                    <div id="comidas" class="form-check">
+                        {{-- <div id="seleccionar_comidas_no_individuales" class="d-none">
+                        </div> --}}
                             @if ($relevamiento_por_salas->RelevamientoTurno == 'Mañana')
                                 @foreach ($tiposcomida as $tipocomida)
-                                    @if ($tipocomida->TipoComidaTurno == 0)
-                                    {{-- @if ($tipocomida->TipoComidaNombre == 'Almuerzo' || $tipocomida->TipoComidaNombre == 'Sopa Almuerzo' || $tipocomida->TipoComidaNombre == 'Merienda' || $tipocomida->TipoComidaNombre == 'Postre Almuerzo' || $tipocomida->TipoComidaNombre == 'Colación Tarde') --}}
-                                        <div class="form-inline">
-                                            <label for="comidaid{{$tipocomida->TipoComidaId}}">{{$tipocomida->TipoComidaNombre}}</label>
-                                            <select class="form-control clsComidas" id="comidaid{{$tipocomida->TipoComidaId}}" name="comidas[]"  style="width: 100%">
-                                                @foreach ($tipocomida->comidas as $comida)
-                                                <option value="{{$comida->ComidaId}}">{{$comida->ComidaNombre}}</option>
-                                                @endforeach
-                                            </select> 
+                                    @if ($tipocomida->TipoComidaTurno != 1)
+                                        <input class="form-check-input clsTipoComida" type="checkbox" value="{{$tipocomida->TipoComidaId}}" id="tipo_comida_{{$tipocomida->TipoComidaId}}">
+                                        <label for="comidaid{{$tipocomida->TipoComidaId}}">{{$tipocomida->TipoComidaNombre}}</label>
+                                        <div>
+                                            <div class="form-check form-check-inline" style="width: 100%">
+                                                <select class="form-control clsComidas" id="comidaid{{$tipocomida->TipoComidaId}}" name="comidas[]"  style="width: 100%">
+                                                    @foreach ($tipocomida->comidas as $comida)
+                                                    <option value="{{$comida->ComidaId}}">{{$comida->ComidaNombre}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                         </div>
                                     @endif
                                 @endforeach    
                             @elseif(($relevamiento_por_salas->RelevamientoTurno == 'Tarde'))
                                 @foreach ($tiposcomida as $tipocomida)
-                                    @if ($tipocomida->TipoComidaTurno == 1)
+                                    @if ($tipocomida->TipoComidaTurno != 0)
                                     {{-- @if ($tipocomida->TipoComidaNombre == 'Cena' || $tipocomida->TipoComidaNombre == 'Sopa Cena' || $tipocomida->TipoComidaNombre == 'Desayuno' || $tipocomida->TipoComidaNombre == 'Postre Cena' || $tipocomida->TipoComidaNombre == 'Colación Mañana') --}}
                                         <div class="form-inline">
                                             <label for="comidaid{{$tipocomida->TipoComidaId}}">{{$tipocomida->TipoComidaNombre}}</label>
@@ -189,18 +190,15 @@
                                     @endif 
                                 @endforeach
                             @endif
-                        </div>
                     </div>
-
-                    <!-- DESCOMENTAR LINEA 322 DE DETALLE RELEVAMIENTO CONTROLLER -->
-                    <!-- <div class="form-inline border-bottom border-top pb-2 pt-2">
+                    {{-- <div class="form-inline border-bottom border-top pb-2 pt-2">
                         <label for="colacion">Colación</label>
                         <select class="form-control" id="colacion" name="colacion" style="width: 100%">
                             @foreach ($colaciones as $colacion)
                                 <option value="{{$colacion->ComidaId}}">{{$colacion->ComidaNombre}}</option>
                             @endforeach
                         </select>
-                    </div> -->
+                    </div> --}}
                     <div class="form-check mt-3">
                         <input class="form-check-input" type="checkbox" value="1" id="acompanianteId" name="acompanianteId">
                         <label class="form-check-label" for="acompanianteId">

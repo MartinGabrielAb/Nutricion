@@ -76,7 +76,7 @@
         <div class="modal-body">
           <input type="hidden" id="id" name="id">
           <label for='nombre' id="labelNombre">Nombre</label>
-          <input class="form-control" type="text" id="nombre" name="nombre" required minlength="4" maxlength="64">
+          <input class="form-control" type="text" id="nombre" name="nombre" required minlength="1" maxlength="64">
           <label for="tipo">Tipo de comida</label>
           <select class="form-control" id="tipo" name="tipo" required>
             @foreach($tiposComida as $tipoComida)

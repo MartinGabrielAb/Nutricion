@@ -9,5 +9,5 @@ class ComidaPorTipoPaciente extends Model
     protected $table = 'comidaportipopaciente';
 	protected $primaryKey = 'ComidaPorTipoPacienteId';
 	public $timestamps = false;
-	protected $filliable=['DetalleMenuTipoPacienteId','ComidaId','TipoComidaId'];
+	protected $filliable=['DetalleMenuTipoPacienteId','ComidaId','TipoComidaId','Variante'];
 }

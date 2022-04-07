@@ -18,7 +18,7 @@ class ComidaPorTipoPacienteRequest extends FormRequest
     { 
         Validator::extend('comida_principal_unique', function () use ($request) {
             //si es una variante entonces la acepta
-            if($request->get('principal') == 0){
+            if($request->get('variante') == 0){
                 return 1;
             }
             //sino comprueba si ya existe una comida principal en este menu y tipo de paciente
@@ -26,7 +26,7 @@ class ComidaPorTipoPacienteRequest extends FormRequest
                 $join->on('comidaportipopaciente.ComidaId', 'comida.ComidaId')
                     ->where('comida.TipoComidaId', $request->get('tipocomida'));
             })->where('comidaportipopaciente.DetalleMenuTipoPacienteId', $request->get('detalleMenuTipoPacienteId'))
-              ->where('comidaportipopaciente.ComidaPorTipoPacientePrincipal', 1);
+              ->where('comidaportipopaciente.Variante', 1);
     
             // True means pass, false means fail validation.
             // If count is 0, that means the unique constraint passes.
@@ -43,7 +43,7 @@ class ComidaPorTipoPacienteRequest extends FormRequest
                     }),
                 'comida_principal_unique',
             ],
-            'principal' => ['required'],
+            'variante' => ['required'],
         ];
         
     }
@@ -53,8 +53,8 @@ class ComidaPorTipoPacienteRequest extends FormRequest
         return [
             'comida.required' => 'Debe seleccionar una comida.',
             'comida.unique' => 'Ya existe esta comida en este menú.',
-            'comida.comida_principal_unique' => 'Ya existe una comida principal para este tipo de comida.',            
-            'principal.required' => 'Debe seleccionar si es principal o variante.',
+            'comida.comida_principal_unique' => 'Ya existe una comida predeterminada para este tipo de comida.',
+            'variante.required' => 'La variante es requerida.',
         ];
     }
 }

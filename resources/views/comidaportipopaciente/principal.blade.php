@@ -46,7 +46,7 @@
                     <tr>
                       <th>Tipo de comida</th>
                       <th>Comida</th>
-                      <th>Tipo</th>
+                      <th>Variante</th>
                       <th width="5%">Acciones</th>
                     </tr>
                   </thead>
@@ -80,7 +80,7 @@
             <label for="tipoComida">Seleccione el tipo de menu</label>
             <select name="tipoComida" id="tipoComida" class="form-control" required>
                 @foreach($tiposcomida as $tipoComida)
-                <option value="{{$tipoComida->TipoComidaId}}">{{$tipoComida->TipoComidaNombre}}</option>
+                  <option value="{{$tipoComida->TipoComidaId}}">{{$tipoComida->TipoComidaNombre}}</option>
                 @endforeach
             </select>
             <div id="mensaje"></div>
@@ -90,7 +90,16 @@
                 <!-- Aca se agregan las opciones por js -->
                 </select>
             </div>
-            <label>Seleccione si es principal o variante</label>
+            <label for="variante">Variante</label>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="variante" id="variante" required value="1">
+              <label class="form-check-label" for="inlineRadio1">Predeterminado</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="variante" id="variante" required value="0">
+              <label class="form-check-label" for="inlineRadio2">Opcional</label>
+            </div>
+            {{-- <label>Seleccione si es principal o variante</label>
             <div class="form-check">
               <input class="form-check-input" type="radio" name="principal" id="principal" value="1" checked required>
               <label class="form-check-label" for="principal">
@@ -102,7 +111,7 @@
               <label class="form-check-label" for="variante">
                 Variante
               </label>
-            </div>
+            </div> --}}
         </div>
         <div class="modal-footer">
           <div class="container-fluid">

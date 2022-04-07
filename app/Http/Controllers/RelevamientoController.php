@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Menu;
+use App\Sala;
 use Exception;
 use App\Paciente;
 use App\Relevamiento;
@@ -10,6 +11,8 @@ use App\TipoPaciente;
 use App\DetalleRelevamiento;
 use App\RelevamientoPorSala;
 use Illuminate\Http\Request;
+use Ramsey\Uuid\Type\Integer;
+use App\DetRelevamientoPorComida;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\RelevamientoRequest;
@@ -50,6 +53,7 @@ class RelevamientoController extends Controller
         $relevamiento->RelevamientoFecha = $request->get('fecha');
         $relevamiento->RelevamientoTurno = $request->get('turno');
         $resultado = $relevamiento->save();
+        $this->crear_salas($relevamiento->RelevamientoId);
         if ($resultado) {
             return response()->json(['success'=> $relevamiento]);
         }else{
@@ -139,7 +143,7 @@ class RelevamientoController extends Controller
             foreach ($relevamientosPorSala as $relevamientoPorSala) {
                 $detallesRelevamiento = DetalleRelevamiento::where("RelevamientoPorSalaId",$relevamientoPorSala->RelevamientoPorSalaId)->get();
                 foreach ($detallesRelevamiento as $detalleRelevamiento){
-                    $detallesRelevamientoPorComida = DB::table('detrelevamientocomida')->where('DetalleRelevamientoId',$detalleRelevamiento->DetalleRelevamientoId)->get();
+                    $detallesRelevamientoPorComida = DetRelevamientoPorComida::where('DetalleRelevamientoId',$detalleRelevamiento->DetalleRelevamientoId)->get();
                     foreach ($detallesRelevamientoPorComida as $detalleRelevamientoPorComida) {
                         $detalleRelevamientoPorComida->delete();
                     }
@@ -153,6 +157,19 @@ class RelevamientoController extends Controller
             return response()->json(['success'=>'true']);
         }else{
             return response()->json(['success'=>'false']);
+        }
+    }
+
+    private function crear_salas($relevamiento_id = null)
+    {
+        if ($relevamiento_id) {
+            $salas = Sala::where('SalaEstado',1)->get();
+            foreach ($salas as $sala) {
+                $relevamientoPorSala = new RelevamientoPorSala;
+                $relevamientoPorSala->RelevamientoId = $relevamiento_id;
+                $relevamientoPorSala->SalaId = $sala->SalaId;
+                $relevamientoPorSala->save();
+            }
         }
     }
 }

@@ -4,10 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Menu;
 use App\Comida;
-use App\Alimento;
-use App\Nutriente;
-use App\TipoComida;
-use App\TipoPaciente;
 use Illuminate\Http\Request;
 use App\ComidaPorTipoPaciente;
 use App\DetalleMenuTipoPaciente;
@@ -27,7 +23,7 @@ class ComidaPorTipoPacienteController extends Controller
         $nuevo =new ComidaPorTipoPaciente();
         $nuevo->DetalleMenuTipoPacienteId = $request['detalleMenuTipoPacienteId'];
         $nuevo->ComidaId = $request['comida'];
-        $nuevo->ComidaPorTipoPacientePrincipal = $request['principal'];
+        $nuevo->variante = $request['variante'];
         $resultado = $nuevo->save();
         if ($resultado) {
             return response()->json(['success' => $nuevo]);

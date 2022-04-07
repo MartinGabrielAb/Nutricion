@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Menu;
 use Exception;
 use App\Paciente;
+use App\Relevamiento;
 use App\TipoPaciente;
-use App\DetalleRelevamiento;
 use App\RelevamientoPorSala;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -42,18 +42,7 @@ class RelevamientoPorSalaController extends Controller
      */
     public function store(Request $request)
     {
-        $resultado = false;
-        $relevamiento_por_sala = new RelevamientoPorSala;
-        $relevamiento_por_sala->RelevamientoId = $request->get('relevamiento_id');
-        $relevamiento_por_sala->SalaId = $request->get('sala_id');
-        $relevamiento_por_sala->RelevamientoPorSalaAcompaniantes = 0;
-        $relevamiento_por_sala->RelevamientoPorSalaEstado = 1;
-        $resultado = $relevamiento_por_sala->save();
-        if ($resultado) {
-            return response()->json(['success'=> $relevamiento_por_sala]);
-        }else{
-            return response()->json(['success'=>'false']);
-        }
+        //
     }
 
     /**
@@ -83,6 +72,9 @@ class RelevamientoPorSalaController extends Controller
                 ], 500);
             }
         }
+        $relevamientoPorSala = RelevamientoPorSala::findOrFail($id);
+        $relevamiento = Relevamiento::findOrFail($relevamientoPorSala->RelevamientoId);
+        $menuSeleccionado = Menu::findOrFail($relevamiento->RelevamientoMenu);
         $relevamiento_por_salas = DB::table('relevamientoporsala as rps')  
                         ->join('relevamiento as r','r.RelevamientoId','rps.RelevamientoId')
                         ->join('sala as s','s.SalaId','rps.SalaId')
@@ -106,16 +98,22 @@ class RelevamientoPorSalaController extends Controller
         $tiposcomida = DB::table('tipocomida')->where('TipoComidaEstado',1)->get();
         
         foreach ($tiposcomida as $index => $tipocomida) {
-            $comidas = DB::table('comida')->where('TipoComidaId',$tipocomida->TipoComidaId)->where('ComidaEstado',1)->get();
+            $comidas = DB::table('comida as c')
+                        ->join('comidaportipopaciente as cptp','cptp.ComidaId','c.ComidaId')
+                        ->join('detallemenutipopaciente as dmtp','dmtp.DetalleMenuTipoPacienteId','cptp.DetalleMenuTipoPacienteId')
+                        ->where('dmtp.MenuId',$menuSeleccionado->MenuId)
+                        ->where('c.TipoComidaId',$tipocomida->TipoComidaId)
+                        ->where('c.ComidaEstado',1)->get();
             $tiposcomida[$index]->comidas = $comidas;
         }
 
         $colaciones = DB::table('comida as c')
                         ->join('tipocomida as tc','tc.TipoComidaId','c.TipoComidaId')
-                        ->where('tc.TipoComidaNombre','Colación')
+                        // ->where('tc.TipoComidaNombre','Colación')
+                        ->where('tc.TipoComidaNombre', 'like', '%Colación%')
                         ->get();
 
-        return view('relevamientoporsalas.show',compact('relevamiento_por_salas','pacientes','piezas','tiposPaciente','menus','tiposcomida','colaciones'));
+        return view('relevamientoporsalas.show',compact('relevamiento_por_salas','pacientes','piezas','tiposPaciente','menus','tiposcomida','colaciones','menuSeleccionado'));
     }
 
     /**
@@ -138,18 +136,7 @@ class RelevamientoPorSalaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $resultado = false;
-        $relevamiento_por_sala = RelevamientoPorSala::findOrFail($id);
-        $relevamiento_por_sala->RelevamientoId = $request->get('relevamiento_id');
-        $relevamiento_por_sala->SalaId = $request->get('sala_id');
-        $relevamiento_por_sala->RelevamientoPorSalaAcompaniantes = 0;
-        $relevamiento_por_sala->RelevamientoPorSalaEstado = 1;
-        $resultado = $relevamiento_por_sala->update();
-        if ($resultado) {
-            return response()->json(['success'=> $relevamiento_por_sala]);
-        }else{
-            return response()->json(['success'=>'false']);
-        }
+        //
     }
 
     /**
@@ -160,20 +147,6 @@ class RelevamientoPorSalaController extends Controller
      */
     public function destroy($id)
     {
-        $relevamiento_por_sala = RelevamientoPorSala::findOrFail($id);
-        $detalles_relevamiento = DetalleRelevamiento::where("RelevamientoPorSalaId",$relevamiento_por_sala->RelevamientoPorSalaId)->get();
-        if($detalles_relevamiento){
-            foreach ($detalles_relevamiento as $detalle_relevamiento) {
-                $detalle_relevamiento->DetalleRelevamientoEstado = -1;
-                $detalle_relevamiento->update();
-            }
-        }
-        $relevamiento_por_sala->RelevamientoPorSalaEstado = -1;
-        $resultado = $relevamiento_por_sala->update();
-        if ($resultado) {
-            return response()->json(['success'=>'true']);
-        }else{
-            return response()->json(['success'=>'false']);
-        }
+        //
     }
 }

@@ -195,7 +195,7 @@ class DetalleRelevamientoController extends Controller
 
     public function update(Request $request, $id)//request: relevamiento, paciente, cama, diagnostico, observaciones, menu, tipopaciente, acompaniante, vajilladescartable, user, comidas[], colacion
     {
-        
+        $this->verificar_existencia_paciente($request->get('paciente'));
         if($request->get('paciente_modo_carga') == 'add_new'){
             $this->set_paciente_nuevo($request->get('paciente_nombre'), $request->get('paciente_apellido'), $request->get('paciente_dni'));
         }
@@ -319,7 +319,7 @@ class DetalleRelevamientoController extends Controller
             $detalleRelevamiento->DetalleRelevamientoVajillaDescartable = 0;
         }
         $detalleRelevamiento->UserId = $request['user'];
-        //$detalleRelevamiento->DetalleRelevamientoColacion = $request['colacion'];
+        $detalleRelevamiento->DetalleRelevamientoColacion = $request['colacion'];
         $detalleRelevamiento->save();
 
         return $detalleRelevamiento;

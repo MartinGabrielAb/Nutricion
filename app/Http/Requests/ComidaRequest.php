@@ -18,18 +18,18 @@ class ComidaRequest extends FormRequest
         $metodo = $this->getMethod();
         if ( $metodo == 'POST') {
             return [
-            'nombre' => ['required','min:4','max:64',
+            'nombre' => ['required','min:1','max:64',
                 Rule::unique('comida','ComidaNombre')->where(function ($query) { 
                     return $query->where('ComidaEstado', 1);
                     })
                 ],
-            'tipo' => ['required','numeric','exists:tipocomida,TipoComidaId']    
+            'tipo' => ['required','numeric','exists:tipocomida,TipoComidaId'],
             ];
         //validacion para el update
         }
         if ($metodo == "PUT" || $metodo == "PATCH") {
             return  [
-            'nombre' => ['required','min:4','max:64',
+            'nombre' => ['required','min:1','max:64',
                 Rule::unique('comida','ComidaNombre')
                     ->where(function ($query) use ($request) { 
                         return $query->where('ComidaId','!=',$request->id);
@@ -54,7 +54,6 @@ class ComidaRequest extends FormRequest
             'tipo.required' => 'Tipo de comida es requerido.',
             'tipo.numeric' => 'El tipo de comida debe ser un número.',
             'tipo.exists' => 'El tipo de comida debe existir.',
-
         ];
     }
 }

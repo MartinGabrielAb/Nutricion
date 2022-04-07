@@ -36,7 +36,6 @@ $(document).ready( function () {
     },
     allowClear: true,
   });
-
   $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
   
   /*------Funcion para llenar los campos cuando selecciono una fila -----*/ 
@@ -50,13 +49,13 @@ $(document).ready( function () {
       $("#tituloModal").text("Editar paciente");
       $("#btnGuardar span").text("Editar");
       vaciarCampos();
+      pantalla_select_paciente();
       $('#id').val(detallerelevamiento.DetalleRelevamientoId);
       $('#pacienteId').val(detallerelevamiento.PacienteCuil).trigger('change');
       $('#diagnosticoId').val(detallerelevamiento.DetalleRelevamientoDiagnostico);
       $('#observacionesId').val(detallerelevamiento.DetalleRelevamientoObservaciones);
       $('#menu').val(detallerelevamiento.MenuId).trigger('change');
       $('#tipoPacienteId').val(detallerelevamiento.TipoPacienteId).trigger('change');
-      $('#comidas').addClass('d-none');
       if(detallerelevamiento.DetalleRelevamientoAcompaniante == 1){
         $( "#acompanianteId" ).prop( "checked", true );
       }else{
@@ -95,22 +94,22 @@ $(document).ready( function () {
     $(".clsComidas").val(-1).trigger('change');
   });
   $('#tipoPacienteId').on("select2:select", function(e) { 
-    $('#comidas').addClass('d-none');
+    $(".clsComidas").val(-1).trigger('change');
+    $('.clsTipoComida').prop('checked',false);
+    // $('#comidas').addClass('d-none');
     menuId = $("#menu").val();
     tipopacienteId = $(this).val();
-    if(menuId != -1 && $("#tipoPacienteId option:selected").text() == 'Individual'){
-      elementoComidas = $('#comidas');
-      if(elementoComidas.hasClass('d-none')){
-        $('#comidas').removeClass('d-none');
-        $('#seleccionar_comidas_individuales').removeClass('d-none');
-        $('#seleccionar_comidas_no_individuales').addClass('d-none');
-      }
-    }else if(menuId != -1 && $("#tipoPacienteId option:selected").text() != 'Individual'){
+    if(menuId != -1 && $("#tipoPacienteId option:selected").text() != 'Individual'){
       seleccionar_comidas();
-    }else{
-      $('#comidas').addClass('d-none');
+      // elementoComidas = $('#comidas');
+      // if(elementoComidas.hasClass('d-none')){
+      //   $('#comidas').removeClass('d-none');
+      //   $('#seleccionar_comidas_individuales').removeClass('d-none');
+      //   $('#seleccionar_comidas_no_individuales').addClass('d-none');
+      // }
+    // }else if(menuId != -1 && $("#tipoPacienteId option:selected").text() != 'Individual'){
+    //   seleccionar_comidas();
     }
-    
   });
 });
 
@@ -120,71 +119,63 @@ function guardar(e){
   e.preventDefault();
   var id = $("#id").val();
   comidas = [];
-  if($('#seleccionar_comidas_no_individuales').hasClass('d-none')){
-    clsComidas = $('.clsComidas');
-    clsComidas.each(function(index, item) {
-      var $comidaid = $(item).val();
-        $comidaid = {
-          'ComidaId' : $comidaid,
-        }
+  //Saca los IDs de las comidas seleccionadas.
+  clsComidas = $('.clsTipoComida');
+  clsComidas.each(function(index, item) {
+    var $tipo_paciente_id = $(item).val();
+    if ($(item).is(':checked')) {
+      $comidaid = $('#comidaid'+$tipo_paciente_id).val();
+      $comidaid = {
+        'ComidaId' : $comidaid,
+      }
       if($comidaid != null){
         comidas.push($comidaid);
       }
-    });
-  }else{
-    comidas_no_individuales = $('.comidas_no_individuales');
-    comidas_no_individuales.each(function(index, item) {
-      var $comidaid = $(item).val();
-      if ($(item).is(':checked')) {
-        $comidaid = {
-          'ComidaId' : $comidaid,
+    }
+  });
+  if(comidas.length > 0){
+    if(id == 0){
+      $.ajax({
+        type:'POST',
+        url:"../detallesrelevamiento",
+        dataType:"json",
+        data:{
+          relevamientoPorSalaId: $('#relevamientoPorSalaId').val(),
+          paciente: $('#pacienteId').val(),
+          cama: $('#camaId').val(),
+          diagnostico: $('#diagnosticoId').val(),
+          observaciones: $('#observacionesId').val(),
+          menu: $('#menu').val(),
+          tipopaciente: $('#tipoPacienteId').val(),
+          comidas: comidas,
+          acompaniante: $('#acompanianteId').is(':checked'),
+          vajilladescartable: $('#vajilladescartable').is(':checked'),
+          user: $('#usuarioId').val(),
+          colacion: $('#colacion').val(),
+          paciente_modo_carga: $('#paciente_modo_carga').val(),
+          paciente_nombre: $('#paciente_nombre').val(),
+          paciente_apellido: $('#paciente_apellido').val(),
+          paciente_dni: $('#paciente_dni').val(),
+        },
+        success: function(response){
+          camaid = response.success;
+          $('#modal').modal('hide');
+          mostrarCartel('Registro agregado correctamente.','alert-success');
+          getDetallerelevamiento(camaid);
+        },
+        error:function(response){
+          var errors =  response.responseJSON.errors;
+          for (var campo in errors) {
+            $("#listaErrores").append('<li type="square">'+errors[campo]+'</li>');
+          }       
         }
-        comidas.push($comidaid); 
-      }
-    });
-  }
-  if(comidas.length == 0){
-    comidas = null;
-  }
-  if(id == 0){
-    $.ajax({
-      type:'POST',
-      url:"../detallesrelevamiento",
-      dataType:"json",
-      data:{
-        relevamientoPorSalaId: $('#relevamientoPorSalaId').val(),
-        paciente: $('#pacienteId').val(),
-        cama: $('#camaId').val(),
-        diagnostico: $('#diagnosticoId').val(),
-        observaciones: $('#observacionesId').val(),
-        menu: $('#menu').val(),
-        tipopaciente: $('#tipoPacienteId').val(),
-        comidas: comidas,
-        acompaniante: $('#acompanianteId').is(':checked'),
-        vajilladescartable: $('#vajilladescartable').is(':checked'),
-        user: $('#usuarioId').val(),
-        colacion: $('#colacion').val(),
-        paciente_modo_carga: $('#paciente_modo_carga').val(),
-        paciente_nombre: $('#paciente_nombre').val(),
-        paciente_apellido: $('#paciente_apellido').val(),
-        paciente_dni: $('#paciente_dni').val(),
-      },
-      success: function(response){
-        camaid = response.success;
-        $('#modal').modal('hide');
-        mostrarCartel('Registro agregado correctamente.','alert-success');
-        getDetallerelevamiento(camaid);
-      },
-      error:function(response){
-        var errors =  response.responseJSON.errors;
-        for (var campo in errors) {
-          $("#listaErrores").append('<li type="square">'+errors[campo]+'</li>');
-        }       
-      }
-    });
+      });
+    }else{
+      editar(id,comidas);
+    } 
   }else{
-    editar(id,comidas);
-  } 
+    $("#listaErrores").append('<li type="square">Debe seleccionar al menos una comida</li>');
+  }
 }
 
 //PUT AJAX
@@ -216,7 +207,6 @@ function editar(id,comidas){
       camaid = response.success;
       $('#modal').modal('hide');
       mostrarCartel('Registro editado correctamente.','alert-success');
-      console.log(camaid);
       getDetallerelevamiento(camaid);
     },
     error:function(response){
@@ -293,6 +283,7 @@ function vaciarCampos(){
   $('#vajilladescartable').prop( "checked", false );
   $(".clsComidas").val(-1).trigger('change');
   $("#listaErrores").empty();
+  $('.clsTipoComida').prop('checked',false);
 }
 function agregar(){
   $("#id").val(0);
@@ -302,7 +293,6 @@ function agregar(){
   $('#modal-footer').removeClass('d-none');
   vaciarCampos();
   $("#tituloModal").text("Agregar paciente");
-  $('#comidas').addClass('d-none');
   $("#btnGuardar span").text("Guardar");
   camaid = $('#camaId').val();
   getUltimoDetRelevamiento(camaid);
@@ -492,7 +482,7 @@ function getUltimoDetRelevamiento(camaid, paciente = null){
         $('#observacionesId').val(detallerelevamiento.DetalleRelevamientoObservaciones);
         $('#tipoPacienteId').val(detallerelevamiento.TipoPacienteId).trigger('change');
         // $('#comidas').addClass('d-none');
-        seleccionar_comidas();
+        seleccionar_comidas(detallerelevamiento.DetalleRelevamientoId);
         if(detallerelevamiento.DetalleRelevamientoAcompaniante == 1){
           $( "#acompanianteId" ).prop( "checked", true );
         }else{
@@ -554,9 +544,9 @@ function seleccionar_comidas(detallerelevamientoid){
   $('#seleccionar_comidas_no_individuales').empty();
   if($('#tipoPacienteId option:selected').text() != ''){
     if($('#tipoPacienteId option:selected').text() != 'Individual'){
-      $('#comidas').removeClass('d-none');
-      $('#seleccionar_comidas_individuales').addClass('d-none');
-      $('#seleccionar_comidas_no_individuales').removeClass('d-none');
+      // $('#comidas').removeClass('d-none');
+      // $('#seleccionar_comidas_individuales').addClass('d-none');
+      // $('#seleccionar_comidas_no_individuales').removeClass('d-none');
       menu = $('#menu').val();
       tipopaciente = $('#tipoPacienteId').val();
       $.ajax({
@@ -591,7 +581,6 @@ function mostrar_checkbox_comidas(comidas,detallerelevamientoid) {
       mostrarCartel('Error al eliminar el registro.','alert-danger');
     }
   }).responseJSON;
-
   comidas.forEach(comida => {
     comida.check = null;
     detalleRelevamientoComidas.success.forEach(element => {
@@ -600,52 +589,155 @@ function mostrar_checkbox_comidas(comidas,detallerelevamientoid) {
       }
     });
     if ($('#turno').val() == 'Mañana') {
-      if (comida.TipoComidaTurno == 0){
-        if (comida.check == null) {
-          html = `
-            <div class="form-check">
-              <input class="form-check-input comidas_no_individuales" type="checkbox" value="${comida.ComidaId}" id="comida_id_${comida.ComidaId}" name="comida_id_${comida.ComidaId}">
-              <label class="form-check-label" for="comida_id_${comida.ComidaId}">
-                ${comida.TipoComidaNombre} - ${comida.ComidaNombre}
-              </label>
-            </div>
-            `;  
-        }else{
-          html = `
-            <div class="form-check">
-              <input class="form-check-input comidas_no_individuales" checked type="checkbox" value="${comida.ComidaId}" id="comida_id_${comida.ComidaId}" name="comida_id_${comida.ComidaId}">
-              <label class="form-check-label" for="comida_id_${comida.ComidaId}">
-                ${comida.TipoComidaNombre} - ${comida.ComidaNombre}
-              </label>
-            </div>
-            `;
+      if (comida.TipoComidaTurno != 1){
+      //   if (comida.check == null) {
+      //     html = `
+      //       <div class="form-check">
+      //         <input class="form-check-input comidas_no_individuales" type="checkbox" value="${comida.ComidaId}" id="comida_id_${comida.ComidaId}" name="comida_id_${comida.ComidaId}">
+      //         <label class="form-check-label" for="comida_id_${comida.ComidaId}">
+      //           ${comida.TipoComidaNombre} - ${comida.ComidaNombre}
+      //         </label>
+      //       </div>
+      //       `;  
+      //   }else{
+      //     html = `
+      //       <div class="form-check">
+      //         <input class="form-check-input comidas_no_individuales" checked type="checkbox" value="${comida.ComidaId}" id="comida_id_${comida.ComidaId}" name="comida_id_${comida.ComidaId}">
+      //         <label class="form-check-label" for="comida_id_${comida.ComidaId}">
+      //           ${comida.TipoComidaNombre} - ${comida.ComidaNombre}
+      //         </label>
+      //       </div>
+      //       `;
+      //   }
+      //   $('#seleccionar_comidas_no_individuales').append(html);
+      // }
+      if (comida.Variante == 1) {
+        $('#comidaid'+comida.TipoComidaId).val(comida.ComidaId).trigger('change');
+        if (comida.check == 1) {
+          $('#tipo_comida_'+comida.TipoComidaId).prop('checked', true); 
         }
-        
-        $('#seleccionar_comidas_no_individuales').append(html);
       }
     }else if($('#turno').val() == 'Tarde'){
-      if (comida.TipoComidaTurno == 1){
-        if (comida.check == null) {
-          html = `
-            <div class="form-check">
-              <input class="form-check-input comidas_no_individuales" type="checkbox" value="${comida.ComidaId}" id="comida_id_${comida.ComidaId}" name="comida_id_${comida.ComidaId}">
-              <label class="form-check-label" for="comida_id_${comida.ComidaId}">
-                ${comida.TipoComidaNombre} - ${comida.ComidaNombre}
-              </label>
-            </div>
-            `;  
-        }else{
-          html = `
-            <div class="form-check">
-              <input class="form-check-input comidas_no_individuales" checked type="checkbox" value="${comida.ComidaId}" id="comida_id_${comida.ComidaId}" name="comida_id_${comida.ComidaId}">
-              <label class="form-check-label" for="comida_id_${comida.ComidaId}">
-                ${comida.TipoComidaNombre} - ${comida.ComidaNombre}
-              </label>
-            </div>
-            `;
+      if (comida.TipoComidaTurno != 0){
+        // if (comida.check == null) {
+        //   html = `
+        //     <div class="form-check">
+        //       <input class="form-check-input comidas_no_individuales" type="checkbox" value="${comida.ComidaId}" id="comida_id_${comida.ComidaId}" name="comida_id_${comida.ComidaId}">
+        //       <label class="form-check-label" for="comida_id_${comida.ComidaId}">
+        //         ${comida.TipoComidaNombre} - ${comida.ComidaNombre}
+        //       </label>
+        //     </div>
+        //     `;  
+        // }else{
+        //   html = `
+        //     <div class="form-check">
+        //       <input class="form-check-input comidas_no_individuales" checked type="checkbox" value="${comida.ComidaId}" id="comida_id_${comida.ComidaId}" name="comida_id_${comida.ComidaId}">
+        //       <label class="form-check-label" for="comida_id_${comida.ComidaId}">
+        //         ${comida.TipoComidaNombre} - ${comida.ComidaNombre}
+        //       </label>
+        //     </div>
+        //     `;
+        // }
+        // $('#seleccionar_comidas_no_individuales').append(html);
+        if (comida.Variante == 1) {
+          $('#comidaid'+comida.TipoComidaId).val(comida.ComidaId).trigger('change');
+          if (comida.check == 1) {
+            $('#tipo_comida_'+comida.TipoComidaId).prop('checked', true); 
+          }
         }
-        $('#seleccionar_comidas_no_individuales').append(html);
       }
     }
+  }
   });
+}
+
+function main_datos_de_paciente(dni){
+  datos_de_paciente_api = get_datos_paciente_de_api(dni);
+  datos_paciente_en_interna = get_paciente_en_bd_interna(dni);
+  switch (true) {
+    case (datos_de_paciente_api && !datos_paciente_en_interna):
+      datos_paciente_en_interna = set_datos_de_api_en_bd_interna(datos_de_paciente_api);
+      break;
+    case (!datos_de_paciente_api && !datos_paciente_en_interna):
+      datos_paciente_en_interna = set_dni_en_bd_interna(dni);
+      break;
+    default:
+      break;
+  }
+  mostrar_datos_de_paciente(datos_de_paciente_api, datos_paciente_en_interna);
+}
+
+function get_datos_paciente_de_api(dni){
+  //Llama a la API a través de los parámetros de fecha_desde, fecha_hasta, DNI.
+  //La fecha_desde y fecha_hasta son parámetros obligatorios.
+  //Se tomará como fecha_desde 1990/01/01 y a fecha_hasta: fecha actual del sistema.
+  //La API devolverà una lista de objetos JSON.
+  //Los objetos contienen: ApellidoyNombre, Edad, FechaIngreso, FechaSalida, HoraIngreso, HoraSalida, MotivoIngreso, MOTIVO, NroDocumento, ObraSocial, Procedencia
+  //De la lista devuelta, se tomarà el ùltimo o el objeto que tenga la fecha_desde màs cercana a la fecha actual del sistema.
+  fecha_desde = "1990-01-01";
+  fecha_hasta = get_fecha_actual();
+
+  var settings = {
+    "url": "http://stisalta2.duckdns.org/wssaltasalud/rest/WSDatosPacientes",
+    "method": "POST",
+    "timeout": 0,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "data": JSON.stringify({
+      "FechaDesde": fecha_desde,
+      "FechaHasta": fecha_hasta,
+      "NroDocumento": dni
+    }),
+  };
+  
+  $.ajax(settings).done(function (response) {
+    // console.log(response);
+    return response;
+  });
+
+}
+
+function get_paciente_en_bd_interna(dni){
+  //Select single a la tabla paciente con el DNI como filtro, si encuentra entonces devuelve los datos, sino retorna null.
+  var settings = {
+    "url": "paciente",
+    "method": "POST",
+    "timeout": 0,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "data": JSON.stringify({
+      "FechaDesde": fecha_desde,
+      "FechaHasta": fecha_hasta,
+      "NroDocumento": dni
+    }),
+  };
+  
+  $.ajax(settings).done(function (response) {
+    // console.log(response);
+    return response;
+  });
+}
+
+function set_dni_en_bd_interna(dni){
+  //Setea ùnicamente el DNI en BD interna para continuar de todas formas el relevamiento.
+}
+
+function mostrar_datos_de_paciente(datos_de_paciente_api, datos_paciente_en_interna){
+  //Interactùa con el HTML para mostrar los datos de paciente obtenidos.
+}
+
+function get_fecha_actual(){
+  //obtiene la fecha actual del sistema formateada como AAAA-MM-DD
+  d = new Date();
+
+  month = d.getMonth()+1;
+  day = d.getDate();
+
+  output = d.getFullYear() + '-' +
+  (month<10 ? '0' : '') + month + '-' +
+  (day<10 ? '0' : '') + day;
+
+  return output;
 }

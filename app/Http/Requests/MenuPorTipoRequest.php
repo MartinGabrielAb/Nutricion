@@ -23,7 +23,7 @@ class MenuPorTipoRequest extends FormRequest
                         ->where(function ($query) use($request) {
                             return $query->where('MenuId', $request->menuId)->where('TipoPacienteId', $request->tipoPaciente);
                         }),
-                    ]      
+                    ],
             ];
         
     }

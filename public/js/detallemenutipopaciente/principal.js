@@ -40,7 +40,6 @@ $(document).ready( function () {
         data:{
           tipoPaciente: $('#tipoPaciente').val(),
           menuId: $('#menuId').val(),
-
         },
         success: function(response){
           $('#modal').modal('hide');

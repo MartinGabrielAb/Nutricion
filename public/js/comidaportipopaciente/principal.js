@@ -8,15 +8,7 @@ jQuery( function () {
       "columns": [
         {data: "TipoComidaNombre"},
         {data: "ComidaNombre"},
-        {
-          data: null, name: 'ComidaPorTipoPacientePrincipal',
-          render: function ( data, type, row ) {
-            if (data.ComidaPorTipoPacientePrincipal == 1) {
-              return '<span class="text-success ml-1">Principal</span>';
-            }else{
-              return '<span class="text-warning ml-1">Variante</span>';
-            }
-        }},
+        {data: 'Variante'},
         {data:'btn',orderable:false,sercheable:false},
       ],
       "language": { "url": "../JSON/Spanish_dataTables.json"},
@@ -28,7 +20,6 @@ jQuery( function () {
     
     /*------Funcion para llenar los campos cuando selecciono una fila -----*/ 
   $("#tipoComida").on('change',function(){
-      console.log("cahngeeg");
       $("#comida").empty();
       $.ajax({
           type:'GET',
@@ -66,6 +57,7 @@ jQuery( function () {
   function vaciarCampos(){
     $("#tipoPaciente").val("");
     $("#listaErrores").empty();
+    $('input:radio[name=variante][value=1]').click();
   };
   
   function agregar(){
@@ -100,7 +92,7 @@ jQuery( function () {
             detalleMenuTipoPacienteId: $('#detalleMenuTipoPacienteId').val(),
             tipocomida: $('#tipoComida').val(),
             comida: $('#comida').val(),
-            principal: $('[name="principal"]:checked').val(),
+            variante:$('input[name="variante"]:checked').val(),//1 Predeterminado - 0 Opcional
         },
         success: function(response){
           $('#modal').modal('hide');

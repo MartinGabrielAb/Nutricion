@@ -90,7 +90,6 @@ function editar(id){
       error:function(response){
         var errors =  response.responseJSON.errors;
         for (var campo in errors) {
-          console.log(errors[campo]);
           $("#listaErrores").append('<li type="square">'+errors[campo]+'</li>');
         }       
       }
