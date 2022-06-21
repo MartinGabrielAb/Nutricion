@@ -205,6 +205,25 @@
                             Acompañante
                         </label>
                     </div>
+                    <div id="opciones_acompaniante" hidden>
+                        @foreach ($tiposcomida as $tipocomida)
+                            @if ($relevamiento_por_salas->RelevamientoTurno == 'Mañana')
+                                @if ($tipocomida->TipoComidaTurno != 1)
+                                    <div class="form-check mt-3 ml-3">
+                                        <input class="form-check-input cls_tiposcomida" type="checkbox" value="1" id="{{$tipocomida->TipoComidaId}}" name="{{$tipocomida->TipoComidaId}}">
+                                        <label class="form-check-label" for="acompanianteId">{{$tipocomida->TipoComidaNombre}}</label>
+                                    </div>
+                                @endif
+                            @elseif ($relevamiento_por_salas->RelevamientoTurno == 'Tarde')
+                                @if ($tipocomida->TipoComidaTurno != 0)
+                                    <div class="form-check mt-3 ml-3">
+                                        <input class="form-check-input cls_tiposcomida" type="checkbox" value="1" id="{{$tipocomida->TipoComidaId}}" name="{{$tipocomida->TipoComidaId}}">
+                                        <label class="form-check-label" for="acompanianteId">{{$tipocomida->TipoComidaNombre}}</label>
+                                    </div>
+                                @endif
+                            @endif
+                        @endforeach
+                    </div>
                     <div class="form-check mt-3">
                         <input class="form-check-input" type="checkbox" value="1" id="vajilladescartable" name="vajilladescartable">
                         <label class="form-check-label" for="vajilladescartable">

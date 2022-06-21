@@ -47,7 +47,7 @@ class DetalleRelevamientoController extends Controller
         //acompañante
         if($detalleRelevamiento->DetalleRelevamientoAcompaniante == 1){
             $para_acompaniante = 1;
-            $comidas = $request->get('comidas');
+            $comidas = $this->get_comidas_por_tipo($detalleRelevamiento->MenuId,1,$request['comidas_acompaniente']);//1 = Normal
             //sumo y seteo cantidad de comidas del acompañante en el relevamiento actual.
             foreach ($comidas as $comida) {
                 $this->setComidaPorRelevamiento($comida,$detalleRelevamiento->DetalleRelevamientoId,$relevamientoPorSala->RelevamientoId,$para_acompaniante);
@@ -227,7 +227,7 @@ class DetalleRelevamientoController extends Controller
         //acompañante
         if($detalleRelevamiento->DetalleRelevamientoAcompaniante == 1){
             $para_acompaniante = 1;
-            $comidas = $request->get('comidas');
+            $comidas = $this->get_comidas_por_tipo($detalleRelevamiento->MenuId,1,$request['comidas_acompaniente']);//1 = Normal
             //sumo y seteo cantidad de comidas del acompañante en el relevamiento actual.
             foreach ($comidas as $comida) {
                 $this->setComidaPorRelevamiento($comida,$detalleRelevamiento->DetalleRelevamientoId,$relevamientoPorSala->RelevamientoId,$para_acompaniante);
@@ -319,7 +319,7 @@ class DetalleRelevamientoController extends Controller
             $detalleRelevamiento->DetalleRelevamientoVajillaDescartable = 0;
         }
         $detalleRelevamiento->UserId = $request['user'];
-        $detalleRelevamiento->DetalleRelevamientoColacion = $request['colacion'];
+        // $detalleRelevamiento->DetalleRelevamientoColacion = $request['colacion'];
         $detalleRelevamiento->save();
 
         return $detalleRelevamiento;
@@ -346,6 +346,22 @@ class DetalleRelevamientoController extends Controller
                                    ->where('DetalleRelevamientoEstado',1)
                                    ->update(['DetalleRelevamientoEstado' => 0]);
         }
+    }
+
+    private function get_comidas_por_tipo($menuId,$tipoPacienteId,$tiposComidaId){
+        $tiposComida = [];
+        foreach ($tiposComidaId as $tipoComidaId) {
+            array_push($tiposComida,$tipoComidaId['tipoComidaId']);
+        }
+        $comidas_acompaniante = DB::table('comidaportipopaciente as cptp')
+                ->join('detallemenutipopaciente as dmtp','dmtp.DetalleMenuTipoPacienteId','cptp.DetalleMenuTipoPacienteId')
+                ->join('comida as c','c.ComidaId','cptp.ComidaId')
+                ->where('dmtp.MenuId',$menuId)
+                ->where('dmtp.TipoPacienteId',$tipoPacienteId)
+                ->whereIn('c.TipoComidaId',$tiposComida)
+                ->where('cptp.Variante',1)
+                ->get();
+        return json_decode($comidas_acompaniante, true);
     }
 
 }

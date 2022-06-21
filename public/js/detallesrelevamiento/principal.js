@@ -88,6 +88,14 @@ $(document).ready( function () {
     // ocultar inputs de add_paciente.
     $('.col_add_paciente').addClass('d-none');
 
+    $('body').on('change', '#acompanianteId', function() {
+      if ($(this).is(":checked")){
+        $('#opciones_acompaniante').removeAttr('hidden');
+      }else{
+        $('#opciones_acompaniante').attr('hidden',true);
+      }
+    });
+
   });
   //eventos para seleccionar las comidas del menú
   $('#menu').on("select2:select", function(e) { 
@@ -133,6 +141,22 @@ function guardar(e){
       }
     }
   });
+  //Saca los IDs de las comidas seleccionadas del acompaniante si existe.
+  comidas_acompaniente = [];
+  if ($('#acompanianteId').is(':checked')) {
+    cls_comidas_acompaniente = $('.cls_tiposcomida');
+    cls_comidas_acompaniente.each(function name(index, item) {
+      if ($(item).is(':checked')) {
+        $tipocomidadid = $(this).attr('id');
+        $tipocomidadid = {
+          'tipoComidaId' : $tipocomidadid,
+        }
+        if($tipocomidadid != null){
+          comidas_acompaniente.push($tipocomidadid);
+        }
+      }
+    });
+  }
   if(comidas.length > 0){
     if(id == 0){
       $.ajax({
@@ -149,6 +173,7 @@ function guardar(e){
           tipopaciente: $('#tipoPacienteId').val(),
           comidas: comidas,
           acompaniante: $('#acompanianteId').is(':checked'),
+          comidas_acompaniente: comidas_acompaniente,
           vajilladescartable: $('#vajilladescartable').is(':checked'),
           user: $('#usuarioId').val(),
           colacion: $('#colacion').val(),
@@ -171,7 +196,7 @@ function guardar(e){
         }
       });
     }else{
-      editar(id,comidas);
+      editar(id,comidas,comidas_acompaniente);
     } 
   }else{
     $("#listaErrores").append('<li type="square">Debe seleccionar al menos una comida</li>');
@@ -179,7 +204,7 @@ function guardar(e){
 }
 
 //PUT AJAX
-function editar(id,comidas){
+function editar(id,comidas,comidas_acompaniente){
   $("#listaErrores").empty();
   $.ajax({
     type:'PUT',
@@ -195,6 +220,7 @@ function editar(id,comidas){
       tipopaciente: $('#tipoPacienteId').val(),
       comidas: comidas,
       acompaniante: $('#acompanianteId').is(':checked'),
+      comidas_acompaniente: comidas_acompaniente,
       vajilladescartable: $('#vajilladescartable').is(':checked'),
       user: $('#usuarioId').val(),
       colacion: $('#colacion').val(),
@@ -284,6 +310,7 @@ function vaciarCampos(){
   $(".clsComidas").val(-1).trigger('change');
   $("#listaErrores").empty();
   $('.clsTipoComida').prop('checked',false);
+  $('.cls_tiposcomida').prop('checked',false);
 }
 function agregar(){
   $("#id").val(0);
@@ -581,11 +608,17 @@ function mostrar_checkbox_comidas(comidas,detallerelevamientoid) {
       mostrarCartel('Error al eliminar el registro.','alert-danger');
     }
   }).responseJSON;
+  
   comidas.forEach(comida => {
     comida.check = null;
+    ((!detallerelevamientoid) ? $('#tipo_comida_'+comida.TipoComidaId).prop('checked', true) : '');
     detalleRelevamientoComidas.success.forEach(element => {
-      if(element.ComidaId == comida.ComidaId){
+      if(element.ComidaId == comida.ComidaId && element.para_acompaniante != 1){
         comida.check = 1;
+      }else if(element.para_acompaniante == 1){
+        $('#opciones_acompaniante').attr('hidden',false);
+        console.log('#' + element.TipoComidaId + ' .cls_tiposcomida');
+        $('#' + element.TipoComidaId).prop('checked',true);;
       }
     });
     if ($('#turno').val() == 'Mañana') {

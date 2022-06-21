@@ -90,14 +90,14 @@
                 <!-- Aca se agregan las opciones por js -->
                 </select>
             </div>
-            <label for="variante">Variante</label>
+            <label>Variante</label>
             <div class="form-check">
               <input class="form-check-input" type="radio" name="variante" id="variante" required value="1">
-              <label class="form-check-label" for="inlineRadio1">Predeterminado</label>
+              <label class="form-check-label" for="variante">Predeterminado</label>
             </div>
             <div class="form-check">
               <input class="form-check-input" type="radio" name="variante" id="variante" required value="0">
-              <label class="form-check-label" for="inlineRadio2">Opcional</label>
+              <label class="form-check-label" for="variante">Opcional</label>
             </div>
             {{-- <label>Seleccione si es principal o variante</label>
             <div class="form-check">
