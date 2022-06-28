@@ -179,14 +179,13 @@
                                 @foreach ($tiposcomida as $tipocomida)
                                     @if ($tipocomida->TipoComidaTurno != 0)
                                     {{-- @if ($tipocomida->TipoComidaNombre == 'Cena' || $tipocomida->TipoComidaNombre == 'Sopa Cena' || $tipocomida->TipoComidaNombre == 'Desayuno' || $tipocomida->TipoComidaNombre == 'Postre Cena' || $tipocomida->TipoComidaNombre == 'Colación Mañana') --}}
-                                        <div class="form-inline">
+                                            <input class="form-check-input clsTipoComida" type="checkbox" value="{{$tipocomida->TipoComidaId}}" id="tipo_comida_{{$tipocomida->TipoComidaId}}">
                                             <label for="comidaid{{$tipocomida->TipoComidaId}}">{{$tipocomida->TipoComidaNombre}}</label>
                                             <select class="form-control clsComidas" id="comidaid{{$tipocomida->TipoComidaId}}" name="comidas[]"  style="width: 100%">
                                                 @foreach ($tipocomida->comidas as $comida)
                                                     <option value="{{$comida->ComidaId}}">{{$comida->ComidaNombre}}</option>
                                                 @endforeach
                                             </select>
-                                        </div>
                                     @endif 
                                 @endforeach
                             @endif
