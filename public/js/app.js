@@ -2021,6 +2021,153 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./resources/js/components/reportes/Reporte.ts?vue&type=script&lang=js&":
+/*!************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./resources/js/components/reportes/Reporte.ts?vue&type=script&lang=js& ***!
+  \************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['id'],
+  data: function data() {
+    return {
+      comidasRelevadas: null,
+      desayuno: {},
+      comidasDesayuno: {},
+      totalesDesayuno: {},
+      almuerzo: {},
+      comidasAlmuerzo: {},
+      totalesAlmuerzo: {}
+    };
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return _this.getComidasRelevadas();
+
+            case 2:
+              _context.next = 4;
+              return _this.getReportes();
+
+            case 4:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }))();
+  },
+  methods: {
+    getComidasRelevadas: function getComidasRelevadas() {
+      var _this2 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _this2.comidasRelevadas = [];
+                _context2.next = 3;
+                return axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/api/getRelevamientoPorSalaYTipoComida/' + _this2.id).then(function (response) {
+                  _this2.comidasRelevadas = response.data;
+                  console.log(_this2.comidasRelevadas);
+                })["catch"](function (error) {
+                  console.log("Error comidas relevadas");
+                });
+
+              case 3:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
+    },
+    getReportes: function getReportes() {
+      var _this3 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+        var reporteDesayuno, reporteAlmuerzo, desayuno, comidasDesayuno, totalesDesayuno, almuerzo, comidasAlmuerzo, totalesAlmuerzo;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                reporteDesayuno = ['Desayuno', 'Merienda']; //Tipos de comida para hacer el reporte
+
+                reporteAlmuerzo = ['Sopa', 'Postre', 'Pan', 'Cena'];
+                desayuno = {};
+                comidasDesayuno = {};
+                totalesDesayuno = {};
+                almuerzo = {};
+                comidasAlmuerzo = {};
+                totalesAlmuerzo = {};
+
+                _this3.comidasRelevadas.forEach(function (sala) {
+                  desayuno[sala.id] = {
+                    'sala': sala.nombre
+                  };
+                  almuerzo[sala.id] = {
+                    'sala': sala.nombre
+                  };
+                  sala.tipo.forEach(function (tipo) {
+                    if (reporteDesayuno.includes(tipo.nombre)) {
+                      tipo.comidas.forEach(function (comida) {
+                        comidasDesayuno[comida.id] = comida.nombre;
+                        desayuno[sala.id][comida.id] = comida.cantidad;
+                        totalesDesayuno[comida.id] ? totalesDesayuno[comida.id] += comida.cantidad : totalesDesayuno[comida.id] = comida.cantidad;
+                      });
+                    }
+
+                    if (reporteAlmuerzo.includes(tipo.nombre)) {
+                      tipo.comidas.forEach(function (comida) {
+                        comidasAlmuerzo[comida.id] = comida.nombre;
+                        almuerzo[sala.id][comida.id] = comida.cantidad;
+                        totalesAlmuerzo[comida.id] ? totalesAlmuerzo[comida.id] += comida.cantidad : totalesAlmuerzo[comida.id] = comida.cantidad;
+                      });
+                    }
+                  });
+                });
+
+                _this3.desayuno = desayuno;
+                _this3.comidasDesayuno = comidasDesayuno;
+                _this3.totalesDesayuno = totalesDesayuno;
+                _this3.almuerzo = almuerzo;
+                _this3.comidasAlmuerzo = comidasAlmuerzo;
+                _this3.totalesAlmuerzo = totalesAlmuerzo;
+
+              case 15:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./resources/js/components/seleccionarMenu/SeleccionComponent.ts?vue&type=script&lang=js&":
 /*!******************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./resources/js/components/seleccionarMenu/SeleccionComponent.ts?vue&type=script&lang=js& ***!
@@ -2034,22 +2181,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['id'],
   data: function data() {
     return {
       relevamientoAnteriorId: null,
-      relevamientoSelected: null,
+      relevamientoSelected: this.id,
       relevamientos: [],
       relevamientoAnterior: null,
       relevamientosSinMenu: [],
       menues: [],
       menuSelected: null,
-      listErrores: null
+      listErrores: []
     };
   },
   mounted: function mounted() {
     var _this = this;
 
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('api/getRelevamientosAnteriores', {
+    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('../../api/getRelevamientosAnteriores', {
       headers: {
         "Content-Type": "application/json",
         "X-Requested-With": "XMLHttpRequest"
@@ -2059,12 +2207,12 @@ __webpack_require__.r(__webpack_exports__);
     })["catch"](function (error) {
       console.log("Error relevamientos pendientes");
     });
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('api/getRelevamientosSinMenuAsignado').then(function (response) {
+    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('../../api/getRelevamientosSinMenuAsignado').then(function (response) {
       _this.relevamientosSinMenu = response.data;
     })["catch"](function (error) {
       console.log("Error menues sin asignar");
     });
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('api/getMenues').then(function (response) {
+    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('../../api/getMenues').then(function (response) {
       _this.menues = response.data;
     })["catch"](function (error) {
       console.log("Error menues");
@@ -2077,7 +2225,7 @@ __webpack_require__.r(__webpack_exports__);
     getRelevamiento: function getRelevamiento() {
       var _this2 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('api/getRelevamientoPorMenu/' + this.relevamientoAnteriorId).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('../../api/getRelevamientoPorMenu/' + this.relevamientoAnteriorId).then(function (response) {
         _this2.relevamientoAnterior = response.data;
       })["catch"](function (error) {
         console.log("Error getRelevamiento");
@@ -2098,17 +2246,19 @@ __webpack_require__.r(__webpack_exports__);
       //     }
       // }
       if (window.confirm("Una vez terminado no podra hacer cambios. ¿Desea finalizar?")) {
-        axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('api/seleccionarMenu', {
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('../../api/seleccionarMenu', {
           params: {
             relevamientoAnt: this.relevamientoAnterior,
             relevamientoNuevo: this.relevamientoSelected,
             menu: this.menuSelected
           }
         }).then(function (response) {
+          console.log(response.data.error);
+
           if (response.data.error) {
             _this3.listErrores = response.data.error;
           } else {
-            window.location.href = "seleccionarMenu/" + _this3.relevamientoSelected;
+            window.location.href = "../../seleccionarMenu/" + _this3.relevamientoSelected;
           }
         })["catch"](function (error) {
           console.log("Error finalizar");
@@ -4185,6 +4335,213 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/reportes/Reporte.vue?vue&type=template&id=b927d4a2&":
+/*!*******************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/reportes/Reporte.vue?vue&type=template&id=b927d4a2& ***!
+  \*******************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c(
+      "table",
+      {
+        staticClass: "table-sm table-bordered text-sm-center",
+        attrs: { id: "tableAlmuerzo" }
+      },
+      [
+        _c("thead", [
+          _c(
+            "tr",
+            [
+              _vm._m(0),
+              _vm._v(" "),
+              _vm._l(_vm.comidasAlmuerzo, function(comida, id) {
+                return _c("th", { key: id }, [
+                  _c("small", [_vm._v(_vm._s(comida))])
+                ])
+              })
+            ],
+            2
+          )
+        ]),
+        _vm._v(" "),
+        _c(
+          "tbody",
+          [
+            _vm._l(_vm.almuerzo, function(sala, id) {
+              return _c(
+                "tr",
+                { key: id },
+                [
+                  _c("td", { attrs: { scope: "col" } }, [
+                    _c("small", [_vm._v(_vm._s(sala.sala))])
+                  ]),
+                  _vm._v(" "),
+                  _vm._l(_vm.comidasAlmuerzo, function(comida, index) {
+                    return _c("td", { key: index }, [
+                      _c("small", [
+                        _vm._v(_vm._s(sala[index] ? sala[index] : 0))
+                      ])
+                    ])
+                  })
+                ],
+                2
+              )
+            }),
+            _vm._v(" "),
+            _c(
+              "tr",
+              [
+                _vm._m(1),
+                _vm._v(" "),
+                _vm._l(_vm.comidasAlmuerzo, function(comida, index) {
+                  return _c("td", { key: index }, [
+                    _c("small", [
+                      _vm._v(
+                        _vm._s(
+                          _vm.totalesAlmuerzo[index]
+                            ? _vm.totalesAlmuerzo[index]
+                            : 0
+                        )
+                      )
+                    ])
+                  ])
+                })
+              ],
+              2
+            )
+          ],
+          2
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c("hr"),
+    _vm._v(" "),
+    _c(
+      "table",
+      {
+        staticClass: "table-sm table-bordered text-sm-center",
+        attrs: { id: "tableDesayuno" }
+      },
+      [
+        _c("thead", [
+          _c(
+            "tr",
+            [
+              _vm._m(2),
+              _vm._v(" "),
+              _vm._l(_vm.comidasDesayuno, function(comida, id) {
+                return _c("th", { key: id }, [
+                  _c("small", [_vm._v(_vm._s(comida))])
+                ])
+              })
+            ],
+            2
+          )
+        ]),
+        _vm._v(" "),
+        _c(
+          "tbody",
+          [
+            _vm._l(_vm.desayuno, function(sala, id) {
+              return _c(
+                "tr",
+                { key: id },
+                [
+                  _c("td", { attrs: { scope: "col" } }, [
+                    _c("small", [_vm._v(_vm._s(sala.sala))])
+                  ]),
+                  _vm._v(" "),
+                  _vm._l(_vm.comidasDesayuno, function(comida, index) {
+                    return _c("td", { key: index }, [
+                      _c("small", [
+                        _vm._v(_vm._s(sala[index] ? sala[index] : 0))
+                      ])
+                    ])
+                  })
+                ],
+                2
+              )
+            }),
+            _vm._v(" "),
+            _c(
+              "tr",
+              [
+                _vm._m(3),
+                _vm._v(" "),
+                _vm._l(_vm.comidasDesayuno, function(comida, index) {
+                  return _c("td", { key: index }, [
+                    _c("small", [
+                      _vm._v(
+                        _vm._s(
+                          _vm.totalesDesayuno[index]
+                            ? _vm.totalesDesayuno[index]
+                            : 0
+                        )
+                      )
+                    ])
+                  ])
+                })
+              ],
+              2
+            )
+          ],
+          2
+        )
+      ]
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("th", [
+      _c("small", { staticClass: "font-weight-bold" }, [_vm._v("Almuerzo")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("th", [
+      _c("small", { staticClass: "font-weight-bold" }, [_vm._v("Totales")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("th", [
+      _c("small", { staticClass: "font-weight-bold" }, [_vm._v("Desayuno")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("th", [
+      _c("small", { staticClass: "font-weight-bold" }, [_vm._v("Totales")])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/seleccionarMenu/SeleccionComponent.vue?vue&type=template&id=11d5a38d&":
 /*!*************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/seleccionarMenu/SeleccionComponent.vue?vue&type=template&id=11d5a38d& ***!
@@ -4331,9 +4688,7 @@ var render = function() {
                     _vm._v(" "),
                     _c("div", { staticClass: "row" }, [
                       _c("div", { staticClass: "col" }, [
-                        _vm._v(
-                          "Seleccione el nuevo relevamiento para asignar el menú  "
-                        )
+                        _vm._v("Relevamiento para asignar el menú  ")
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "col" }, [
@@ -4481,12 +4836,12 @@ var render = function() {
                 )
               ]),
               _vm._v(" "),
-              _vm.listErrores
+              _vm.listErrores.length > 0
                 ? _c(
                     "div",
                     { staticClass: "card" },
                     [
-                      _c("h5", { staticClass: "text-danger" }, [
+                      _c("span", { staticClass: "text-danger" }, [
                         _vm._v("Errores:")
                       ]),
                       _vm._v(" "),
@@ -4494,10 +4849,8 @@ var render = function() {
                         return _c("ul", { key: error.ComidaId }, [
                           _c("li", { staticClass: "text-danger" }, [
                             _vm._v(
-                              "No posee " +
-                                _vm._s(error[1]) +
-                                " porciones de " +
-                                _vm._s(error[0].ComidaNombre)
+                              "No posee esa cantidad porciones de " +
+                                _vm._s(error.ComidaNombre)
                             )
                           ])
                         ])
@@ -4625,173 +4978,228 @@ var render = function() {
                   [
                     _vm._l(_vm.listNutrientes.comidas, function(comida) {
                       return [
-                        _vm._l(comida.alimentos, function(alimento, index) {
-                          return [
-                            index == 0
-                              ? _c(
-                                  "tr",
-                                  { key: alimento.alimentoId },
-                                  [
-                                    _c(
-                                      "td",
-                                      {
-                                        staticClass: "text-xs text-center",
-                                        attrs: {
-                                          rowspan: comida.alimentos.length
-                                        }
-                                      },
-                                      [
-                                        _c("small", [
-                                          _vm._v(_vm._s(comida.tipoComida))
-                                        ])
-                                      ]
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "td",
-                                      {
-                                        staticClass: "text-xs text-center",
-                                        attrs: {
-                                          rowspan: comida.alimentos.length
-                                        }
-                                      },
-                                      [
-                                        _c("small", [
-                                          _vm._v(_vm._s(comida.comida))
-                                        ])
-                                      ]
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "td",
-                                      { staticClass: "text-xs text-center" },
-                                      [
-                                        _c("small", [
-                                          _vm._v(_vm._s(alimento.alimento))
-                                        ])
-                                      ]
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "td",
-                                      { staticClass: "text-xs text-center" },
-                                      [
-                                        _c("small", [
-                                          _vm._v(
-                                            _vm._s(
-                                              alimento.cantidad +
-                                                " " +
-                                                alimento.unidad
-                                            )
-                                          )
-                                        ])
-                                      ]
-                                    ),
-                                    _vm._v(" "),
-                                    alimento.nutrientes.length == 0
-                                      ? _c(
-                                          "td",
-                                          {
-                                            staticClass: "text-xs text-center",
-                                            attrs: { colspan: "19" }
-                                          },
-                                          [
-                                            _c("small", [
-                                              _vm._v(
-                                                "Debe asignar los nutrientes"
-                                              )
-                                            ])
-                                          ]
-                                        )
-                                      : _vm._l(alimento.nutrientes, function(
-                                          nutriente
-                                        ) {
-                                          return _c(
+                        comida.alimentos.length > 0
+                          ? [
+                              _vm._l(comida.alimentos, function(
+                                alimento,
+                                index
+                              ) {
+                                return [
+                                  index == 0
+                                    ? _c(
+                                        "tr",
+                                        {
+                                          key: "alimentos" + alimento.alimentoId
+                                        },
+                                        [
+                                          _c(
                                             "td",
                                             {
-                                              key: nutriente.id,
+                                              staticClass:
+                                                "text-xs text-center",
+                                              attrs: {
+                                                rowspan: comida.alimentos.length
+                                              }
+                                            },
+                                            [
+                                              _c("small", [
+                                                _vm._v(
+                                                  _vm._s(comida.tipoComida)
+                                                )
+                                              ])
+                                            ]
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "td",
+                                            {
+                                              staticClass:
+                                                "text-xs text-center",
+                                              attrs: {
+                                                rowspan: comida.alimentos.length
+                                              }
+                                            },
+                                            [
+                                              _c("small", [
+                                                _vm._v(_vm._s(comida.comida))
+                                              ])
+                                            ]
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "td",
+                                            {
                                               staticClass: "text-xs text-center"
                                             },
                                             [
                                               _c("small", [
                                                 _vm._v(
-                                                  _vm._s(nutriente.cantidad)
+                                                  _vm._s(alimento.alimento)
                                                 )
                                               ])
                                             ]
-                                          )
-                                        })
-                                  ],
-                                  2
-                                )
-                              : _c(
-                                  "tr",
-                                  { key: alimento.alimentoId },
-                                  [
-                                    _c(
-                                      "td",
-                                      { staticClass: "text-xs text-center" },
-                                      [
-                                        _c("small", [
-                                          _vm._v(_vm._s(alimento.alimento))
-                                        ])
-                                      ]
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "td",
-                                      { staticClass: "text-xs text-center" },
-                                      [
-                                        _c("small", [
-                                          _vm._v(
-                                            _vm._s(
-                                              alimento.cantidad +
-                                                " " +
-                                                alimento.unidad
-                                            )
-                                          )
-                                        ])
-                                      ]
-                                    ),
-                                    _vm._v(" "),
-                                    alimento.nutrientes.length == 0
-                                      ? _c(
-                                          "td",
-                                          {
-                                            staticClass: "text-xs text-center",
-                                            attrs: { colspan: "19" }
-                                          },
-                                          [
-                                            _c("small", [
-                                              _vm._v(
-                                                "Debe asignar los nutrientes"
-                                              )
-                                            ])
-                                          ]
-                                        )
-                                      : _vm._l(alimento.nutrientes, function(
-                                          nutriente
-                                        ) {
-                                          return _c(
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
                                             "td",
                                             {
-                                              key: nutriente.id,
                                               staticClass: "text-xs text-center"
                                             },
                                             [
                                               _c("small", [
                                                 _vm._v(
-                                                  _vm._s(nutriente.cantidad)
+                                                  _vm._s(
+                                                    alimento.cantidad +
+                                                      " " +
+                                                      alimento.unidad
+                                                  )
                                                 )
                                               ])
                                             ]
-                                          )
-                                        })
-                                  ],
-                                  2
-                                )
-                          ]
-                        })
+                                          ),
+                                          _vm._v(" "),
+                                          alimento.nutrientes.length == 0
+                                            ? _c(
+                                                "td",
+                                                {
+                                                  staticClass:
+                                                    "text-xs text-center",
+                                                  attrs: { colspan: "19" }
+                                                },
+                                                [
+                                                  _c("small", [
+                                                    _vm._v(
+                                                      "Debe asignar los nutrientes"
+                                                    )
+                                                  ])
+                                                ]
+                                              )
+                                            : _vm._l(
+                                                alimento.nutrientes,
+                                                function(nutriente) {
+                                                  return _c(
+                                                    "td",
+                                                    {
+                                                      key: nutriente.id,
+                                                      staticClass:
+                                                        "text-xs text-center"
+                                                    },
+                                                    [
+                                                      _c("small", [
+                                                        _vm._v(
+                                                          _vm._s(
+                                                            nutriente.cantidad
+                                                          )
+                                                        )
+                                                      ])
+                                                    ]
+                                                  )
+                                                }
+                                              )
+                                        ],
+                                        2
+                                      )
+                                    : _c(
+                                        "tr",
+                                        { key: alimento.alimentoId },
+                                        [
+                                          _c(
+                                            "td",
+                                            {
+                                              staticClass: "text-xs text-center"
+                                            },
+                                            [
+                                              _c("small", [
+                                                _vm._v(
+                                                  _vm._s(alimento.alimento)
+                                                )
+                                              ])
+                                            ]
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "td",
+                                            {
+                                              staticClass: "text-xs text-center"
+                                            },
+                                            [
+                                              _c("small", [
+                                                _vm._v(
+                                                  _vm._s(
+                                                    alimento.cantidad +
+                                                      " " +
+                                                      alimento.unidad
+                                                  )
+                                                )
+                                              ])
+                                            ]
+                                          ),
+                                          _vm._v(" "),
+                                          alimento.nutrientes.length == 0
+                                            ? _c(
+                                                "td",
+                                                {
+                                                  staticClass:
+                                                    "text-xs text-center",
+                                                  attrs: { colspan: "19" }
+                                                },
+                                                [
+                                                  _c("small", [
+                                                    _vm._v(
+                                                      "Debe asignar los nutrientes"
+                                                    )
+                                                  ])
+                                                ]
+                                              )
+                                            : _vm._l(
+                                                alimento.nutrientes,
+                                                function(nutriente) {
+                                                  return _c(
+                                                    "td",
+                                                    {
+                                                      key: nutriente.id,
+                                                      staticClass:
+                                                        "text-xs text-center"
+                                                    },
+                                                    [
+                                                      _c("small", [
+                                                        _vm._v(
+                                                          _vm._s(
+                                                            nutriente.cantidad
+                                                          )
+                                                        )
+                                                      ])
+                                                    ]
+                                                  )
+                                                }
+                                              )
+                                        ],
+                                        2
+                                      )
+                                ]
+                              })
+                            ]
+                          : [
+                              _c("tr", { key: comida.ComidaId }, [
+                                _c(
+                                  "td",
+                                  { staticClass: "text-xs text-center" },
+                                  [
+                                    _c("small", [
+                                      _vm._v(_vm._s(comida.tipoComida))
+                                    ])
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "td",
+                                  { staticClass: "text-xs text-center" },
+                                  [_c("small", [_vm._v(_vm._s(comida.comida))])]
+                                ),
+                                _vm._v(" "),
+                                _vm._m(4, true)
+                              ])
+                            ]
                       ]
                     }),
                     _vm._v(" "),
@@ -4850,7 +5258,7 @@ var render = function() {
           { staticClass: "modal-dialog", attrs: { role: "document" } },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(4),
+              _vm._m(5),
               _vm._v(" "),
               _c(
                 "div",
@@ -4940,6 +5348,16 @@ var staticRenderFns = [
     return _c("th", { staticClass: "text-xs text-center" }, [
       _c("small", [_vm._v("Cantidad")])
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "td",
+      { staticClass: "text-xs text-center", attrs: { colspan: "21" } },
+      [_c("small", [_vm._v("Debe asignar los alimentos")])]
+    )
   },
   function() {
     var _vm = this
@@ -17995,6 +18413,7 @@ Vue.component('simular-component', __webpack_require__(/*! ./components/simularN
 Vue.component('seleccion-component', __webpack_require__(/*! ./components/seleccionarMenu/SeleccionComponent.vue */ "./resources/js/components/seleccionarMenu/SeleccionComponent.vue")["default"]);
 Vue.component('historial-component', __webpack_require__(/*! ./components/historial/HistorialComponent.vue */ "./resources/js/components/historial/HistorialComponent.vue")["default"]);
 Vue.component('tandas-component', __webpack_require__(/*! ./components/tandas/TandasComponent.vue */ "./resources/js/components/tandas/TandasComponent.vue")["default"]);
+Vue.component('reportes-component', __webpack_require__(/*! ./components/reportes/Reporte.vue */ "./resources/js/components/reportes/Reporte.vue")["default"]);
 var app = new Vue({
   el: '#app'
 });
@@ -19876,6 +20295,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_HistorialComponent_vue_vue_type_template_id_27de014e___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_HistorialComponent_vue_vue_type_template_id_27de014e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/reportes/Reporte.ts?vue&type=script&lang=js&":
+/*!******************************************************************************!*\
+  !*** ./resources/js/components/reportes/Reporte.ts?vue&type=script&lang=js& ***!
+  \******************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_Reporte_ts_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!./Reporte.ts?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./resources/js/components/reportes/Reporte.ts?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_Reporte_ts_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/reportes/Reporte.vue":
+/*!******************************************************!*\
+  !*** ./resources/js/components/reportes/Reporte.vue ***!
+  \******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Reporte_vue_vue_type_template_id_b927d4a2___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Reporte.vue?vue&type=template&id=b927d4a2& */ "./resources/js/components/reportes/Reporte.vue?vue&type=template&id=b927d4a2&");
+/* harmony import */ var _Reporte_ts_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Reporte.ts?vue&type=script&lang=js& */ "./resources/js/components/reportes/Reporte.ts?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _Reporte_ts_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Reporte_vue_vue_type_template_id_b927d4a2___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Reporte_vue_vue_type_template_id_b927d4a2___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/reportes/Reporte.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/reportes/Reporte.vue?vue&type=template&id=b927d4a2&":
+/*!*************************************************************************************!*\
+  !*** ./resources/js/components/reportes/Reporte.vue?vue&type=template&id=b927d4a2& ***!
+  \*************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Reporte_vue_vue_type_template_id_b927d4a2___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./Reporte.vue?vue&type=template&id=b927d4a2& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/reportes/Reporte.vue?vue&type=template&id=b927d4a2&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Reporte_vue_vue_type_template_id_b927d4a2___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Reporte_vue_vue_type_template_id_b927d4a2___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

@@ -3,10 +3,10 @@ $(document).ready( function () {
     var table = $('#tableCamas').DataTable({
       responsive: true,
       "serverSide":true,
-      "ajax": "piezas/"+PiezaId,
+      "ajax": "../piezas/"+PiezaId,
         rowId: "CamaId",
       "columns": [
-        {data: "CamaId"},
+        
         {data: "CamaNumero"},
         {data:"CamaEstado"},
         {data:'btn',orderable:false,sercheable:false},

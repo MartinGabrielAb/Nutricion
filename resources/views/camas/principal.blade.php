@@ -44,7 +44,6 @@
                   <!------Cabecera de la tabla------>
                   <thead>
                     <tr>
-                      <th scope="col">#</th>
                       <th scope="col">Cama</th>
                       <th scope="col">Estado</th>
                       <th scope="col" width="5%">Acciones</th>

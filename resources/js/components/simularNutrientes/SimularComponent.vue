@@ -22,23 +22,32 @@
               </thead>
               <tbody>
                     <template  v-for="comida in listNutrientes.comidas" >
-                      <template v-for="(alimento,index) in comida.alimentos">
-                        <tr v-if="index == 0" :key="alimento.alimentoId">
-                          <td  class="text-xs text-center" :rowspan="comida.alimentos.length"><small>{{comida.tipoComida}}</small></td>
-                          <td  class="text-xs text-center" :rowspan="comida.alimentos.length"><small>{{comida.comida}}</small></td>
-                          <td  class="text-xs text-center"><small>{{alimento.alimento}}</small></td>
-                          <td  class="text-xs text-center"><small>{{alimento.cantidad + " " +alimento.unidad}}</small></td>
-                          <td v-if="alimento.nutrientes.length ==0"  class="text-xs text-center" colspan="19" ><small>Debe asignar los nutrientes</small></td>
-                          <td v-else v-for="nutriente in alimento.nutrientes" :key="nutriente.id"  class="text-xs text-center"><small>{{nutriente.cantidad}}</small></td>
-                  
-                        </tr>
-                        <tr v-else :key="alimento.alimentoId">
+                      <template v-if="comida.alimentos.length>0">
+                        <template v-for="(alimento,index) in comida.alimentos">
+                          <tr v-if="index == 0" :key="'alimentos'+alimento.alimentoId">
+                            <td  class="text-xs text-center" :rowspan="comida.alimentos.length"><small>{{comida.tipoComida}}</small></td>
+                            <td  class="text-xs text-center" :rowspan="comida.alimentos.length"><small>{{comida.comida}}</small></td>
                             <td  class="text-xs text-center"><small>{{alimento.alimento}}</small></td>
-                            <td  class="text-xs text-center"><small>{{alimento.cantidad + " " + alimento.unidad}}</small></td>
+                            <td  class="text-xs text-center"><small>{{alimento.cantidad + " " +alimento.unidad}}</small></td>
                             <td v-if="alimento.nutrientes.length ==0"  class="text-xs text-center" colspan="19" ><small>Debe asignar los nutrientes</small></td>
-                            <td v-else v-for="nutriente in alimento.nutrientes" :key="nutriente.id"  class="text-xs text-center"><small>{{nutriente.cantidad}}</small></td> 
+                            <td v-else v-for="nutriente in alimento.nutrientes" :key="nutriente.id"  class="text-xs text-center"><small>{{nutriente.cantidad}}</small></td>
+                    
+                          </tr>
+                          <tr v-else :key="alimento.alimentoId">
+                              <td  class="text-xs text-center"><small>{{alimento.alimento}}</small></td>
+                              <td  class="text-xs text-center"><small>{{alimento.cantidad + " " + alimento.unidad}}</small></td>
+                              <td v-if="alimento.nutrientes.length ==0"  class="text-xs text-center" colspan="19" ><small>Debe asignar los nutrientes</small></td>
+                              <td v-else v-for="nutriente in alimento.nutrientes" :key="nutriente.id"  class="text-xs text-center"><small>{{nutriente.cantidad}}</small></td> 
+                          </tr>
+                        </template> 
+                      </template>
+                      <template v-else>
+                        <tr :key="comida.ComidaId">
+                              <td  class="text-xs text-center"><small>{{comida.tipoComida}}</small></td>
+                              <td  class="text-xs text-center"><small>{{comida.comida}}</small></td>
+                              <td  class="text-xs text-center" colspan="21" ><small>Debe asignar los alimentos</small></td>
                         </tr>
-                      </template> 
+                      </template>
                     </template>
                     <tr >
                             <td v-if="listNutrientes.totales" colspan="4" class="text-xs text-center"><small>Totales</small></td>

@@ -1,5 +1,5 @@
   @if ($RelevamientoControlado == 0 && $RelevamientoMenu == null)
-    <a href="{{route('seleccionarMenu.index')}}" class="btn btn-sm btn-default ml-1 mr-1 pl-3 pr-3"><small>Seleccionar Menú</small></a>
+    <button  onClick ="seleccionarMenu({{$RelevamientoId}})" class="btn btn-sm btn-default ml-1 mr-1 pl-3 pr-3"><small>Seleccionar Menú</small></button>
   @endif
   @if ($RelevamientoControlado == 0 && $RelevamientoMenu != null)
     <a href="{{route('seleccionarMenu.show',$RelevamientoId)}}" class="btn btn-sm btn-default ml-1 mr-1 pl-3 pr-3"><small>Administrar tandas</small></a>  

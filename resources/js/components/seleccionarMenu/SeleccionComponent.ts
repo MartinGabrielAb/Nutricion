@@ -1,28 +1,29 @@
 import axios from "axios";
 
 export default {
+    props:['id'],
     data:function(){ 
         return {
             relevamientoAnteriorId:null,
-            relevamientoSelected:null,
+            relevamientoSelected:this.id,
             relevamientos:[],
             relevamientoAnterior: null,
             relevamientosSinMenu:[],
             menues : [],
             menuSelected : null,
-            listErrores:null,
+            listErrores:[],
         }
     },
     mounted () {
-        axios.get('api/getRelevamientosAnteriores',{
+        axios.get('../../api/getRelevamientosAnteriores',{
             headers: { "Content-Type" : "application/json",
                 "X-Requested-With": "XMLHttpRequest" }}).then(response =>{
                 this.relevamientos = response.data;
             }).catch(error => {console.log("Error relevamientos pendientes");});
-        axios.get('api/getRelevamientosSinMenuAsignado').then(response =>{
+        axios.get('../../api/getRelevamientosSinMenuAsignado').then(response =>{
                 this.relevamientosSinMenu = response.data    
             }).catch(error => { console.log("Error menues sin asignar");});
-        axios.get('api/getMenues').then(response =>{
+        axios.get('../../api/getMenues').then(response =>{
                 this.menues = response.data    
             }).catch(error => { console.log("Error menues");})
     },
@@ -32,7 +33,7 @@ export default {
             // },
 
             getRelevamiento(){
-                axios.get('api/getRelevamientoPorMenu/'+this.relevamientoAnteriorId)
+                axios.get('../../api/getRelevamientoPorMenu/'+this.relevamientoAnteriorId)
                 .then(response =>{
                     this.relevamientoAnterior = response.data;
                 })
@@ -52,18 +53,18 @@ export default {
                 //         nombre : `${this.relevamientoAnterior[property].nombre}`
                 //     }
                 // }
-                  
                 if(window.confirm("Una vez terminado no podra hacer cambios. ¿Desea finalizar?")){
-                axios.post('api/seleccionarMenu',{params:{
+                axios.post('../../api/seleccionarMenu',{params:{
                     relevamientoAnt : this.relevamientoAnterior,
                     relevamientoNuevo: this.relevamientoSelected,
                     menu: this.menuSelected,
                 }}).then(response =>{
+                        console.log(response.data.error);
                         if(response.data.error){
                             this.listErrores = response.data.error;
                         }
                         else{
-                            window.location.href = "seleccionarMenu/" + this.relevamientoSelected;
+                            window.location.href = "../../seleccionarMenu/" + this.relevamientoSelected;
                         }
                     })
                 .catch(error => { console.log("Error finalizar");})

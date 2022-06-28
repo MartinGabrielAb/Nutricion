@@ -184,3 +184,7 @@ function mostrarCartel(texto,clase){
   $('#divMensaje').addClass(clase);  
   $('#divMensaje').fadeOut(4000);
 }
+function seleccionarMenu(id){
+  window.location.replace("./seleccionarMenu/ver/"+id);
+}
+

@@ -4,7 +4,7 @@
     <div class="container-fluid mt-3">
         <div class="row justify-content-center ">
             <div class="col">
-                    <seleccion-component :id="{{$id}}"></seleccion-component>
+                    <reportes-component :id= "{{$relevamiento->RelevamientoId}}" ></reportes-component>
             </div>
         </div>
     </div>

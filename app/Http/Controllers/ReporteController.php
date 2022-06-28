@@ -11,6 +11,15 @@ use App\Exports\ProduccionRacionesExport;
 
 class ReporteController extends Controller
 {
+    public function reportePorSalaYTipoComida($id ,Request $request){
+        /*---Pregunto si es una peticion ajax----*/
+        if($request->ajax()){
+
+        }
+        $relevamiento = DB::table('relevamiento')->where('RelevamientoId',$id)->first();
+        return view('reportes.porSalaYTipoComida',compact('relevamiento'));
+    }
+
     public function exportRelevamientosExcel(Request $request){
         /*---Pregunto si es una peticion ajax----*/
         if($request->ajax()){//PacienteCuil, RelevamientoFechaIni, RelevamientoFechaFin, SalaId

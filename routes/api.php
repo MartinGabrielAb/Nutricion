@@ -70,6 +70,10 @@ Route::get('/getRelevamientoPorMenu/{id}', function ($id) {
 	}
 	return response($relevamiento);
 });
+
+
+
+
 Route::get('/getRelevamientosAnteriores', function () {
 		$relevamientosAnteriores = DB::table('relevamiento as r')
 				->where('RelevamientoControlado',1)
@@ -80,6 +84,151 @@ Route::get('/getRelevamientosAnteriores', function () {
 		return response($relevamientosAnteriores);
 });
 
+
+//Retorna la cantidad de comidas de un relevamiento por sala y tipo de comida
+Route::get('/getRelevamientoPorSalaYTipoComida/{id}', function ($id) {
+	$salas = array();
+	$relevamientosPorSalas = DB::table('relevamientoporsala as rs')
+							->where('RelevamientoId',$id)
+							->where('RelevamientoPorSalaEstado',1)
+							->join('sala as s','s.SalaId','rs.SalaId')
+							->orderBy('SalaNombre','ASC')	
+							->get();
+
+	foreach($relevamientosPorSalas as $relevamiento){
+		$sala = array(
+			'id' => $relevamiento->SalaId,
+			'nombre' => $relevamiento->SalaNombre,
+			);
+		$comidas  = array();
+		$detallesRelevamiento = DB::table('detallerelevamiento as dr')
+						->where('RelevamientoPorSalaId',$relevamiento->RelevamientoPorSalaId)						
+						->get();
+
+		foreach($detallesRelevamiento as $detalle){
+			$detallesComidas = DB::table('detrelevamientoporcomida as dt')
+									->where('DetalleRelevamientoId',$detalle->DetalleRelevamientoId)
+									->join('comida as c','c.ComidaId','dt.ComidaId')
+									->join('tipocomida as tc','c.TipoComidaId','tc.TipoComidaId')
+									->get(); 
+			foreach ($detallesComidas as $detalleComida){
+				$encontrado = -1;
+				foreach($comidas as $index => $tipo){
+					if($detalleComida->TipoComidaId == $tipo['id']){
+						$encontrado = $index;
+						break;
+					}
+				}
+				if($encontrado==-1){
+					array_push($comidas,[
+						'id' => $detalleComida->TipoComidaId,
+						'nombre' => $detalleComida->TipoComidaNombre,
+						'comidas' => [],
+					]);
+					array_push($comidas[count($comidas)-1]['comidas'],[
+						'id' => $detalleComida->ComidaId,
+						'nombre' => $detalleComida->ComidaNombre,
+						'cantidad' => 1,
+					]);
+				}else{
+					$encontrado_comida = -1;
+					foreach($comidas[$encontrado]['comidas'] as $index => $comida){
+						if($detalleComida->ComidaId == $comida['id']){
+							$encontrado_comida = $index;
+							break;
+						}
+					}
+					if($encontrado_comida == -1){
+						array_push($comidas[$encontrado]['comidas'],[
+							'id' => $detalleComida->ComidaId,
+							'nombre' => $detalleComida->ComidaNombre,
+							'cantidad' => 1,
+						]);
+					}else{
+						$comidas[$encontrado]['comidas'][$encontrado_comida]['cantidad'] += 1;
+					}
+				}
+				
+			}	
+		}
+		$sala['tipo'] = $comidas;
+		array_push($salas,$sala);
+	}
+	return response($salas);
+});
+Route::get('/getComidasPorSalaYTipo/{id}', function ($id) {
+	$respuesta = array();
+	$tipos = DB::table('tipocomida as tc')
+					->orderBy('TipoComidaNombre','DESC')
+					->get();
+	$salas = array();
+	$relevamientosPorSalas = DB::table('relevamientoporsala as rs')
+							->where('RelevamientoId',$id)
+							->where('RelevamientoPorSalaEstado',1)
+							->join('sala as s','s.SalaId','rs.SalaId')
+							->orderBy('SalaNombre','ASC')	
+							->get();
+	foreach($relevamientosPorSalas as $relevamiento){
+		$sala = array(
+			'id' => $relevamiento->SalaId,
+			'nombre' => $relevamiento->SalaNombre,
+			);
+		$comidas  = array();
+		$detallesRelevamiento = DB::table('detallerelevamiento as dr')
+						->where('RelevamientoPorSalaId',$relevamiento->RelevamientoPorSalaId)						
+						->get();
+
+		foreach($detallesRelevamiento as $detalle){
+			$detallesComidas = DB::table('detrelevamientoporcomida as dt')
+									->where('DetalleRelevamientoId',$detalle->DetalleRelevamientoId)
+									->join('comida as c','c.ComidaId','dt.ComidaId')
+									->join('tipocomida as tc','c.TipoComidaId','tc.TipoComidaId')
+									->get(); 
+			foreach ($detallesComidas as $detalleComida){
+				$encontrado = -1;
+				foreach($comidas as $index => $tipo){
+					if($detalleComida->TipoComidaId == $tipo['id']){
+						$encontrado = $index;
+						break;
+					}
+				}
+				if($encontrado==-1){
+					array_push($comidas,[
+						'id' => $detalleComida->TipoComidaId,
+						'nombre' => $detalleComida->TipoComidaNombre,
+						'comidas' => [],
+					]);
+					array_push($comidas[count($comidas)-1]['comidas'],[
+						'id' => $detalleComida->ComidaId,
+						'nombre' => $detalleComida->ComidaNombre,
+						'cantidad' => 1,
+					]);
+				}else{
+					$encontrado_comida = -1;
+					foreach($comidas[$encontrado]['comidas'] as $index => $comida){
+						if($detalleComida->ComidaId == $comida['id']){
+							$encontrado_comida = $index;
+							break;
+						}
+					}
+					if($encontrado_comida == -1){
+						array_push($comidas[$encontrado]['comidas'],[
+							'id' => $detalleComida->ComidaId,
+							'nombre' => $detalleComida->ComidaNombre,
+							'cantidad' => 1,
+						]);
+					}else{
+						$comidas[$encontrado]['comidas'][$encontrado_comida]['cantidad'] += 1;
+					}
+				}
+				
+			}	
+		}
+		$sala['tipo'] = $comidas;
+		array_push($salas,$sala);
+	}
+	return response($salas);
+});
 //Retorna la cantidad de comidas de un relevamiento
 Route::get('/getComidasDeRelevamiento/{id}', function ($id) {
 	$comidas = array();
@@ -196,6 +345,36 @@ Route::get('/getComidasEnProgreso/{id}', function ($id) {
 
 });
 
+function getTanda($id_tanda){
+	$comidas = array();
+	$temp_comidas = DB::table('temp_comida as tc')
+							->where('TempTandaId',$id_tanda)
+							->join('comida as c','c.ComidaId','tc.ComidaId')
+							->join('tipocomida as tipo','c.TipoComidaId','tipo.TipoComidaId')
+							->get();
+	foreach($temp_comidas as $temp_comida){
+			$encontrado = -1;
+			foreach($comidas as $index => $comida){
+				if($temp_comida->ComidaId == $comida['id']){
+					$encontrado = $index;
+					break;
+				}
+			}
+			if($encontrado==-1){
+				array_push($comidas,[
+					'id' => $temp_comida->ComidaId,
+					'nombre' => $temp_comida->ComidaNombre,
+					'tipo' =>$temp_comida->TipoComidaNombre,
+					'cantidadNormal' => $temp_comida->CantidadNormal,
+					'cantidadCongelada' => $temp_comida->CantidadCongelada
+				]);
+			}else{
+				$comidas[$encontrado]['cantidadNormal'] += $temp_comida->CantidadNormal;
+				$comidas[$encontrado]['cantidadCongelada'] += $temp_comida->CantidadCongelada;
+			}
+	}
+	return $comidas;
+}
 Route::get('/getTandasRelevamiento/{id}', function ($id) {
 	$temp_relev = DB::table('temp_relevamiento as tr')
 					->join('relevamiento as r','r.RelevamientoId','tr.RelevamientoId')
@@ -206,31 +385,7 @@ Route::get('/getTandasRelevamiento/{id}', function ($id) {
 					->get();
 	$tandas = array();
 	foreach($temp_tandas as $temp_tanda){
-		$comidas = array();
-		$temp_comidas = DB::table('temp_comida as tc')
-							->where('TempTandaId',$temp_tanda->TempTandaId)
-							->join('comida as c','c.ComidaId','tc.ComidaId')
-							->get();
-		foreach($temp_comidas as $temp_comida){
-				$encontrado = -1;
-				foreach($comidas as $index => $comida){
-					if($temp_comida->ComidaId == $comida['id']){
-						$encontrado = $index;
-						break;
-					}
-				}
-				if($encontrado==-1){
-					array_push($comidas,[
-						'id' => $temp_comida->ComidaId,
-						'nombre' => $temp_comida->ComidaNombre,
-						'cantidadNormal' => $temp_comida->CantidadNormal,
-						'cantidadCongelada' => $temp_comida->CantidadCongelada
-					]);
-				}else{
-					$comidas[$encontrado]['cantidadNormal'] += $temp_comida->CantidadNormal;
-					$comidas[$encontrado]['cantidadCongelada'] += $temp_comida->CantidadCongelada;
-				}
-		}
+		$comidas = getTanda($temp_tanda->TempTandaId);
 		array_push($tandas,[
 			'id' => $temp_tanda->TempTandaId,
 			'numero' => $temp_tanda->TandaNumero,
@@ -242,10 +397,51 @@ Route::get('/getTandasRelevamiento/{id}', function ($id) {
 	return response($tandas);
 });
 
+##Hay que poner los nombres de la comida si o si Pan con sal y Pan sin sal 
+Route::get('/getInformePanPostres/{id_tanda}', function ($id_tanda) {
+	$comidas = getTanda($id_tanda);
+	$panConSal = 0; $panSinSal = 0;
+	$respuesta = array();
+	foreach ($comidas as $comida){
+		if(str_contains($comida['tipo'],'Postre')){
+			if (array_key_exists($comida['nombre'], $respuesta)) {
+				$respuesta[$comida['nombre']]++;
+			}else{
+				$respuesta[$comida['nombre']] = 0;
+			}
+		}else{
+			if($comida['nombre'] == 'Pan con sal') $panConSal++;
+			if($comida['nombre'] == 'Pan sin sal') $panSinSal++;
+		}
+	}
+	$respuesta['PanConSal'] = $panConSal;
+	$respuesta['PanSinSal'] = $panSinSal;
+	return $respuesta;
+
+});
+
+Route::get('/getInformeAlmuerzoOrCena/{id_tanda}', function ($id_tanda) {
+	$comidas = getTanda($id_tanda);
+	$panConSal = 0; $panSinSal = 0; $sopaConSal = 0; 
+	$respuesta = array();
+	foreach ($comidas as $comida){
+		$tipo = $comida['tipo'];
+		if ('Postre Almuerzo' || 'Postre Cena' || 'Sopa Almuerzo' || 'Sopa Cena' ){
+				if (array_key_exists($comida['nombre'], $respuesta)) 
+					$respuesta[$comida['nombre']]++;
+				else
+					$respuesta[$comida['nombre']] = 0;
+		}
+			
+	}
+	return $respuesta;
+
+});
 
 Route::post('/finalizar/{id}',function($id){
 	DB::table('relevamiento')->where('RelevamientoId',$id)
 							->update(['RelevamientoControlado' => 1]);
+						
 	$historial = DB::table('historial')->where('RelevamientoId',$id)->first();
 	return $historial->HistorialId;
 });
@@ -495,23 +691,24 @@ Route::post('seleccionarMenu',function(Request $request){
 						->where('DetalleMenuTipoPacienteId',$detalle->DetalleMenuTipoPacienteId)
 						->join('comida as com','ctp.ComidaId','com.ComidaId')
 						->join('tipocomida as tc','tc.TipoComidaId','com.TipoComidaId')
-						->where('ComidaPorTipoPacientePrincipal',1)
+						->where('Variante',0)
 						->where('tc.TipoComidaTurno',0)
 						->get();
 					}else{
 					//SI ES RELEVAMIENTO DE LA TARDE TOMA LOS OTROS TIPOS DE COMIDA(LA COLACION NO ES CONTEMPLADA)
 						$comidas = DB::table('comidaportipopaciente as ctp')
 							->where('DetalleMenuTipoPacienteId',$detalle->DetalleMenuTipoPacienteId)
-							->where('ComidaPorTipoPacientePrincipal',1)
+							->where('Variante',0)
 							->join('comida as com','ctp.ComidaId','com.ComidaId')
 							->join('tipocomida as tc','tc.TipoComidaId','com.TipoComidaId')
 							->where('tc.TipoComidaTurno',1)
 							->get();
 					}
 					foreach($comidas as $comida){	
+						
 						$alcanzo = guardarComida($comida,$tipoPaciente['cantidad'],0,$historialId,$tempTandaId);
 						if(!$alcanzo) {
-							array_push($noHabiaStock,$tipoPaciente);
+							array_push($noHabiaStock,$comida);
 							break;
 						}
 					}
@@ -579,7 +776,9 @@ Route::get('getMenu/{id}',function($id){
 });
 
  //retorna true si se pudo guardar y el stock alcanzaba
-function guardarComida($comida , $porciones,$congeladas,$historialId,$tempTandaId,$paraPersonal = 0){
+function guardarComida($comida , $porciones = 0,$congeladas = 0,$historialId,$tempTandaId,$paraPersonal = 0){
+	if($congeladas == null ) $congeladas = 0;
+	if($porciones == null) $porciones = 0;
 	$bitPersonal = 0;
 	if($paraPersonal) $bitPersonal = 1;
 	$alimentos = descontarStock($comida->ComidaId,$porciones);
@@ -664,6 +863,7 @@ function descontarStock($comidaId,$porciones){
 							->join('unidadmedida as u','u.UnidadMedidaId','apc.UnidadMedidaId')
 							->where('AlimentoPorComidaEstado',1)
 							->get();
+	if(count($alimentosPorComida) == 0 ) return false;
 	foreach($alimentosPorComida as $alimentoPorComida){
 		$alimento = Alimento::where('AlimentoId',$alimentoPorComida->AlimentoId)
 							->where('AlimentoEstado',1)
@@ -733,3 +933,75 @@ function descontarCongelador($comidaId,$porciones){
 			->decrement('Porciones',$porciones);
 		return true;
 }
+
+//Retorna la cantidad de comidas de un relevamiento por sala y tipo de comida
+Route::get('/getRelevamientoPorSalaYTipoComida/{id}', function ($id) {
+	$salas = array();
+	$relevamientosPorSalas = DB::table('relevamientoporsala as rs')
+							->where('RelevamientoId',$id)
+							->where('RelevamientoPorSalaEstado',1)
+							->join('sala as s','s.SalaId','rs.SalaId')
+							->orderBy('SalaNombre','ASC')	
+							->get();
+	foreach($relevamientosPorSalas as $relevamiento){
+		$sala = array(
+			'id' => $relevamiento->SalaId,
+			'nombre' => $relevamiento->SalaNombre,
+			);
+		$comidas  = array();
+		$detallesRelevamiento = DB::table('detallerelevamiento as dr')
+						->where('RelevamientoPorSalaId',$relevamiento->RelevamientoPorSalaId)						
+						->get();
+
+		foreach($detallesRelevamiento as $detalle){
+			$detallesComidas = DB::table('detrelevamientoporcomida as dt')
+									->where('DetalleRelevamientoId',$detalle->DetalleRelevamientoId)
+									->join('comida as c','c.ComidaId','dt.ComidaId')
+									->join('tipocomida as tc','c.TipoComidaId','tc.TipoComidaId')
+									->get(); 
+			foreach ($detallesComidas as $detalleComida){
+				$encontrado = -1;
+				foreach($comidas as $index => $tipo){
+					if($detalleComida->TipoComidaId == $tipo['id']){
+						$encontrado = $index;
+						break;
+					}
+				}
+				if($encontrado==-1){
+					array_push($comidas,[
+						'id' => $detalleComida->TipoComidaId,
+						'nombre' => $detalleComida->TipoComidaNombre,
+						'comidas' => [],
+					]);
+					array_push($comidas[count($comidas)-1]['comidas'],[
+						'id' => $detalleComida->ComidaId,
+						'nombre' => $detalleComida->ComidaNombre,
+						'cantidad' => 1,
+					]);
+				}else{
+					$encontrado_comida = -1;
+					foreach($comidas[$encontrado]['comidas'] as $index => $comida){
+						if($detalleComida->ComidaId == $comida['id']){
+							$encontrado_comida = $index;
+							break;
+						}
+					}
+					if($encontrado_comida == -1){
+						array_push($comidas[$encontrado]['comidas'],[
+							'id' => $detalleComida->ComidaId,
+							'nombre' => $detalleComida->ComidaNombre,
+							'cantidad' => 1,
+						]);
+					}else{
+						$comidas[$encontrado]['comidas'][$encontrado_comida]['cantidad'] += 1;
+					}
+				}
+				
+			}	
+		}
+		$sala['tipo'] = $comidas;
+		array_push($salas,$sala);
+	}
+	
+	return response($salas);
+});

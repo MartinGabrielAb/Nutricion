@@ -11,7 +11,7 @@
                     <option v-for="relevamiento in relevamientos" :key="relevamiento.RelevamientoId" :value="relevamiento.RelevamientoId">
                         {{ relevamiento.RelevamientoFecha}}({{relevamiento.RelevamientoTurno}})
                     </option>
-                </select>
+                </select>   
             </div>
         </div>
     </div> 
@@ -46,7 +46,7 @@
                         <div class="col">Selección de menú</div>
                     </div>
                     <div class="row">
-                        <div class="col">Seleccione el nuevo relevamiento para asignar el menú  </div>
+                        <div class="col">Relevamiento para asignar el menú  </div>
                         <div class="col">
                             <select class="w-100" v-model="relevamientoSelected">
                                 <option v-for="rel in relevamientosSinMenu" :key="rel.RelevamientoId" :value="rel.RelevamientoId">
@@ -83,10 +83,10 @@
                    
                 </div>
             </div>
-            <div class="card" v-if="listErrores">
-                <h5 class="text-danger">Errores:</h5>
+            <div class="card" v-if="listErrores.length>0">
+                <span class="text-danger">Errores:</span>
                 <ul v-for="error in listErrores" :key="error.ComidaId">
-                    <li class="text-danger">No posee {{error[1]}} porciones de {{error[0].ComidaNombre}}</li>
+                    <li class="text-danger">No posee esa cantidad porciones de {{error.ComidaNombre}}</li>
                 </ul>
             </div>
         </template>  

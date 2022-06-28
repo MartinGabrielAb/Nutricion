@@ -252,12 +252,14 @@ Route::middleware(['auth'])->group(function(){
 //seleccionar menu
 Route::middleware(['auth'])->group(function(){
 	Route::post('seleccionarMenu','SeleccionarMenuController@store')->name('seleccionarMenu.store')/*->middleware('permission:seleccionarMenu.store')*/;
-	Route::get('seleccionarMenu','SeleccionarMenuController@index')->name('seleccionarMenu.index')/*->middleware('permission:seleccionarMenu.index')*/;
+	Route::get('seleccionarMenu/','SeleccionarMenuController@index')->name('seleccionarMenu.index')/*->middleware('permission:seleccionarMenu.index')*/;
 	Route::get('seleccionarMenu/create','SeleccionarMenuController@create')->name('seleccionarMenu.create')/*->middleware('permission:seleccionarMenu.create')*/;
 	Route::put('seleccionarMenu/{id}','SeleccionarMenuController@update')->name('seleccionarMenu.update')/*->middleware('permission:seleccionarMenu.update')*/;
 	Route::get('seleccionarMenu/{id}','SeleccionarMenuController@show')->name('seleccionarMenu.show')/*->middleware('permission:seleccionarMenu.show')*/;
 	Route::delete('seleccionarMenu/{id}','SeleccionarMenuController@destroy')->name('seleccionarMenu.destroy')/*->middleware('permission:seleccionarMenu.destroy')*/;
 	Route::get('seleccionarMenu/{id}/edit','SeleccionarMenuController@edit')->name('seleccionarMenu.edit')/*->middleware('permission:seleccionarMenu.edit')*/;
+	Route::get('seleccionarMenu/ver/{id}','SeleccionarMenuController@index')->name('seleccionarMenu.edit')/*->middleware('permission:seleccionarMenu.edit')*/;
+
 });
 
 Route::middleware(['auth'])->group(function(){
@@ -293,6 +295,8 @@ Route::middleware(['auth'])->group(function(){
 // Route::middleware(['auth'])->group(function(){
 	Route::get('reporte/relevamientos','ReporteController@exportRelevamientosExcel')->name('reportes.pacientes');
 	Route::get('reporte/produccionRaciones','ReporteController@exportProduccionRacionesExcel')->name('reportes.produccionraciones');
+	Route::get('reporte/reportePorSalaYTipoComida/{id}','ReporteController@reportePorSalaYTipoComida')->name('reportes.reportePorSalaYTipoComida');
+
 // });
 Auth::routes();
 

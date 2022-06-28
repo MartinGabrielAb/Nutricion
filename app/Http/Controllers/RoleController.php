@@ -67,6 +67,7 @@ class RoleController extends Controller
                 ], 500);
             }
         }
+        
         $rol = Rol::findOrFail($id);
         $permisos = DB::table('permissions')
                         ->orderBy('name','asc')                

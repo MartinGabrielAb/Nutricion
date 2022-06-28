@@ -14,10 +14,9 @@ use App\AlimentoPorProveedor;
 class SeleccionarMenuController extends Controller
 {
  
-    public function index(Request $request)
+    public function index(Request $request,$id)
     {
- 
-        return view('seleccionarmenu.principal');   
+        return view('seleccionarmenu.principal',compact('id'));   
     }
 
     public function create()
@@ -149,7 +148,8 @@ class SeleccionarMenuController extends Controller
 
     public function update($id)
     {
-        
+        dd($id);
+
     }
 
     public function destroy($id)

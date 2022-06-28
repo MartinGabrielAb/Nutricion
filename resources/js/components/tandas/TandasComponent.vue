@@ -144,7 +144,7 @@
                     </button>
                     </div>    
                     <div class="modal-body">
-                        <template v-for="tanda in tandas">
+                        <template v-for="tanda in tandas" >
                             <div class="row" :key="tanda.numero">
                                 <div class="col font-weight-bold"><span>Tanda:{{tanda.numero}}</span></div>
                                 <div class="col text-right">Hora:{{tanda.hora}}</div>

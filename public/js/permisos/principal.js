@@ -3,7 +3,7 @@ $(document).ready( function () {
     var table = $('#tablePermisos').DataTable({
       responsive: true,
       "serverSide":true,
-      "ajax": "roles/"+rolId,
+      "ajax": "../roles/"+rolId,
         rowId: "id",
       "columns": [
         {data: "id"},
